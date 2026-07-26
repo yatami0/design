@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Dialog';
+import { Button } from '@/components/Action/Button';
 
 /**
  * Radix Root の薄い再輸出で **自身は state を持たない**（DR-0013）。
@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/button';
  */
 const meta = {
   title: 'Overlay/Dialog',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Dialog,
 } satisfies Meta<typeof Dialog>;
 

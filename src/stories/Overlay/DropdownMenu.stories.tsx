@@ -7,8 +7,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/DropdownMenu';
+import { Button } from '@/components/Action/Button';
 
 /**
  * 🟥 この部品は typecheck ベースラインの赤 1 件の出どころ
@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
  */
 const meta = {
   title: 'Overlay/DropdownMenu',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: DropdownMenu,
 } satisfies Meta<typeof DropdownMenu>;
 

@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+} from '@/components/DataDisplay/Table';
+import { Badge } from '@/components/Communication/Badge';
 
 /**
  * 🟨 素のマークアップのみ。並べ替え・行選択・列定義は無い（部品カタログ 表1）。
@@ -19,6 +19,8 @@ import { Badge } from '@/components/ui/badge';
  */
 const meta = {
   title: 'DataDisplay/Table',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Table,
 } satisfies Meta<typeof Table>;
 

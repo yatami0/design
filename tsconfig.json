@@ -4,7 +4,13 @@
     // --- PoC の @repo/typescript-config/base.json 相当（逐語） ---
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    // 🟥 借金（手3 D5=A・暫定。DR-0014）
+    //   PoC の packages/typescript-config/base.json は true。ここだけ false にしている。
+    //   理由: shadcn の dropdown-menu.tsx:94 が true と非互換で、`pnpm build` が赤のままだと
+    //         手4（画面を組む）で詰まる。**解決ではなく時間稼ぎ。**
+    //   返上の道: D1=(c) で製品層のラッパーを持てるので、そこで型を吸収すれば true に戻せる。
+    //   🟥 このまま移送すると手9 で赤が復活する。手9 の移送手順に必ず載せること。
+    "exactOptionalPropertyTypes": false,
     "noImplicitOverride": true,
     "target": "ES2023",
     "isolatedModules": true,

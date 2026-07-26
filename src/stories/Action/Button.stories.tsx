@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/Action/Button';
 
 // 役割カテゴリ = Action（部品カタログ 表1）
 const meta = {
   title: 'Action/Button',
+  // 🟨 wrapped: 素材を包んで既定値だけ上書きした部品（手3 D1=(c)）
+  tags: ['wrapped'],
   component: Button,
 } satisfies Meta<typeof Button>;
 

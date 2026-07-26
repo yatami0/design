@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Communication/Badge';
 
 /**
  * tmp-admin V4 は「ステータスは tint pill + 色ドット」と規定するが、
@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
  */
 const meta = {
   title: 'Communication/Badge',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Badge,
 } satisfies Meta<typeof Badge>;
 

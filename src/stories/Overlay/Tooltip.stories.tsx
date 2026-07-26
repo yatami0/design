@@ -5,8 +5,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Tooltip';
+import { Button } from '@/components/Action/Button';
 
 /**
  * ★ Q3 の答えが出る部品。**state は持たないが `TooltipProvider` の配線が必須**（部品カタログ 表4）。
@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/button';
  */
 const meta = {
   title: 'Overlay/Tooltip',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Tooltip,
   decorators: [
     (Story) => (

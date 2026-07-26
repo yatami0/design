@@ -6,11 +6,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/Selection/Select';
 
 // Radix の薄い再輸出で state を持たない（DR-0013）。open は制御 props としてパススルーされる。
 const meta = {
   title: 'Selection/Select',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Select,
 } satisfies Meta<typeof Select>;
 

@@ -7,8 +7,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Sheet';
+import { Button } from '@/components/Action/Button';
 
 /**
  * tmp-admin 4.1 は「詳細は右スライドシートで出す」と規定しており、この部品が受け皿になる。
@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
  */
 const meta = {
   title: 'Overlay/Sheet',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Sheet,
 } satisfies Meta<typeof Sheet>;
 

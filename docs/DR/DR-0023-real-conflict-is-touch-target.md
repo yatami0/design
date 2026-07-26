@@ -5,7 +5,7 @@ title: 'tmp-admin と shadcn nova の本当の衝突は accent ではなくタ�
 status: observed
 date: 2026-07-26
 step: 手2
-related: [DR-0005, DR-0010, DR-0019]
+related: [DR-0005, DR-0010, DR-0019, DR-0030]
 poc_feedback: '🟥 a11y の下限をどう扱うかは PoC の ui.md 規約に関わる。手9 で起票'
 ---
 

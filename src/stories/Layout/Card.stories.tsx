@@ -7,8 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+} from '@/components/Layout/Card';
+import { Button } from '@/components/Action/Button';
 
 /**
  * shadcn で唯一の Layout 部品（Box / Stack / Grid / Container / Spacer / Section は無い。DR-0012）。
@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
  */
 const meta = {
   title: 'Layout/Card',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Card,
 } satisfies Meta<typeof Card>;
 

@@ -6,8 +6,8 @@ import {
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
-} from '@/components/ui/empty';
-import { Button } from '@/components/ui/button';
+} from '@/components/Communication/Empty';
+import { Button } from '@/components/Action/Button';
 
 /**
  * 思想③ Patterns 層の「空状態」を、shadcn は部品として供給している（部品カタログ 表1）。
@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
  */
 const meta = {
   title: 'Communication/Empty',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Empty,
 } satisfies Meta<typeof Empty>;
 

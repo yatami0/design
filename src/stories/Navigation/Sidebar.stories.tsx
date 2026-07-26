@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
+} from '@/components/Navigation/Sidebar';
 
 /**
  * ★ 本 repo で最も重い部品。32 export・lint 赤 33 件のうち 17 件がここ（DR-0013）。
@@ -27,6 +27,8 @@ import {
  */
 const meta = {
   title: 'Navigation/Sidebar',
+  // 🟨 wrapped: 素材を包んで既定値だけ上書きした部品（手3 D1=(c)）
+  tags: ['wrapped'],
   component: Sidebar,
 } satisfies Meta<typeof Sidebar>;
 

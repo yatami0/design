@@ -7,11 +7,13 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Popover';
+import { Button } from '@/components/Action/Button';
 
 const meta = {
   title: 'Overlay/Popover',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Popover,
 } satisfies Meta<typeof Popover>;
 

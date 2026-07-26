@@ -8,11 +8,13 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from '@/components/Navigation/Pagination';
 
 // tmp-admin はページャに 3 案を残したまま停止している（段取り §7）。手4 で選ぶ。
 const meta = {
   title: 'Navigation/Pagination',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Pagination,
 } satisfies Meta<typeof Pagination>;
 
