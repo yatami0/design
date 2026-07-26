@@ -171,7 +171,8 @@ flowchart TD
 | 手1 | [手1_shadcn導入と役割分類.md](手順/手1_shadcn導入と役割分類.md) | ✅ done |
 | 手2 | [手2_トークン層マッピング.md](手順/手2_トークン層マッピング.md) | ✅ done |
 | 手2b | [手2b_UIカタログStorybook.md](手順/手2b_UIカタログStorybook.md) | ✅ done |
-| 手3〜手9 | 未作成 | ⬜ |
+| 手3 | [手3_Components層と製品層の分離.md](手順/手3_Components層と製品層の分離.md) | ⬜ **planned**（D1 待ち） |
+| 手4〜手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 

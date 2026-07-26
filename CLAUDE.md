@@ -47,18 +47,24 @@ pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell
 
 **赤がベースライン。**件数と内訳を `docs/handoff.md` の表と比較して「新しい赤」を見つける。
 
-### DR の frontmatter と採番
+### 文書のメタデータと台帳
 
-`trace` plugin（`trace@aisy`）が機械で守る。語彙・フィールド定義の正本は **`.claude/trace.config.mjs`**（`docs/DR/_template.md` は読むための写し）。
+`trace` plugin（`trace@aisy`）が機械で守る。**語彙・フィールド定義の正本は `.claude/trace.config.mjs`**（各 `_template.md` は読むための写し）。語彙は PoC に合わせてある。
 
-- **新規 DR を書く前に止まる** — 必須フィールドの欠落・`type` / `status` / `step` の語彙違反・**採番の重複**を hook がブロックする
+| 台帳 | 入れるもの | skill |
+|---|---|---|
+| `docs/DR/` | **定まったもの。**決めたこと（`decision`）／実測で分かったこと（`finding`） | `/dr` |
+| `docs/OBS/` | **まだ決まっていないもの。**疑問（`question`）／結びついた気づき（`insight`） | `/obs` |
+
+**決まっていないものを DR に積まない。**結びついて判断が定まったら DR へ昇格させる。
+
+- **新規 md を書く前に止まる** — 必須（`type` / `title` / `step` / `status`）の欠落・語彙違反・**採番の重複**を hook がブロックする
+- **既存ファイルは対象外。** retrofit は段階的でよい（`--check` では warn で出る）
 - **`related` の参照先が実在するかは hook では見ない。**台帳全体を見る検査は CLI 側:
 
 ```bash
 node "$(jq -r '.plugins["trace@aisy"][0].installPath' ~/.claude/plugins/installed_plugins.json)/tools/docs-meta.mjs" --check
 ```
-
-**対象は `docs/DR` だけ。**手順書と `docs/` 直下は frontmatter の形が違うので検査していない。
 
 ## 関連リポジトリ
 

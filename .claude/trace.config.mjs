@@ -2,21 +2,16 @@
 // エンジン本体は plugin 側（trace@aisy）にあり、語彙もパスも持たない。ここが唯一の出どころ。
 //
 // 使い方:
-//   node "<plugin>/tools/docs-meta.mjs" --check     docs/DR 全体を検査
-//   PreToolUse(Write) hook が新規 DR の frontmatter と採番を書き込み前に止める
+//   node "<plugin>/tools/docs-meta.mjs" --check     docs/ 全体を検査
+//   PreToolUse(Write) hook が新規 md の frontmatter と採番を書き込み前に止める
 //
 // `.json` ではなく `.mjs` なのは、語彙のコメントが情報資産だから。
 
 export default {
-  // ⚠ `docs` ではなく `docs/DR` に絞っている。
-  // 本 repo の docs/ には frontmatter の形が 3 種類ある——
-  //   docs/DR/      … 下の fields の形
-  //   docs/手順/    … step / title / status / updated_at / next_action（type が無い）
-  //   docs/*.md     … frontmatter を持たない（handoff・部品カタログ 等）
-  // trace は docsRoot 全体に fields を 1 組しか持てないので、
-  // `docs` にすると手順書と直下の文書が「必須フィールドが無い」で新規作成をブロックされる。
-  // 台帳（採番の重複防止・DR の規約）だけを見させるのが最小。
-  docsRoot: 'docs/DR',
+  // docs/ 全体を対象にする（語彙は PoC に合わせた）。
+  // 既存文書は retrofit 未了で warn が出るが、**hook が止めるのは新規ファイルだけ**（既存の
+  // 上書きは対象外）なので作業は止まらない。既存は段階的に埋める＝PoC と同じ方針。
+  docsRoot: 'docs',
 
   // 台帳（1 ファイル = 1 決定 or 1 発見）。ID はファイル名が持つ。
   // dir / idPattern / idPrefix はエンジン（検査）が読む。残りは skill が読む。
@@ -36,28 +31,61 @@ export default {
         '本 repo に ADR は無い。昇格の判定はしない。',
       ],
     },
+    {
+      name: 'obs',
+      dir: 'docs/OBS',
+      idPattern: '^(OBS-\\d{4})',
+      idPrefix: '',
+      filename: '{id}_{title}', // 日本語の短い題（PoC に合わせた）
+      template: 'docs/OBS/_template.md',
+      index: 'docs/OBS/index.md',
+      commitType: 'docs',
+      extraSteps: [
+        '未確認の印は `🟥 要確認`。凡例は 🟦 確定／🟨 暫定／🟥 未確認。',
+        '起票時の必須は frontmatter と §0〜§2 のみ。残りは 🟥 のままでよい。',
+        '§3 知識の結びつきは本人の頭の中の出来事。仮説は出してよいが、本人の確認なしに確定として書かない。',
+        '会話で Mermaid 図を作っていたら §9 へコードブロックごと転記する（日付見出し＋キャプション）。',
+        '昇格先は DR だけ（本 repo に OQ は無い）。`/dr` で起票し `promoted_to` に ID を書く。',
+        '索引の「棚卸しメモ」に直近実施日を残す。',
+      ],
+    },
   ],
 
   // コミットの形（CLAUDE.md §git が正本）
   commitFormat:
     '<type>(H<N>): 日本語要約 [手N] — 手に属さない作業は scope と [手N] を省く',
 
-  // 語彙（閉じた集合）— 正本は docs/DR/_template.md
-  // 実データ 27 件は decision→decided / finding→observed にきれいに割れているが、
+  // 語彙（閉じた集合）— ここが正本。各 _template.md は読むための写し。
+  // decision/finding: 実データ 27 件は decision→decided / finding→observed に割れているが、
   // テンプレートは status を型で分けていないので、そのまま和集合にしてある。
   // 厳しくするなら decision: ['decided','superseded'] / finding: ['observed','superseded']
   types: {
+    // 台帳（docs/DR）— 定まったもの
     decision: ['decided', 'observed', 'superseded'], // 決めたこと
     finding: ['decided', 'observed', 'superseded'], // 分かったこと
+    // 台帳（docs/OBS）— まだ決まっていないもの。PoC の語彙に合わせた
+    question: ['open', 'connected', 'promoted', 'closed'], // わからないまま進めた疑問
+    insight: ['open', 'connected', 'promoted', 'closed'], // 知識が結びついた気づき
+    // 手順・状態（PoC の語彙に合わせた。status の値は本 repo の _template が正本）
+    procedure: ['planned', 'in-progress', 'done', 'blocked'], // docs/手順/
+    process: ['stable'], // 段取り（地図）
+    ledger: ['living'], // handoff（状態台帳）
+    principle: ['stable', 'superseded'], // 思想・原則集
+    record: ['stable'], // 実行記録（実測のみ）
+    reference: ['stable', 'stale'], // 対応表・カタログ
+    concept: ['draft', 'stable', 'superseded'], // 単発の概念解説
+    study: ['draft', 'stable', 'superseded'], // 調査・比較検討
   },
 
   // フィールド定義。並び順がエラーメッセージの列挙順になる
   fields: {
-    id: { level: 'required', kind: 'string' },
+    // 必須は PoC と同じ 4 つ（type / title / step / status）。
+    // `id` と `date` は台帳だけが持つものなので必須にしない——必須にすると
+    // 手順書と直下文書が新規作成できなくなる（hook は missing-required で止める）。
     type: { level: 'required', kind: 'typeKey' },
     title: { level: 'required', kind: 'string' },
-    status: { level: 'required', kind: 'statusOf', of: 'type' },
-    date: { level: 'required', kind: 'string' },
+    id: { level: 'recommended', kind: 'string' }, // 台帳では実質必須
+    date: { level: 'recommended', kind: 'string' },
     step: {
       level: 'required',
       kind: 'pattern',
@@ -66,14 +94,19 @@ export default {
       example: '手0 / 手2 / 手2b / -',
       hint: '補足は本文に書く',
     },
+    status: { level: 'required', kind: 'statusOf', of: 'type' },
     related: { level: 'optional', kind: 'idArray' },
     // PoC へ戻す候補なら行き先を書く。無ければ null
     poc_feedback: { level: 'optional', kind: 'string' },
+    // OBS で使う。DR 側には無くてよい（optional なので欠けても警告しない）
+    updated: { level: 'optional', kind: 'string' },
+    tags: { level: 'optional', kind: 'array' },
+    promoted_to: { level: 'optional', kind: 'string' },
   },
 
-  // related に書ける ID。本 repo の台帳は DR だけ
-  idPattern: '^DR-\\d{4}$',
-  idExample: 'DR-0006',
+  // related / promoted_to に書ける ID
+  idPattern: '^(DR-\\d{4}|OBS-\\d{4})$',
+  idExample: 'DR-0006 / OBS-0018',
 
-  rulesRef: 'docs/DR/_template.md（型の正本）',
+  rulesRef: '.claude/trace.config.mjs（語彙の正本）／各台帳の _template.md',
 };
