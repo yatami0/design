@@ -16,7 +16,7 @@ import { Button } from '@/components/Action/Button';
  * 未決 #1 が決まるまで build は赤のまま。**story では CheckboxItem を使わない**ことで回避している。
  */
 const meta = {
-  title: 'Overlay/DropdownMenu',
+  title: '② 素材層/Overlay/DropdownMenu',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: DropdownMenu,

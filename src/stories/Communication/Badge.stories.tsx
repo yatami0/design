@@ -10,7 +10,7 @@ import { Badge } from '@/components/Communication/Badge';
  * ★ 手5 の判定対象: `focus-visible:ring-[3px]`（純粋な生値。DR-0010 の (C)）。
  */
 const meta = {
-  title: 'Communication/Badge',
+  title: '② 素材層/Communication/Badge',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Badge,

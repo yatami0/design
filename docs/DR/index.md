@@ -24,6 +24,7 @@
 | [DR-0035](DR-0035-sidebar-stays-as-vendor.md) | Sidebar の状態は **shadcn のまま**使う（製品層は薄いラッパーのみ） | 手3 | decided |
 | [DR-0036](DR-0036-card-spacing-points-to-semantic.md) | `--card-spacing` を **semantic 層へ向け替える**（レイヤ外の 2 規則） | 手3 | decided |
 | [DR-0037](DR-0037-providers-belong-to-product-layer.md) | Provider は**製品層が持つ**（部品ではなく「動くための前提条件」だから） | 手3 | decided |
+| [DR-0051](DR-0051-storybook-organized-by-layer-with-viewpoint-cards.md) | ⭐ **Storybook を層で並べ、実測値を観点カードとして story に載せる**（認識合わせの仕掛け） | 手5 | decided |
 
 ## 発見（finding）
 
@@ -61,6 +62,7 @@
 | [DR-0047](DR-0047-cost-of-forcing-the-swap-through.md) | ⭐ **「無理をして通す」代償を実測した** — 追従 +29 と引き換えに取り残し 7・語彙 +6・内部依存 +9 | 手5 | **OBS-0005**・手9 |
 | [DR-0048](DR-0048-build-storybook-does-not-render.md) | ⭐ **`build-storybook` の緑は描画を保証しない** — story が実行時に落ちても exit 0 | 手5 | **未決 #14**・手9・PoC |
 | [DR-0049](DR-0049-hit-area-reaches-44px-only-at-default-size.md) | ⭐ **当たり判定 44px は default サイズだけ** — 拡張量が一律なので 4 サイズ中 2 つが未達。DR-0034 の射程を訂正 | 手5 | **未決 #23 を閉じた**・手9 |
+| [DR-0050](DR-0050-three-surfaces-collapsed-into-two.md) | ⭐ **「面は 3 層」が 2 層になっていた** — 部品単位では見えず、中身の詰まったテンプレートで初めて出た | 手5 | **手5**・手9・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -108,4 +110,6 @@
 | DR-0047 | 🟥 OBS-0003 の材料 | 案B に「レイヤ外上書き」を入れるなら**代償 3 種を明記する**。特にユーティリティクラス名への依存は「shadcn を更新できない」形で返る |
 | DR-0048 | 🟥 architecture.md の材料 | 「story を単一ソースにする」なら、**`build-storybook` の緑が何を保証しないか**を明示する |
 | DR-0049 | 🟥 ui.md の材料 | a11y 規約を「当たり判定」に書くなら、**サイズごとに**成立を確かめる。固定拡張では小さい variant が届かない |
+| DR-0050 | 🟥 OBS 候補 | **写し方の誤りは部品カタログでは検出できない。**面の構成はテンプレートでしか測れない |
+| DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

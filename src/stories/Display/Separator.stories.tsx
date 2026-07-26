@@ -4,7 +4,7 @@ import { Separator } from '@/components/Display/Separator';
 
 // 思想の Divider に対応（部品カタログ 表1）。色は --border ← tmp-admin の --color-separator。
 const meta = {
-  title: 'Display/Separator',
+  title: '② 素材層/Display/Separator',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Separator,

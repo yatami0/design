@@ -12,7 +12,7 @@ import {
 
 // tmp-admin はページャに 3 案を残したまま停止している（段取り §7）。手4 で選ぶ。
 const meta = {
-  title: 'Navigation/Pagination',
+  title: '② 素材層/Navigation/Pagination',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Pagination,

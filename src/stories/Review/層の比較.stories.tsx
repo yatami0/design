@@ -16,11 +16,11 @@ import { Inline } from '@/components/Layout/Inline';
 import { Stack } from '@/components/Layout/Stack';
 import { Checkbox } from '@/components/Selection/Checkbox';
 import { Input } from '@/components/TextInput/Input';
-import { Group } from './_spec';
+import { Viewpoint, Group } from './_spec';
 
 const meta = {
-  title: 'Review/I 層の比較',
-  tags: ['own'],
+  title: '★ Review/I 層の比較',
+  tags: ['review'],
 } satisfies Meta;
 
 export default meta;
@@ -38,6 +38,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="max-w-3xl">
+      <Viewpoint obs="I" />
       <Group
         title="🟨 vendor（16 件）— 素材そのまま"
         note="製品層は再輸出しているだけで、中身は shadcn が書いたコード。任意値・不透明度修飾・variant がそのまま残っている＝追従は shadcn の書き方次第。"

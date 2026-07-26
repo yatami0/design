@@ -20,7 +20,7 @@ import { Button } from '@/components/Action/Button';
  *   tmp-admin V1「blur を使わない」「スクリムは --scrim」と衝突し、**トークンでは解けない**（DR-0023 表3 #3）。
  */
 const meta = {
-  title: 'Overlay/Dialog',
+  title: '② 素材層/Overlay/Dialog',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Dialog,

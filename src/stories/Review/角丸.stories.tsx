@@ -3,11 +3,11 @@
 // **1 画面に「届いた段」「取り残された variant」「そもそも動かない生値」を並べる。**
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Group, Ruler, Spec } from './_spec';
+import { Viewpoint, Group, Ruler, Spec } from './_spec';
 
 const meta = {
-  title: 'Review/B 角丸',
-  tags: ['own'],
+  title: '★ Review/B 角丸',
+  tags: ['review'],
 } satisfies Meta;
 
 export default meta;
@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="max-w-3xl">
+      <Viewpoint obs="B" />
       <Group
         title="1. 狙い — apple の非線形 5 段"
         note="これが物差し。以下の検体がこの値に一致していれば追従、していなければ取り残し。"

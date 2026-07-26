@@ -3,11 +3,11 @@
 // **段の区別が失われて平坦に見えないか**を、実際に使っている 7 箇所を並べて見る。
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Group, Spec } from './_spec';
+import { Viewpoint, Group, Spec } from './_spec';
 
 const meta = {
-  title: 'Review/C 影',
-  tags: ['own'],
+  title: '★ Review/C 影',
+  tags: ['review'],
 } satisfies Meta;
 
 export default meta;
@@ -21,6 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="bg-muted/30 max-w-3xl p-6">
+      <Viewpoint obs="C" />
       <Group
         title="1. 差し替え後の 2 段"
         note="apple --shadow-1 = 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04) ／ --shadow-2 = 0 8px 30px rgba(0,0,0,.10)。素の shadcn は 3 段だった。"

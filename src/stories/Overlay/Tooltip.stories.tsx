@@ -20,7 +20,7 @@ import { Button } from '@/components/Action/Button';
  * ★ 手5 の判定対象: `rounded-[2px]` と `translate-y-[calc(-50% - 2px)]`（純粋な生値。DR-0010 の (C)）。
  */
 const meta = {
-  title: 'Overlay/Tooltip',
+  title: '② 素材層/Overlay/Tooltip',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Tooltip,

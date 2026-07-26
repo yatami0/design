@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/Communication/Skeleton';
 
 // 思想は Skeleton を Communication に置いている（読み込み中の伝達）。
 const meta = {
-  title: 'Communication/Skeleton',
+  title: '② 素材層/Communication/Skeleton',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Skeleton,

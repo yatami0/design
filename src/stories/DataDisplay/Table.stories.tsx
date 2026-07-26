@@ -18,7 +18,7 @@ import { Badge } from '@/components/Communication/Badge';
  * shadcn 側に `--font-mono` の語彙が無い（トークンマッピング 2.3）。手3〜手4 で足す。
  */
 const meta = {
-  title: 'DataDisplay/Table',
+  title: '② 素材層/DataDisplay/Table',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Table,

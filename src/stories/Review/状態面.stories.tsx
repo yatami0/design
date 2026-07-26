@@ -4,11 +4,11 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { StatusPill } from '@/components/DataDisplay/StatusPill';
-import { Group, Spec } from './_spec';
+import { Viewpoint, Group, Spec } from './_spec';
 
 const meta = {
-  title: 'Review/A 状態面',
-  tags: ['own'],
+  title: '★ Review/A 状態面',
+  tags: ['review'],
 } satisfies Meta;
 
 export default meta;
@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="max-w-3xl">
+      <Viewpoint obs="A" />
       <Group
         title="1. tmp-admin の狙い（自作 StatusPill）"
         note="製品層で自作した StatusPill は --color-fill-* を直接参照している。これが tmp-admin V4「状態は tint pill + ドット」の意図した見た目。"

@@ -16,7 +16,7 @@ import { Button } from '@/components/Action/Button';
  *   手3 でここを `--spacing-inset-md` に向け替えられれば、Card だけは部品を触らずに semantic 層へ載る。
  */
 const meta = {
-  title: 'Layout/Card',
+  title: '② 素材層/Layout/Card',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Card,

@@ -16,7 +16,7 @@ import { Button } from '@/components/Action/Button';
  *    （トークンマッピング 2.4）。
  */
 const meta = {
-  title: 'Overlay/Sheet',
+  title: '② 素材層/Overlay/Sheet',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Sheet,

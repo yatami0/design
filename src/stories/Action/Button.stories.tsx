@@ -4,7 +4,7 @@ import { Button } from '@/components/Action/Button';
 
 // 役割カテゴリ = Action（部品カタログ 表1）
 const meta = {
-  title: 'Action/Button',
+  title: '② 製品層・ラッパー/Action/Button',
   // 🟨 wrapped: 素材を包んで既定値だけ上書きした部品（手3 D1=(c)）
   tags: ['wrapped'],
   component: Button,

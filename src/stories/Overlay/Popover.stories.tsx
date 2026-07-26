@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/Action/Button';
 
 const meta = {
-  title: 'Overlay/Popover',
+  title: '② 素材層/Overlay/Popover',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Popover,

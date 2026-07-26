@@ -26,7 +26,7 @@ import {
  *   2. `--sidebar-width` … 値が `sidebar.tsx` の **TS 定数 "16rem"**（CSS に無い）＝**変わらないはず**（DR-0022）
  */
 const meta = {
-  title: 'Navigation/Sidebar',
+  title: '② 製品層・ラッパー/Navigation/Sidebar',
   // 🟨 wrapped: 素材を包んで既定値だけ上書きした部品（手3 D1=(c)）
   tags: ['wrapped'],
   component: Sidebar,

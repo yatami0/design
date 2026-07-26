@@ -5,7 +5,7 @@ import { Button } from '@/components/Action/Button';
 import { EmptyState } from '@/patterns/EmptyState';
 
 const meta = {
-  title: 'Patterns/EmptyState',
+  title: '③ Patterns/EmptyState',
   component: EmptyState,
   tags: ['own'],
 } satisfies Meta<typeof EmptyState>;

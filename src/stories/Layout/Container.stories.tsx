@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Container } from '@/components/Layout/Container';
 
 const meta = {
-  title: 'Layout/Container',
+  title: '② 製品層・自作/Layout/Container',
   component: Container,
   // 🟥 Q6: 素材由来（vendor / wrapped）と自作（own）が同じ階層に並ぶので、
   //    tag で層を明示する。手5 の判定でどちらの由来かを切り分けるため。

@@ -63,8 +63,9 @@ function serve() {
  */
 const TARGETS = [
   {
-    id: 'review-b-角丸--default',
+    id: '★-review-b-角丸--default',
     label: 'B 角丸',
+    obs: 'B',
     full: true,
     measure: [
       {
@@ -106,8 +107,9 @@ const TARGETS = [
     ],
   },
   {
-    id: 'review-a-状態面--default',
+    id: '★-review-a-状態面--default',
     label: 'A 状態面',
+    obs: 'A',
     full: true,
     measure: [
       {
@@ -137,8 +139,9 @@ const TARGETS = [
     ],
   },
   {
-    id: 'review-c-影--default',
+    id: '★-review-c-影--default',
     label: 'C 影',
+    obs: 'C',
     full: true,
     measure: [
       {
@@ -162,8 +165,9 @@ const TARGETS = [
     ],
   },
   {
-    id: 'review-d-タイポ--default',
+    id: '★-review-d-タイポ--default',
     label: 'D タイポ',
+    obs: 'D',
     full: true,
     measure: [
       {
@@ -199,8 +203,9 @@ const TARGETS = [
     ],
   },
   {
-    id: 'review-i-層の比較--default',
+    id: '★-review-i-層の比較--default',
     label: 'I 層の比較',
+    obs: 'I',
     full: true,
     measure: [
       {
@@ -224,8 +229,9 @@ const TARGETS = [
     ],
   },
   {
-    id: 'review-e·f-オーバーレイ--default',
+    id: '★-review-e·f-オーバーレイ--default',
     label: 'E·F オーバーレイ',
+    obs: 'EF',
     full: false,
     // オーバーレイは開かないと出ない。Dialog を開いてから測る。
     open: 'Dialog を開く',
@@ -251,8 +257,9 @@ const TARGETS = [
     ],
   },
   {
-    id: 'templates-appshell--default',
+    id: '④-templates-appshell--default',
     label: '④ AppShell',
+    obs: 'H',
     full: true,
     measure: [
       {
@@ -276,14 +283,16 @@ const TARGETS = [
     ],
   },
   {
-    id: 'patterns-listdetail--default',
+    id: '③-patterns-listdetail--default',
     label: '③ ListDetail',
+    obs: '-',
     full: true,
     measure: [],
   },
   {
-    id: 'foundations-tokens--colors',
+    id: '①-tokens-tokens--colors',
     label: 'Tokens 色',
+    obs: '-',
     full: true,
     measure: [],
   },
@@ -340,7 +349,7 @@ const touchCtx = await browser.newContext({
 });
 const touchPage = await touchCtx.newPage();
 await touchPage.goto(
-  `http://localhost:${String(PORT)}/iframe.html?id=action-button--sizes&viewMode=story`,
+  `http://localhost:${String(PORT)}/iframe.html?id=②-製品層・ラッパー-action-button--sizes&viewMode=story`,
   { waitUntil: 'networkidle' },
 );
 const hit = await touchPage.evaluate(() => {
@@ -373,6 +382,44 @@ await browser.close();
 server.close();
 
 await writeFile(join(OUT, 'measured.json'), JSON.stringify(results, null, 2));
+
+// 🟦 **認識合わせの核心。**実測値を story 側へ渡し、観点カードが
+//    「期待 / 実測 / 一致」を Storybook の画面上に出せるようにする。
+//    → 人は現物を、機械は数字を、**同じ画面で**突き合わせられる。
+const specimens = [];
+for (const r of results) {
+  for (const m of r.measured) {
+    const got = m.got
+      ? Object.entries(m.got)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(' / ')
+      : null;
+    specimens.push({
+      obs: r.obs ?? '-',
+      name: m.name,
+      expect: m.expect,
+      got,
+      ok: got !== null,
+    });
+  }
+}
+for (const row of hit?.rows ?? []) {
+  specimens.push({
+    obs: 'J',
+    name: `Button ${row.ラベル}`,
+    expect: '当たり判定 44px 以上',
+    got: `見た目 ${row.見た目} + inset ${row.inset} × 2 = ${row.当たり判定}`,
+    ok: row['44px 到達'],
+  });
+}
+await writeFile(
+  'src/stories/Review/_measured.json',
+  JSON.stringify({ measuredAt: new Date().toISOString(), specimens }, null, 2) +
+    '\n',
+);
+console.log(
+  `観点カード用 → src/stories/Review/_measured.json（${String(specimens.length)} 検体）`,
+);
 
 const md = results
   .filter((r) => r.measured.length > 0)

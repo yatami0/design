@@ -17,7 +17,7 @@ import { issues, type Issue, type IssueStatus } from '@/lib/fixtures/issues';
 import type { ColumnDef } from '@tanstack/react-table';
 
 const meta = {
-  title: 'Patterns/ListDetail',
+  title: '③ Patterns/ListDetail',
   // 🟦 own: ③ 層の自作。DR-0039 の条件（状態を持つ／複数カテゴリをまたぐ）を両方満たす
   tags: ['own'],
 } satisfies Meta;

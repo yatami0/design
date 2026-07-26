@@ -16,7 +16,7 @@ const columns: ColumnDef<Issue, never>[] = [
 ];
 
 const meta = {
-  title: 'DataDisplay/DataGrid',
+  title: '② 製品層・自作/DataDisplay/DataGrid',
   tags: ['own'],
 } satisfies Meta;
 

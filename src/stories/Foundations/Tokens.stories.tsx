@@ -7,7 +7,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import type { ReactNode } from 'react';
 
 const meta = {
-  title: 'Foundations/Tokens',
+  title: '① Tokens/Tokens',
   parameters: { layout: 'padded' },
 } satisfies Meta;
 

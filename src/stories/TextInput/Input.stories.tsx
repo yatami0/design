@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Input } from '@/components/TextInput/Input';
 
 const meta = {
-  title: 'TextInput/Input',
+  title: '② 素材層/TextInput/Input',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Input,

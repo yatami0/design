@@ -3,11 +3,11 @@
 // **V3「強調は weight 600 ⇔ 400 のコントラスト」が出ているか／太すぎないか**を見る。
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Group, Spec } from './_spec';
+import { Viewpoint, Group, Spec } from './_spec';
 
 const meta = {
-  title: 'Review/D タイポ',
-  tags: ['own'],
+  title: '★ Review/D タイポ',
+  tags: ['review'],
 } satisfies Meta;
 
 export default meta;
@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="max-w-3xl">
+      <Viewpoint obs="D" />
       <Group
         title="1. V3 のコントラスト（600 ⇔ 400）"
         note="tmp-admin V3 は「強調は色ではなく weight のコントラストで作る」。600 と 400 が並んだとき、差がはっきり読めるか。"

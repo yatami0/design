@@ -14,7 +14,7 @@ import { Button } from '@/components/Action/Button';
  * PoC の architecture.md §3.6 が「loading / error / empty を 1 回書いて使い回す」としている対象。
  */
 const meta = {
-  title: 'Communication/Empty',
+  title: '② 素材層/Communication/Empty',
   // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
   tags: ['vendor'],
   component: Empty,

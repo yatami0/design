@@ -1,0 +1,222 @@
+{
+  "measuredAt": "2026-07-26T22:24:36.836Z",
+  "specimens": [
+    {
+      "obs": "B",
+      "name": "rounded-sm",
+      "expect": "8px",
+      "got": "borderTopLeftRadius: 8px",
+      "ok": true
+    },
+    {
+      "obs": "B",
+      "name": "rounded-md",
+      "expect": "8px",
+      "got": "borderTopLeftRadius: 8px",
+      "ok": true
+    },
+    {
+      "obs": "B",
+      "name": "rounded-lg",
+      "expect": "12px",
+      "got": "borderTopLeftRadius: 12px",
+      "ok": true
+    },
+    {
+      "obs": "B",
+      "name": "rounded-xl",
+      "expect": "18px",
+      "got": "borderTopLeftRadius: 18px",
+      "ok": true
+    },
+    {
+      "obs": "B",
+      "name": "rounded-2xl",
+      "expect": "18px",
+      "got": "borderTopLeftRadius: 18px",
+      "ok": true
+    },
+    {
+      "obs": "B",
+      "name": "rounded-4xl (pill)",
+      "expect": "980px",
+      "got": "borderTopLeftRadius: 980px",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "bg-destructive/10",
+      "expect": "destructive を 10% で混ぜた色",
+      "got": "backgroundColor: oklab(0.654224 0.203716 0.111346 / 0.1)",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "bg-destructive/20",
+      "expect": "20%",
+      "got": "backgroundColor: oklab(0.654224 0.203716 0.111346 / 0.2)",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "bg-muted/50",
+      "expect": "50%",
+      "got": "backgroundColor: oklab(0.962566 0.00190642 -0.00636154 / 0.5)",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "StatusPill danger（自作・比較対象）",
+      "expect": "--color-fill-danger = rgba(255,59,48,.16)",
+      "got": "backgroundColor: rgba(255, 59, 48, 0.16)",
+      "ok": true
+    },
+    {
+      "obs": "C",
+      "name": "shadow-sm",
+      "expect": "apple --shadow-1",
+      "got": "boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.06) 0px 1px 3px 0px, rgba(0, 0, 0, 0.04) 0px 1px 2px 0px",
+      "ok": true
+    },
+    {
+      "obs": "C",
+      "name": "shadow-md",
+      "expect": "apple --shadow-1（sm と同一になるはず）",
+      "got": "boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.06) 0px 1px 3px 0px, rgba(0, 0, 0, 0.04) 0px 1px 2px 0px",
+      "ok": true
+    },
+    {
+      "obs": "C",
+      "name": "shadow-lg",
+      "expect": "apple --shadow-2",
+      "got": "boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 8px 30px 0px",
+      "ok": true
+    },
+    {
+      "obs": "D",
+      "name": "font-medium",
+      "expect": "600",
+      "got": "fontWeight: 600",
+      "ok": true
+    },
+    {
+      "obs": "D",
+      "name": "font-normal",
+      "expect": "400",
+      "got": "fontWeight: 400",
+      "ok": true
+    },
+    {
+      "obs": "D",
+      "name": "text-body",
+      "expect": "17px",
+      "got": "fontSize: 17px",
+      "ok": true
+    },
+    {
+      "obs": "D",
+      "name": "text-table",
+      "expect": "15px",
+      "got": "fontSize: 15px",
+      "ok": true
+    },
+    {
+      "obs": "D",
+      "name": "text-label",
+      "expect": "13px",
+      "got": "fontSize: 13px",
+      "ok": true
+    },
+    {
+      "obs": "I",
+      "name": "Checkbox（vendor・生値 4px）",
+      "expect": "4px のまま動かない",
+      "got": "borderTopLeftRadius: 4px",
+      "ok": true
+    },
+    {
+      "obs": "I",
+      "name": "Button（wrapped）",
+      "expect": "角丸は min(--radius-md,12px) / 高さ 32px",
+      "got": "borderTopLeftRadius: 12px / height: 32px",
+      "ok": true
+    },
+    {
+      "obs": "I",
+      "name": "Card（own）",
+      "expect": "--card-spacing → --spacing-inset-md = 16px",
+      "got": "paddingTop: 16px",
+      "ok": true
+    },
+    {
+      "obs": "EF",
+      "name": "dialog overlay の背景",
+      "expect": "rgba(0,0,0,.4) = --color-scrim",
+      "got": "backgroundColor: rgba(0, 0, 0, 0.4)",
+      "ok": true
+    },
+    {
+      "obs": "EF",
+      "name": "dialog overlay の blur",
+      "expect": "blur(0px) または none（V1）",
+      "got": "backdropFilter: blur(0px)",
+      "ok": true
+    },
+    {
+      "obs": "EF",
+      "name": "dialog content の角丸",
+      "expect": "18px（apple l）",
+      "got": "borderTopLeftRadius: 18px",
+      "ok": true
+    },
+    {
+      "obs": "H",
+      "name": "sidebar の面",
+      "expect": "#003a63（tmp brand-navy）",
+      "got": "backgroundColor: rgb(0, 58, 99)",
+      "ok": true
+    },
+    {
+      "obs": "H",
+      "name": "sidebar の前景",
+      "expect": "rgba(255,255,255,.92)",
+      "got": "color: rgba(255, 255, 255, 0.92)",
+      "ok": true
+    },
+    {
+      "obs": "H",
+      "name": "nav-item（見た目も 44px・DR-0034）",
+      "expect": "44px",
+      "got": "minHeight: 44px",
+      "ok": true
+    },
+    {
+      "obs": "J",
+      "name": "Button xs (h-6)",
+      "expect": "当たり判定 44px 以上",
+      "got": "見た目 24px + inset -6px × 2 = 36px",
+      "ok": false
+    },
+    {
+      "obs": "J",
+      "name": "Button sm (h-7)",
+      "expect": "当たり判定 44px 以上",
+      "got": "見た目 28px + inset -6px × 2 = 40px",
+      "ok": false
+    },
+    {
+      "obs": "J",
+      "name": "Button default (h-8)",
+      "expect": "当たり判定 44px 以上",
+      "got": "見た目 32px + inset -6px × 2 = 44px",
+      "ok": true
+    },
+    {
+      "obs": "J",
+      "name": "Button lg (h-9)",
+      "expect": "当たり判定 44px 以上",
+      "got": "見た目 36px + inset -6px × 2 = 48px",
+      "ok": true
+    }
+  ]
+}

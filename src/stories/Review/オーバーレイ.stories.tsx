@@ -3,6 +3,8 @@
 // **blur を消した以上、奥行きはスクリムの濃さだけで作ることになる。**
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
+import { Viewpoint } from './_spec';
+
 import { Button } from '@/components/Action/Button';
 import {
   Dialog,
@@ -23,8 +25,8 @@ import {
 import { Stack } from '@/components/Layout/Stack';
 
 const meta = {
-  title: 'Review/E·F オーバーレイ',
-  tags: ['vendor'],
+  title: '★ Review/E·F オーバーレイ',
+  tags: ['review'],
 } satisfies Meta;
 
 export default meta;
@@ -43,6 +45,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="max-w-2xl">
+      <Viewpoint obs="EF" />
       <Stack gap="md">
         <p className="text-body">
           背後のテキスト。オーバーレイを開いたときに

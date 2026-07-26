@@ -5,7 +5,7 @@ import { StatusPill } from '@/components/DataDisplay/StatusPill';
 import { Inline } from '@/components/Layout/Inline';
 
 const meta = {
-  title: 'DataDisplay/StatusPill',
+  title: '② 製品層・自作/DataDisplay/StatusPill',
   component: StatusPill,
   tags: ['own'],
 } satisfies Meta<typeof StatusPill>;
