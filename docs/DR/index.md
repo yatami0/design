@@ -15,6 +15,8 @@
 | [DR-0006](DR-0006-shadcn-base-radix-preset-nova.md) | shadcn は base=radix / preset=nova | 手1 | decided |
 | [DR-0007](DR-0007-shadcn-output-handling.md) | shadcn 出力は整形対象外にするが lint の赤は ignore しない | 手1 | decided |
 | [DR-0017](DR-0017-storybook-as-catalog.md) | ⭐ UI カタログは Storybook を採用し**手2b として挿入**（階層は役割 9 カテゴリ） | 手2b | decided |
+| [DR-0019](DR-0019-semantic-spacing-typography-vocabulary.md) | semantic な spacing / typography は**用途名で自前定義**する（Tailwind 既定を semantic とみなさない） | 手2 | decided |
+| [DR-0020](DR-0020-dark-mode-out-of-scope.md) | dark モードはトークン差し替えの**対象外**とする | 手2 | decided |
 
 ## 発見（finding）
 
@@ -30,6 +32,9 @@
 | [DR-0015](DR-0015-findings-against-component-philosophy.md) | 共通コンポーネント思想への指摘 3 点 | 手1 | ユーザー判断 |
 | [DR-0016](DR-0016-shadcn-deps-are-caret-ranges.md) | shadcn が追加する依存は `^` レンジ | 手1 | 手5・手9 |
 | [DR-0018](DR-0018-design-sync-takes-preview-html.md) | ⭐ `/design-sync` が受け取るのは**プレビュー HTML** — story も React も渡らない | — | **手6**・手2b |
+| [DR-0021](DR-0021-tailwind-scans-docs-markdown.md) | ⭐ Tailwind v4 は `docs/**.md` を走査し**文章中のクラス名を本番 CSS に生成する** | 手2 | **手5**・PoC |
+| [DR-0022](DR-0022-shadcn-has-component-tokens.md) | ⭐ 思想の 3 層は**3 層とも実在する**（component token は有る）。欠けるのは spacing / typography だけ | 手2 | 手3・段取り訂正 |
+| [DR-0023](DR-0023-real-conflict-is-touch-target.md) | ⭐ tmp-admin と nova の本当の衝突は accent ではなく**タッチターゲット 44px** | 手2 | **手3**・手9 |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。
 
@@ -43,3 +48,6 @@
 | DR-0011 | ADR-0019 の材料 | off リストは「ルールごと off」ではなくセレクタを絞る形が使える可能性 |
 | DR-0014 | 🟥 移送時に必ず出る | `exactOptionalPropertyTypes` の扱い（3 択） |
 | DR-0016 | 🟥 移送時 | catalog に 7 パッケージを厳密ピンで追加 |
+| DR-0021 | 🟥 OBS 候補 | PoC も Tailwind v4。**`docs/` に書いたクラス名が本番 CSS に入る**（PoC の docs は巨大） |
+| DR-0022 | OBS-0003 の前提 | 「shadcn は semantic 1 層」は誤り。3 層とも実在するので案B の議論の土台が変わる |
+| DR-0023 | 🟥 ui.md の材料 | a11y のタッチターゲット下限（44px）を規約に置くかどうか |
