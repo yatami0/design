@@ -19,14 +19,21 @@
 //   shadcn/ui が置くコード（src/components/ui/**）は orval のような生成物ではなく
 //   自分で編集する実体コード。ignore すると「shadcn の素のコードが strictTypeChecked と
 //   任意値禁止を通るか」という手1 の観測ができなくなるため、検査対象に含める。
+//
+// 【手2b で足したもの】eslint-plugin-storybook
+//   `storybook init` は import 行だけを足して config 配列に追加せず、
+//   **プラグインが効いていない状態**にしていた（手順書 §2 D12）。story は shadcn の出力ではなく
+//   自分で書くコードなので検査対象に入れる。PoC も将来 Storybook を入れる方針
+//   （architecture.md §3.6）なので、この設定はそのまま移送できる。
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import tailwindcss from 'eslint-plugin-tailwindcss';
+import storybook from 'eslint-plugin-storybook';
 
 export default defineConfig(
   {
-    ignores: ['**/dist/**', '**/.next/**'],
+    ignores: ['**/dist/**', '**/.next/**', '**/storybook-static/**'],
   },
 
   tseslint.configs.strictTypeChecked,
@@ -79,4 +86,7 @@ export default defineConfig(
       ],
     },
   },
+
+  // 手2b: story 専用の検査（D12）。init が配線し損ねていたものを正しく入れる。
+  storybook.configs['flat/recommended'],
 );

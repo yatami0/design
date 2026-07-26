@@ -3,16 +3,17 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)
 
-最終更新: 2026-07-26（手2 完了）
+最終更新: 2026-07-26（手2b 完了）
 
 ---
 
 ## 現在地
 
-- **手0（土台）・手1（shadcn 導入と役割分類）・手2（① Tokens 層）が完了。**すべて `main` へ `--no-ff` マージ済み、作業ツリー clean。
-- 手2 の 7 つの問い（Q1〜Q7）にすべて回答済み。**[トークンマッピング.md](トークンマッピング.md) が完成**し、**手5 の差し替え手順と手3 の語彙が確定した。**
-- **決定 9 件・発見 12 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜0023）。
-- 次は **手2b（UI カタログ = Storybook）**。まず手順書 `docs/手順/手2b_*.md` を書き、問いを立ててから実行する。
+- **手0（土台）・手1（shadcn 導入）・手2（① Tokens 層）・手2b（UI カタログ）が完了。**すべて `main` へ `--no-ff` マージ済み、作業ツリー clean。
+- 手2b の 7 つの問い（Q1〜Q7）にすべて回答済み。**Storybook が判定装置として機能することを予行演習で確認済み**＝手5 を実行してよい状態。
+- ★ **手5 の判定方法が確定した**（DR-0027）。生成 CSS の diff では判定できず、**静的分類 + 実効値計算 + 目視**の 3 段。
+- **決定 10 件・発見 15 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜0027）。
+- 次は **手3（② Components 層）**。まず手順書 `docs/手順/手3_*.md` を書き、問いを立ててから実行する。
 
 ## 進捗ボード
 
@@ -21,8 +22,8 @@
 | 手0 | 土台（Next.js + Tailwind v4 + PoC 同一版・同一 lint） | （無し。フォーマット確定前） | ✅ **done** |
 | 手1 | shadcn デフォルト導入 + 役割 9 カテゴリ割り当て | [手1](手順/手1_shadcn導入と役割分類.md) | ✅ **done** |
 | 手2 | ① Tokens 層（3 層トークン ↔ shadcn 語彙 ↔ tmp-admin のマッピング） | [手2](手順/手2_トークン層マッピング.md) | ✅ **done** |
-| **手2b** | **UI カタログ（Storybook 10.5）**。階層は役割 9 カテゴリ＝**手5 の判定装置** | 未作成 | ⬜ **次はここ** |
-| 手3 | ② Components 層（Layout / Overlay の自作テンプレ・状態は hook へ） | 未作成 | ⬜ |
+| **手2b** | **UI カタログ（Storybook 10.5）**。階層は役割 9 カテゴリ＝**手5 の判定装置** | [手2b](手順/手2b_UIカタログStorybook.md) | ✅ **done** |
+| 手3 | ② Components 層（Layout / Overlay の自作テンプレ・状態は hook へ） | 未作成 | ⬜ **次はここ** |
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | 未作成 | ⬜ |
 | 手5 | ★ トークン差し替え実験 | 未作成 | ⬜ |
 | 手6 | **プレビュー HTML を作り** `/design-sync` で登録 → フラグ無しで部品を選べるか | 未作成 | ⬜ |
@@ -35,15 +36,22 @@
 **赤がベースライン**（DR-0007 により shadcn の赤を ignore していない）。
 次セッションは**この数字と比較**して「新しい赤が出たか」を判定する。
 
-| ゲート | 手1 完了時 | **手2 完了時** | 備考 |
-|---|---|---|---|
-| `pnpm typecheck` | 🟥 赤 1 件 | 🟥 **赤 1 件** | `dropdown-menu.tsx:94` / `exactOptionalPropertyTypes`（DR-0014） |
-| `pnpm lint` | 🟥 赤 33 件 | 🟥 **赤 33 件** | 任意値 24（DR-0010）／型系 9。**うち `sidebar.tsx` 17 + `use-mobile.ts` 3 = 6 割** |
-| `pnpm build` | 🟥 赤 | 🟥 **赤** | typecheck と同一原因 |
-| `pnpm format:check` | 🟦 緑 | 🟦 **緑** | shadcn 出力は `.prettierignore`（DR-0007） |
-| `pnpm spell` | 🟦 緑 | 🟦 **緑** | 辞書に `largetitle` / `noto` / `rgba` を追加済み |
+**ゲートは 6 本になった**（手2b D4 で `build-storybook` を追加）。
 
-**手2 で新しい赤はゼロ。**トークンの語彙を足しただけでは lint も typecheck も動かない（＝手2 Q6 の答え）。
+```bash
+pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && pnpm build-storybook
+```
+
+| ゲート | 手1 完了時 | 手2 完了時 | **手2b 完了時** | 備考 |
+|---|---|---|---|---|
+| `pnpm typecheck` | 🟥 赤 1 | 🟥 赤 1 | 🟥 **赤 1** | `dropdown-menu.tsx:94` / `exactOptionalPropertyTypes`（DR-0014） |
+| `pnpm lint` | 🟥 赤 33 | 🟥 赤 33 | 🟥 **赤 33** | 任意値 24（DR-0010）／型系 9。**うち `sidebar.tsx` 17 + `use-mobile.ts` 3 = 6 割** |
+| `pnpm build` | 🟥 赤 | 🟥 赤 | 🟥 **赤** | typecheck と同一原因 |
+| `pnpm format:check` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | shadcn 出力は `.prettierignore`（DR-0007） |
+| `pnpm spell` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | 辞書に `largetitle` / `noto` / `rgba` を追加済み |
+| 🆕 `pnpm build-storybook` | — | — | 🟦 **緑** | 本体の `build` が赤でも通る（別系統） |
+
+**手2・手2b とも新しい赤はゼロ。**トークンの語彙を足しても story を 19 本書いても、lint も typecheck も動かない。
 
 内訳を取り直すコマンド:
 
@@ -61,6 +69,7 @@ pnpm dev              # 開発サーバ
 ```
 
 依存は**すべて PoC の catalog と同一値で厳密ピン**（DR-0003）。`^` で入っているのは shadcn が追加した 7 件のみ（DR-0016）。
+Storybook 関連 6 件（手2b）も**厳密ピン**。カタログは `pnpm storybook`（開発）／ `pnpm build-storybook`（ゲート）。
 
 ## 確定済みスコープ
 
@@ -76,6 +85,8 @@ pnpm dev              # 開発サーバ
 | shadcn | `base=radix` / `preset=nova` / CLI `4.15.0` 固定 / 部品 18 件 | DR-0006 |
 | 赤の扱い | ignore もルール緩和もしない。**赤の内訳が成果物** | DR-0007 |
 | UI カタログ | **Storybook 10.5**（`@storybook/nextjs-vite`）を手2b で導入。階層は役割 9 カテゴリ | DR-0017 |
+| Storybook の範囲 | **描画のみ**（+ `addon-a11y`）。`storybook build` を機械ゲートに追加 | DR-0024 |
+| 手5 の判定方法 | **静的分類 + 実効値計算 + 目視**の 3 段。CSS の diff では判定できない | DR-0027 |
 | Claude Design への受け渡し | **プレビュー HTML**（`@dsCard group="…"`）。story も React も渡らない | DR-0018 |
 | semantic 語彙 | spacing / typography は**用途名で自前定義**（`--spacing-inset-*` 等・値は既定への参照） | DR-0019 |
 | dark モード | **トークン差し替えの対象外**。`.dark` は shadcn 既定のまま残す | DR-0020 |
@@ -98,18 +109,44 @@ pnpm dev              # 開発サーバ
 - `src/app/tokens.css` — 用途名の semantic spacing 9 / typography 6。**値は書かず既定への参照**（手5 で参照先を向け替える）
 - `globals.css` に `@source not '../../docs'` — Tailwind が docs の md を走査してクラスを生成していたため（DR-0021）
 
-## 次にやること（手2b）— Storybook 導入
+## 手2b の成果（次の手が前提にすること）
+
+**判定装置が立った。**`pnpm storybook` で役割 9 カテゴリの階層に 18 部品 + Foundations が並ぶ。
+
+| 事実 | 数字・内容 | 効く先 |
+|---|---|---|
+| ★ **手5 の判定方法が確定** | CSS の diff では**1 行しか動かない**（全部 `var()` 参照）。正しくは **① 参照の形で静的分類 ② 実効値の計算 ③ 目視で裏取り** | **未決 #5 を閉じた**（DR-0027） |
+| ★ **予行演習に成功** | `--radius` 10px → 24px で、事前特定していた Checkbox `rounded-[4px]` と Tooltip `rounded-[2px]` が**実際に変わらなかった** | **手5 を実行してよい状態** |
+| 🟨 (B) 群は「条件つき」 | `min(var(--radius-md), 10px)` は**小さくする方向なら追従、大きくすると頭打ち** | 手5 では**差し替えの向きも記録する** |
+| 部品を触っていない | `src/components/ui/**` は 1 行も変更なし | 手5 の前提は保たれている |
+| 配線が要る部品は 2 件 | `Tooltip`（`TooltipProvider`）／`Sidebar`（`SidebarProvider`）。story 側の decorator で解決 | [部品カタログ 表2](部品カタログ.md) の指摘 1・3 が実装でも顕在化 |
+| 🟨 CSS パイプラインが 2 本 | 本体は oklch を **hex + lab** に展開、Storybook は **oklch のまま**。値は等価 | 判定は **Storybook 側に固定する**（DR-0026） |
+| 🟥 移送コスト | 依存 22 → **28**（+6 を厳密ピン）／`pnpm-lock.yaml` **+1,991 行** | 手9（DR-0024） |
+
+### 手2b で新設したもの
+
+- `.storybook/main.ts` / `preview.tsx` — addon は **a11y と docs の 2 つだけ**（D10）
+- `src/stories/<役割カテゴリ>/*.stories.tsx` — **19 ファイル**（部品 18 + Foundations/Tokens）
+- `tsconfig.json` の `include` に `.storybook/**` — 🟥 **足すまでゲートの射程外だった**（DR-0025）
+- `eslint.config.mjs` に `eslint-plugin-storybook` を**正しく配線**（init は import だけ足していた）
+
+## 次にやること（手3）— ② Components 層
 
 **まず手順書を書く。**問いの立っていない手は実行しない（DR-0004）。
-方針は [DR-0017](DR/DR-0017-storybook-as-catalog.md) で確定済み。**問いの種も同 DR §「手2b で答えを出す問い」にある**ので、手順書はそこから起こす。
 
-- `@storybook/nextjs-vite@10.5.4`（peer に `next: ^16` を明示。実測確認済み）
-- 階層は役割 9 カテゴリ（`title: 'Action/Button'`）→ [部品カタログ.md](部品カタログ.md) の表と同じ構造
-- Tailwind は `.storybook/preview.ts` で `import '../src/app/globals.css'` するだけ
-- 🟥 **Vite が新規依存**。本体の Next ビルドと別系統になる＝「本体では通るが Storybook では壊れる」を観測項目に入れる
-- 🟨 `@storybook/addon-vitest`（＋ Playwright）まで入れるかは手2b の判断ポイント
-- 🆕 **手2 から持ち込む観測点**: Storybook は Vite 系なので `@source not '../../docs'`（DR-0021）が効くか別系統で確かめる。
-  効かないと **Storybook と本体で生成されるクラス集合が食い違う**＝手5 の判定装置が本体と別の答えを出す
+作業範囲は手1 の [部品カタログ 表3](部品カタログ.md) で確定済み。加えて手2・手2b で**判断待ちが 4 件たまっている**。
+
+| # | やること | 根拠 |
+|---|---|---|
+| 1 | **Layout プリミティブを自作する**（Box / Stack / Grid / Container / Spacer / Section） | 部品カタログ 表3。shadcn は 1 つも供給しない（DR-0012） |
+| 2 | 自作 Layout が **手2 の semantic 語彙だけで組めるか**を確かめる | DR-0019。**semantic 層が効く唯一の場所**がここ |
+| 3 | 🟥 未決 #1（`exactOptionalPropertyTypes`）を決着させる | **手3 まで**。`build` が赤のままだと手4 で詰まる（DR-0014） |
+| 4 | 未決 #2（Sidebar の state を hook へ切り出すか） | DR-0013。lint 赤の 6 割 |
+| 5 | 🟥 未決 #11（touch-min 44px を守るか、nova の高密度を取るか） | DR-0023。**`addon-a11y` で測れるようになった** |
+| 6 | 未決 #12（`--card-spacing` を `--spacing-inset-md` に向け替えるか） | DR-0022。**部品を触らず semantic 層へ載る唯一の接続点** |
+| 7 | 未決 #3（TanStack Table を入れるか） | 一覧の DataGrid |
+
+> **作った部品はそのつど story を足す**（手2b で面ができている）。手5 の判定対象は story に載っているものだけ。
 
 ## 未決・保留
 
@@ -119,15 +156,18 @@ pnpm dev              # 開発サーバ
 | 2 | Sidebar の状態を hook へ切り出すか（唯一 state を内包・lint 赤の 6 割） | 手3（DR-0013） |
 | 3 | TanStack Table を導入するか（`Data Table` は組み立てガイドで新規依存が要る） | 手3 |
 | 4 | 思想への指摘 3 点を採るか（分類の穴・Overlay の定義・`provider` フラグ） | ユーザー判断（DR-0015） |
-| 5 | 手5 の判定方法を「どこが変わらなかったか」の列挙に変える | 手5 の手順書作成時（DR-0010） |
+| ~~5~~ | ~~手5 の判定方法~~ | ✅ **閉じた。**静的分類 + 実効値計算 + 目視の 3 段（手2b・DR-0027） |
 | 6 | `preset` ごと差し替える軸を手5 に含めるか（トークン差し替えとは別の軸） | 手5（DR-0016） |
 | 7 | ダミーデータの作り方（契約は `/ping` 1 本のみ＝使えるデータがゼロ） | 手4。**仮置き: 使い捨ての手書き**（契約の正本を割らないため） |
-| 8 | 🆕 `@storybook/addon-vitest`（＋ Playwright）まで入れるか、描画のみに留めるか | 手2b（DR-0017） |
-| 9 | 🆕 `storybook build` を機械ゲートに入れるか | 手2b（DR-0017） |
+| ~~8~~ | ~~addon-vitest まで入れるか~~ | ✅ **閉じた。描画のみ**（+ a11y）。3 案の比較は DR-0024 |
+| ~~9~~ | ~~`storybook build` をゲートに入れるか~~ | ✅ **閉じた。入れた**（ゲートは 6 本。DR-0024） |
 | 10 | 🆕 フラグ（stateful / behaviorHook 等）は `/design-sync` で渡らない。辞書を Claude Code 側（skill / rules）に持たせるか | 手6（DR-0018） |
 | 11 | 🆕 🟥 **タッチターゲット 44px を守るか、nova の高密度（`h-8`=32px）を取るか。**トークンでは解けず、哲学とプリセットのどちらを優先するかの判断 | **手3。ユーザー判断の可能性が高い**（DR-0023） |
 | 12 | 🆕 `--card-spacing` を `--spacing-inset-md` に向け替えるか（**Card だけは部品を触らずに semantic 層へ載る可能性がある**唯一の接続点） | 手3（DR-0022） |
-| 13 | 🆕 意味色 success / warning と状態 tint 4 種の語彙をいつ足すか（shadcn は `destructive` しか持たない＝ステータス表示が組めない） | 手3〜手4（トークンマッピング 表1 2.4） |
+| 13 | 意味色 success / warning と状態 tint 4 種の語彙をいつ足すか（shadcn は `destructive` しか持たない＝ステータス表示が組めない） | 手3〜手4（トークンマッピング 表1 2.4） |
+| 14 | 🆕 `@storybook/addon-vitest` を**いつ入れるか**（保留であって却下ではない。PoC の ADR-0009 は「UI が固まってから」） | 手7 以降（DR-0024） |
+| 15 | 🆕 `@storybook/addon-mcp`（Storybook を MCP で AI に露出）を手7 の別経路として試すか | 手7（DR-0024・DR-0018） |
+| 16 | 🆕 Storybook を「見た目の正本」として扱うなら、**色空間の差**（本体は hex+lab フォールバック / Storybook は oklch）の前提を明示するか | 手5（DR-0026） |
 
 ## セッション申し送り
 
@@ -161,3 +201,24 @@ pnpm dev              # 開発サーバ
   これは**判断ではなく観測**なので DR-0022 に切り出した。**手順書 §2 は「決めること」、DR は「分かったこと」**という責務分離を維持した。
 - **手5 の観測点が絞れた。**「変わらない箇所」が実験前に 15 件特定できたので、手5 の問いは
   **「それ以外に変わらない箇所が出るか」**という形にできる。→ 手5 の手順書作成時に反映すること（未決 #5）。
+
+### 2026-07-26（第 2 セッション・続き）— 手2b（UI カタログ）
+
+- **手2b の合否は「Storybook が入ったか」ではなく「判定装置として効くか」に置いた。**手順書 §0 に Q7（予行演習）を足し、
+  `--radius` を 1 変数だけ動かして**事前特定していた 2 件が本当に変わらないこと**を確認して終えた。
+  → 装置の不良と設計の穴を、手5 で切り分けられる状態になった。
+- ★ **判定方法が想定と違った。**「生成 CSS の diff で見る」つもりだったが、**diff は 1 行しか動かない**（全部 `var()` 参照）。
+  正しくは **① 参照の形で静的分類 ② 実効値の計算 ③ 目視で裏取り**の 3 段（DR-0027）。**未決 #5 はこれで閉じた。**
+- ⚠ **ツールが書いた設定を読まずに信じてはいけない、が 3 度目の教訓。**`storybook init` は
+  `eslint.config.mjs` に **import 行だけ足して config 配列に追加しておらず、プラグインが 1 つも効いていなかった**（DR-0025）。
+  1 例目 DR-0006（CLI の設定モデル）、2 例目 DR-0022（3 層は実在した）に続く。**生成物は必ず全文読む。**
+- ⚠ **`.storybook/**` がどのゲートの射程にも入っていなかった。**H2B-03（ゲートの射程を story より前に確かめる）を
+  手順に置いていたので、19 ファイル書く前に気づけた。**「対象 0 件で緑」を疑う規律が 2 度目に効いた**（1 度目は手0 の赤テスト）。
+- **`init --yes` は「描画のみ」を選べない。**13 依存（Playwright のブラウザバイナリ込み）を入れてくるので、
+  **入れてから削る**しかなかった。→ 移送手順として PoC へ渡す（DR-0025）。
+- **未決が 3 件閉じ、3 件増えた。**閉: #5（判定方法）・#8（addon-vitest）・#9（ゲート）。
+  増: #14（addon-vitest をいつ入れるか）・#15（addon-mcp を手7 の別経路にするか）・#16（色空間の差の扱い）。
+- **仕組み化はまだしない。**story の雛形生成は「同じことを 18 回やった」が、**部品ごとに形が違いすぎて型が取れなかった**
+  （Provider が要る 2 件・composite が 8 件・単純な args が 5 件）。手3 で自作部品の story を足すときに、
+  **2 回目の需要として型が見えるかを観測する。**
+

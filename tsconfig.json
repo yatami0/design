@@ -39,7 +39,11 @@
     "src/**/*",
     ".next/types/**/*.ts",
     "*.config.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    // 手2b D14: これが無いと .storybook/** は typecheck の対象外になり、
+    // lint も projectService が型情報を取れず Parsing error で落ちる（検査されずにエラーだけ出る）。
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }
