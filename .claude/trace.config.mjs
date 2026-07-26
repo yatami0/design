@@ -28,7 +28,7 @@ export default {
       extraSteps: [
         '`related` には実在する DR の id だけを書く。無ければ空配列。',
         '`poc_feedback` は PoC へ戻す候補なら行き先を書く（例: OBS 候補 / ADR-0019 の材料）。無ければ null。',
-        '本 repo に ADR は無い。昇格の判定はしない。',
+        '**ADR 昇格判定**: 一度決めると戻しにくい／外から見える構造・規約に影響するなら、`docs/DR/index.md` に昇格候補として印を付け、本文フォローアップにもマークする。**その場で起案しない**（判定と起案を分ける）。起案は `/adr`。',
       ],
     },
     {
@@ -49,6 +49,22 @@ export default {
         '索引の「棚卸しメモ」に直近実施日を残す。',
       ],
     },
+    {
+      name: 'adr',
+      dir: 'docs/adr',
+      idPattern: '^(\\d{4})', // ファイル名は接頭辞なしの4桁（MADR の慣習）
+      idPrefix: 'ADR-',
+      filename: '{num}-{slug}', // {num} = idPattern が捕捉した部分＝ここでは 0029
+      template: 'docs/adr/_template.md',
+      index: 'docs/adr/index.md',
+      commitType: 'docs',
+      extraSteps: [
+        '**判定と起案を分ける。**DR を書く時点では index に昇格候補として印を付けるだけ。起案は根拠が揃った時機に行う。',
+        '昇格元の DR を `related` に列挙し、DR 側の status を `promoted` にして同一コミットで更新する。',
+        '本文は MADR の構成（背景と課題 / 決定 / 検討した選択肢 / 根拠 / 結果）に従う。',
+        '`decision-makers` は空配列でよい（本 repo は 1 人）。',
+      ],
+    },
   ],
 
   // コミットの形（CLAUDE.md §git が正本）
@@ -63,6 +79,8 @@ export default {
     // 台帳（docs/DR）— 定まったもの
     decision: ['decided', 'observed', 'superseded'], // 決めたこと
     finding: ['decided', 'observed', 'superseded'], // 分かったこと
+    // 台帳（docs/adr）— 横断決定（MADR 準拠）
+    adr: ['proposed', 'accepted', 'rejected', 'deprecated', 'superseded'],
     // 台帳（docs/OBS）— まだ決まっていないもの。PoC の語彙に合わせた
     question: ['open', 'connected', 'promoted', 'closed'], // わからないまま進めた疑問
     insight: ['open', 'connected', 'promoted', 'closed'], // 知識が結びついた気づき
@@ -105,8 +123,8 @@ export default {
   },
 
   // related / promoted_to に書ける ID
-  idPattern: '^(DR-\\d{4}|OBS-\\d{4})$',
-  idExample: 'DR-0006 / OBS-0018',
+  idPattern: '^(DR-\\d{4}|OBS-\\d{4}|ADR-\\d{4})$',
+  idExample: 'DR-0006 / OBS-0018 / ADR-0001',
 
   rulesRef: '.claude/trace.config.mjs（語彙の正本）／各台帳の _template.md',
 };
