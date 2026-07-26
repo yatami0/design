@@ -27,6 +27,8 @@ import {
  */
 const meta = {
   title: 'Navigation/Sidebar',
+  // 🟨 wrapped: 素材を包んで既定値だけ上書きした部品（手3 D1=(c)）
+  tags: ['wrapped'],
   component: Sidebar,
 } satisfies Meta<typeof Sidebar>;
 

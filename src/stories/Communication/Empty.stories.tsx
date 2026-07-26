@@ -15,6 +15,8 @@ import { Button } from '@/components/Action/Button';
  */
 const meta = {
   title: 'Communication/Empty',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Empty,
 } satisfies Meta<typeof Empty>;
 

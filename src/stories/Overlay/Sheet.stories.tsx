@@ -17,6 +17,8 @@ import { Button } from '@/components/Action/Button';
  */
 const meta = {
   title: 'Overlay/Sheet',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Sheet,
 } satisfies Meta<typeof Sheet>;
 

@@ -5,6 +5,8 @@ import { Label } from '@/components/Display/Label';
 
 const meta = {
   title: 'Selection/Checkbox',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Checkbox,
 } satisfies Meta<typeof Checkbox>;
 

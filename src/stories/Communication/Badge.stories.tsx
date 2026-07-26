@@ -11,6 +11,8 @@ import { Badge } from '@/components/Communication/Badge';
  */
 const meta = {
   title: 'Communication/Badge',
+  // 🟦 vendor: 中身は素材そのまま。製品層は窓口を 1 本にするためだけに通している
+  tags: ['vendor'],
   component: Badge,
 } satisfies Meta<typeof Badge>;
 

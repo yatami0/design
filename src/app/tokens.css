@@ -66,3 +66,21 @@
      （→ トークンマッピング.md 表3 #5）。差は手3 で扱う。 */
   --font-weight-emphasis: var(--font-weight-semibold); /* 600 */
 }
+
+/* ── component token の向け替え（手3 D8 / DR-0036）──────────────────
+ * shadcn の `--card-spacing` は card.tsx の className 内で
+ * `[--card-spacing:--spacing(4)]` と定義され、**primitive を直接指している**。
+ * 3 層トークンの規約（component は semantic を指す）に照らして参照方向が誤っている。
+ *
+ * 🟦 @theme の**外**（＝どのカスケードレイヤにも属さない）に書くと、
+ *    `@layer utilities` の中にある shadcn の宣言に勝つ。
+ *    → **card.tsx を 1 行も触らずに semantic 層へ載せ替えられる**（DR-0029 で実測）。
+ *
+ * 🟨 1 規則だけだと `data-[size=sm]` のバリアントまで潰れるので 2 規則に分ける。
+ */
+[data-slot='card'] {
+  --card-spacing: var(--spacing-inset-md);
+}
+[data-slot='card'][data-size='sm'] {
+  --card-spacing: var(--spacing-inset-sm);
+}
