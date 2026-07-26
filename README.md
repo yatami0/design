@@ -7,18 +7,24 @@ PoC（`~/git/PoC`）の **UI 部分の開発ワークフローが往復するか
 
 | # | 文書 | 何の正本か |
 |---|---|---|
-| 1 | [docs/UI検証の位置づけと段取り.md](docs/UI検証の位置づけと段取り.md) | **この repo が何をする場所か**・確定事項・手0〜手9 の段取り |
-| 2 | [docs/共通コンポーネント思想.md](docs/共通コンポーネント思想.md) | **部品分類**（3 層・役割 9 カテゴリ・フラグ） |
-| 3 | [docs/実行記録.md](docs/実行記録.md) | **実測結果**の横断台帳。手ごとの観測と気づき |
-| 4 | [docs/手順/](docs/手順/) | 手ごとの**実行計画**。形式の正本は [_template.md](docs/手順/_template.md) |
-| 5 | [ClaudeDesignShadcnIntegration.md](ClaudeDesignShadcnIntegration.md) | 先行調査（shadcn × Claude Design） |
+| **1** | **[docs/handoff.md](docs/handoff.md)** | **状態台帳。**現在地・進捗ボード・機械ゲートのベースライン・次の一手・未決。**セッション開始時はここから** |
+| 2 | [docs/DR/index.md](docs/DR/index.md) | **決定と発見**（1 ファイル = 1 決定 or 1 発見） |
+| 3 | [docs/UI検証の位置づけと段取り.md](docs/UI検証の位置づけと段取り.md) | **地図。**この repo が何をする場所か・確定事項・手0〜手9 |
+| 4 | [docs/共通コンポーネント思想.md](docs/共通コンポーネント思想.md) | **部品分類**（3 層・役割 9 カテゴリ・フラグ） |
+| 5 | [docs/手順/](docs/手順/) | 手ごとの**実行計画**。形式の正本は [_template.md](docs/手順/_template.md) |
+| 6 | [docs/実行記録.md](docs/実行記録.md) | 手ごとの**実測**（構成とゲート結果の時系列） |
+| 7 | [docs/部品カタログ.md](docs/部品カタログ.md) | shadcn 63 部品 × 役割 9 カテゴリの割り当て・欠落リスト |
+| 8 | [ClaudeDesignShadcnIntegration.md](ClaudeDesignShadcnIntegration.md) | 先行調査（shadcn × Claude Design） |
 
 ## 文書の責務分離
 
 ```
 段取り（UI検証の位置づけと段取り.md）  … 何を・なぜ・どの順で。全体の地図
   └ 手順書（docs/手順/手N_*.md）      … その手で「答えを出す問い」と作業計画。実測は書かない
-      └ 実行記録（実行記録.md）        … 実測結果だけ。手順書へリンクする
+      └ 実行記録（実行記録.md）        … 実測結果の時系列。手順書へリンクする
+          └ DR（docs/DR/DR-00XX-*.md） … 1 決定 or 1 発見。横断で引ける粒度
+
+状態（docs/handoff.md）… 上のどこに何があるかと「いま何をすべきか」を指す台帳
 ```
 
 **手順書と実行記録を混ぜない。**計画と結果を同じ場所に書くと、二重管理になるか、
