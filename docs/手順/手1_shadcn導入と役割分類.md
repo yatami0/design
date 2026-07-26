@@ -56,17 +56,33 @@ next_action: '判断ポイントは全件決着済み（D1 = neutral）。H1-01 
 
 | # | 論点 | 選択肢 | 決定（推奨） | 根拠 | 戻せるか |
 |---|---|---|---|---|---|
-| **D1** | `tailwind.baseColor` | neutral / stone / zinc / mauve / olive / mist / taupe | ✅ **neutral**（ユーザー決定 2026-07-26） | tmp-admin は「濃紺 chrome / グレー canvas / 白 card」の 3 層で、canvas は無彩色。zinc は青みが乗るため濃紺 chrome と干渉しうる。純グレーの neutral が濁らない | 🟥 **不可逆**（公式が「init 後は変更不可」と明記） |
+| ~~**D1**~~ | ~~`tailwind.baseColor`~~ | ~~neutral / stone / zinc / …~~ | ❌ **論点ごと消滅**（H1-02 実行時に判明） | CLI v4 に `baseColor` も `cssVariables` も**存在しない**。公式の components.json ページが CLI の実装より古かった。設定モデルは `base` + `preset` に置き換わっている → **D9 / D10** | — |
 | **D2** | CLI の版 | `shadcn@latest` / `shadcn@4.15.0` | **4.15.0 に固定** | PoC は全依存を厳密ピンしている。CLI が生成するコードは成果物なので、生成器の版が動くと**再現しない**。手5 の差し替え実験は再現性が前提 | 🟦 戻せる |
 | **D3** | add する部品の範囲 | 全 63 / 一覧画面から逆算した分だけ | **逆算した分だけ**（下記 H1-03 の表） | 使わない部品が lint 赤を出しても判断材料にならず、赤の内訳が濁る。9 カテゴリ割り当ては**表の上で全 63 を扱えば足りる**（コードを置く必要はない） | 🟦 戻せる |
 | **D4** | shadcn のコードが lint / typecheck で赤だったときの扱い | ignore する / ルールを緩める / ラップして直す / **赤のまま記録して進む** | **赤のまま記録して進む**（§5 H1-04 の分岐図） | ignore すると **Q1・Q2 の答えが消え、手5 の判定が甘くなる**。手1 の成果物は「緑の状態」ではなく「赤の内訳」 | 🟦 戻せる |
 | **D5** | DataDisplay の Table をどう供給するか | 素の `Table` のみ / `Data Table`（TanStack Table を導入） | **手1 では素の `Table` のみ**。TanStack Table の導入判断は手3 へ送る | shadcn の Data Table は単一部品ではなく **TanStack Table を使う組み立てガイド**。PoC の catalog に `@tanstack/react-table` は無く、**新規依存の追加は移送に影響する**。手1 の問い（Q1〜Q7）はどれも Table の中身に依存しない | 🟦 戻せる |
-| **D6** | `tailwind.cssVariables` | true / false | **true** | false は Tailwind ユーティリティ直書きになり、**思想①「UI は semantic token だけを使う」が成立しない**。選択の余地はない | 🟦 戻せる |
-| **D7** | `style` | new-york のみ（`default` は deprecated） | **new-york** | 選択肢が 1 つしかない。記録のみ | — |
+| ~~**D6**~~ | ~~`tailwind.cssVariables`~~ | ~~true / false~~ | ❌ **論点ごと消滅** | D1 と同じ理由。CLI v4 に該当キーが無い。**CSS 変数によるテーマ上書きは既定の唯一の道**になった（メンテナが「ソースを触らず CSS カスタムプロパティで上書きせよ」と明言）＝思想①の前提は満たされる | — |
+| ~~**D7**~~ | ~~`style` = new-york~~ | — | ❌ **意味が変わった** | `style` は preset 名を保持するフィールドになった（→ D10） | — |
 | **D8** | aliases の配置 | — | `components: @/components` / `ui: @/components/ui` / `lib: @/lib` / `hooks: @/hooks` / `utils: @/lib/utils` | 手0 で入れた `paths: {"@/*": ["./src/*"]}` と整合。PoC の `apps/redmine/src/lib/` 構成とも並ぶ | 🟦 戻せる |
 
-> ✅ **判断ポイントは全件決着済み**（D1 は 2026-07-26 にユーザーが `neutral` を決定）。着手してよい。
-> 実行中に §2 に無い選択肢が出たら、**その場で決めずにここへ追記してから進む。**
+### 追記（2026-07-26・H1-02 着手時に判明）
+
+**CLI v4 の設定モデルが公式ドキュメントの記述と食い違っていた。**
+`shadcn init --help` の実測で、`--base-color` に相当するフラグが存在せず、代わりに `--base`（プリミティブ実装）と `--preset`（設計システム）の 2 軸になっていることが判明した。
+`shadcn info` が出力する `components.json` のフィールドは `base` / `style` / `rsc` / `tsx` / `tailwind.config` / `tailwind.css` / `iconLibrary` / `aliases` / `registries` で、**`tailwind.baseColor` も `tailwind.cssVariables` も無い**。
+→ **D1・D6・D7 は論点ごと消滅**し、下記 D9・D10 に置き換わる。
+
+> 🟦 **一次情報を実測で置き換える規律が効いた例。**公式 docs（二次的に古い）だけで進めていたら、存在しないフラグを前提に手順を組んでいた。
+
+| # | 論点 | 選択肢 | 決定 | 根拠 | 戻せるか |
+|---|---|---|---|---|---|
+| **D9** | `--base`（プリミティブ実装） | `base`(Base UI) / `radix`(Radix UI) / `aria`(React Aria) | ✅ **radix**（ユーザー決定 2026-07-26） | 世に出回るコード・作例が圧倒的に多い。**手7 の「Claude Design が登録部品を使うか作り直すか」の判定で、AI 側が既知の形を持っている方が「知らなかったから作り直した」という交絡を減らせる。**PoC 移送後に情報を引ける量も最大 | 🟥 **重い**（全部品の実装と依存が変わる） |
+| **D10** | `--preset`（設計システム） | Vega / Nova / Maia / Lyra / Mira / Luma / Rhea / Sera（8 種） | **nova**（＝`radix-nova`） | CLI の既定（`--defaults` は `base-nova`）。Nova は compact layout 志向で管理画面に向く。**公式が「別の preset code で init し直せば全部再構成される」と明記＝戻せる**ので、手5 の出発点として支障がない | 🟦 戻せる |
+
+> ⚠ **「preset 無し」モードは存在しない**（Discussion #10236・メンテナ回答）。
+> ただし同回答は「コンポーネントのソースを触らず CSS カスタムプロパティで設計システムを上書きする」ことを推奨しており、**これは手5 でやろうとしていることそのもの**。公式の想定と一致している＝手5 の前提として好材料。
+
+✅ **判断ポイントは全件決着済み。**実行中に §2 に無い選択肢が出たら、**その場で決めずにここへ追記してから進む**（本節がその実例）。
 
 ---
 
