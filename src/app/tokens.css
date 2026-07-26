@@ -51,6 +51,25 @@
   --container-wide: var(--container-7xl); /* 80rem 一覧・データ表 */
   --spacing-gutter: calc(var(--spacing) * 6); /* 24px 画面端の余白 */
 
+  /* ── 意味色と状態 tint（手4 D3 / 未決 #13）─────────────────────
+     shadcn は destructive しか持たず、ステータス表示（チケット一覧の中核）が組めない。
+     tmp-admin §4.5 は「状態 = tint pill + 色ドット」と規定している。
+     🟥 値は書かない（DR-0005 決定3）。Tailwind パレットへの参照で置き、
+        手5 で tmp-admin の --color-success / --fill-* へ向け替える。 */
+  --color-success: var(--color-emerald-600);
+  --color-warning: var(--color-amber-600);
+  /* 状態 tint（面）。danger は shadcn の destructive と別に持つ（tint は薄面） */
+  --color-fill-success: var(--color-emerald-50);
+  --color-fill-warning: var(--color-amber-50);
+  --color-fill-danger: var(--color-red-50);
+  --color-fill-neutral: var(--color-neutral-100);
+
+  /* ── 行の寸法（手4 D7 / tmp-admin §4.4「行高 60px」）───────────
+     🟥 語彙が無いと Table を組めない。値は --spacing への参照で表す。 */
+  --spacing-row: calc(var(--spacing) * 15); /* 60px 一覧の行高 */
+  --spacing-dot: calc(
+    var(--spacing) * 1.5
+  ); /* 6px  状態ドット（tmp-admin §4.5） */
   /* ── タイポ: 用途名 ────────────────────────────────────────────
      用途の切り方は tmp-admin §4.3 の使い分け規定に対応させる
      （本文 / テーブル本文 / th・補助 / 氏名・検索 / シート見出し）。 */
