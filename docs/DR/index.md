@@ -52,11 +52,16 @@
 | [DR-0038](DR-0038-arbitrary-value-rule-sees-three-contexts.md) | `no-arbitrary-value` が見る文脈は **className / cva / cn の 3 つだけ** | 手3 | **手3**・PoC |
 | [DR-0039](DR-0039-pattern-layer-is-not-uniform.md) | ⭐ **③ Patterns 層は一様ではない** — 3 件のうち 1 件は component の足し算で書けた | 手4 | 思想への指摘・手5 |
 | [DR-0040](DR-0040-frame-leaks-when-a-layer-is-added.md) | ⭐ **枠は層を足すたびに漏れる** — 新ディレクトリは lint の射程に自動では入らない | 手4 | **手5 以降**・PoC |
+| [DR-0041](DR-0041-tailwind-v4-seams-differ-per-utility.md) | ⭐ **トークンの継ぎ目は utility ごとに違う** — `font-medium`/`backdrop-blur-xs` は `var()`、`shadow-*` はリテラル | 手5 | **手5**・PoC |
+| [DR-0042](DR-0042-layer-external-override-reaches-properties.md) | ⭐ レイヤ外の上書きは**プロパティにも届く** — DR-0029 §4 の射程を訂正 | 手5 | **手5**・PoC |
+| [DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) | ⭐ **手5 の「変わらない箇所」は 15 件ではなく 1 件** — 6 件は差し替え先が無く、6 件は素材層を触らず解ける | 手5 | **手5**・手9 |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
 > 🟥 **DR-0030 は [DR-0023](DR-0023-real-conflict-is-touch-target.md) の発見 2 を訂正する**（発見 1・3 は維持）。
 > 🟨 **DR-0029 は [DR-0022](DR-0022-shadcn-has-component-tokens.md) の射程を拡張する**（「唯一の接続点」→「接続方式」）。
+> 🟥 **DR-0042 は [DR-0029](DR-0029-component-token-overridable-outside-layer.md) §4 の但し書きを訂正する**（「効くのは変数だけ」→ 任意値にも届く）。
+> 🟥 **DR-0043 は [トークンマッピング §5](../トークンマッピング.md) の「15 件」を 1 件へ更新する**（[DR-0010](DR-0010-shadcn-invents-values.md) の見立ては緩和方向に外れた）。
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 
@@ -84,4 +89,7 @@
 | DR-0038 | 🟥 OBS 候補 | 任意値禁止は `cva` / `cn` / `className` を経由しない文字列を検査しない |
 | DR-0039 | OBS 候補 | ③ 層に置く条件は「状態を持つ」or「複数カテゴリをまたぐ」。packages/ui の層構成に効く |
 | DR-0040 | 🟥 OBS 候補 | ディレクトリ単位の規約は**層を足すたびに漏れる**。運用手順が要る |
+| DR-0041 | 🟥 OBS 候補 | Tailwind v4 で「トークンを差し替えれば追従する」は **utility 単位で成否が割れる**。ソースを見ても分からず生成 CSS を見る必要がある |
+| DR-0042 | 🟥 OBS-0003 の材料を訂正 | 案B の「レイヤ外からの上書き」は**任意値にも届く**。ただし変異を潰すので「向け替え」と「上書き」を区別して書く |
+| DR-0043 | 🟥 OBS-0003 の前提を更新 | 「箱を触らずテーマだけ変える」の**不成立範囲は見積もりより 1 桁小さい**（15 → 1） |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
