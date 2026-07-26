@@ -1,0 +1,52 @@
+/* src/app/tokens.css
+ * ① Tokens 層 — semantic な余白とタイポの「語彙」だけを置く。
+ *
+ * なぜ別ファイルか（手2 D1）:
+ *   shadcn CLI は globals.css を書き換える（手1 Q3 で観測済み）。自分の語彙を分けておくと
+ *   git diff で「ツールが何を変えたか」が読める＝手2 Q7 に答えられる。
+ *
+ * 🟥 値は書かない（DR-0005 決定3）。
+ *   すべて Tailwind / shadcn の既定への **参照** で定義する。手5 のトークン差し替えは
+ *   「この参照先を tmp-admin の値へ向け替えるだけ」になるのが狙い。
+ *   ここに生値（16px 等）を書いた時点で、手5 の差し替え実験は 2 箇所を直すことになる。
+ *
+ * なぜ用途名か（DR-0019）:
+ *   Tailwind の --spacing / --text-* は「サイズ」を言っていて「用途」を言っていない＝ primitive。
+ *   思想①「UI は semantic だけを使う」を名前で検証できるようにするため、用途名を足す。
+ *   🟥 射程の限界: shadcn の素の部品は spacing を 132 箇所・text サイズを 43 箇所 直書きしており、
+ *      この語彙を使わない。効くのは手3 で自作する Layout テンプレの内側だけ。
+ */
+
+@theme {
+  /* ── 余白: inset（面の内側 = padding） ─────────────────────────── */
+  --spacing-inset-xs: calc(var(--spacing) * 2); /* 8px  セル・小コントロール */
+  --spacing-inset-sm: calc(var(--spacing) * 3); /* 12px 密なカード */
+  --spacing-inset-md: calc(
+    var(--spacing) * 4
+  ); /* 16px カード既定（shadcn の --card-spacing と同値） */
+  --spacing-inset-lg: calc(var(--spacing) * 6); /* 24px ページ本文 */
+
+  /* ── 余白: stack（縦の要素間 = gap / space-y） ──────────────────── */
+  --spacing-stack-sm: calc(var(--spacing) * 2); /* 8px  */
+  --spacing-stack-md: calc(var(--spacing) * 4); /* 16px */
+  --spacing-stack-lg: calc(var(--spacing) * 5); /* 20px カード間 */
+
+  /* ── 余白: inline（横の要素間 = gap） ──────────────────────────── */
+  --spacing-inline-sm: calc(var(--spacing) * 1.5); /* 6px  アイコンとラベル */
+  --spacing-inline-md: calc(var(--spacing) * 2); /* 8px  ボタン間 */
+
+  /* ── タイポ: 用途名 ────────────────────────────────────────────
+     用途の切り方は tmp-admin §4.3 の使い分け規定に対応させる
+     （本文 / テーブル本文 / th・補助 / 氏名・検索 / シート見出し）。 */
+  --text-body: var(--text-sm); /* 本文 */
+  --text-table: var(--text-sm); /* テーブル本文 */
+  --text-label: var(--text-xs); /* th・補助・キャプション */
+  --text-emphasis: var(--text-base); /* 氏名・検索など目を引かせる本文 */
+  --text-heading: var(--text-lg); /* セクション・シートの見出し */
+
+  /* ── タイポ: 強調の weight ─────────────────────────────────────
+     tmp-admin V3「強調は色でなく weight 600 ⇔ 400 のコントラスト」の受け皿。
+     shadcn の素の部品は font-medium(500) を 15 箇所使っており 1 段ずれている
+     （→ トークンマッピング.md 表3 #5）。差は手3 で扱う。 */
+  --font-weight-emphasis: var(--font-weight-semibold); /* 600 */
+}
