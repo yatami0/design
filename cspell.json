@@ -4,6 +4,8 @@
   "ignorePaths": ["node_modules", "pnpm-lock.yaml", ".next", "dist"],
   "words": [
     "aisy",
+    "braid",
+    "chakra",
     "codemod",
     "dodds",
     "dtcg",
@@ -11,6 +13,7 @@
     "fixit",
     "frontmatter",
     "genai",
+    "grafana",
     "largetitle",
     "lightningcss",
     "luma",
