@@ -47,6 +47,19 @@ pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell
 
 **赤がベースライン。**件数と内訳を `docs/handoff.md` の表と比較して「新しい赤」を見つける。
 
+### DR の frontmatter と採番
+
+`trace` plugin（`trace@aisy`）が機械で守る。語彙・フィールド定義の正本は **`.claude/trace.config.mjs`**（`docs/DR/_template.md` は読むための写し）。
+
+- **新規 DR を書く前に止まる** — 必須フィールドの欠落・`type` / `status` / `step` の語彙違反・**採番の重複**を hook がブロックする
+- **`related` の参照先が実在するかは hook では見ない。**台帳全体を見る検査は CLI 側:
+
+```bash
+node "$(jq -r '.plugins["trace@aisy"][0].installPath' ~/.claude/plugins/installed_plugins.json)/tools/docs-meta.mjs" --check
+```
+
+**対象は `docs/DR` だけ。**手順書と `docs/` 直下は frontmatter の形が違うので検査していない。
+
 ## 関連リポジトリ
 
 | repo | 役割 |
