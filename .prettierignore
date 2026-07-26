@@ -6,3 +6,12 @@ node_modules/
 next-env.d.ts
 # markdown は対象外（PoC の DR-0012 と同じ理由: 表の再整形で全行 diff になる）
 **/*.md
+
+# shadcn が置いたコード（手1 の D11）
+# 整形すると「shadcn が吐いたそのもの」でなくなり、手5 の「部品を触らずに」の証拠性が落ちる。
+# また shadcn add / update のたびに全行 diff になる。
+# ⚠ 編集禁止という意味ではない（PoC の src/generated/ とは性質が違う）。整形対象外というだけ。
+# 自分で書く部品（Layout プリミティブ等）は src/components/ 直下に置き、整形対象に残す。
+src/components/ui/
+src/hooks/
+src/lib/utils.ts
