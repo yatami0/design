@@ -17,6 +17,7 @@
 | [DR-0017](DR-0017-storybook-as-catalog.md) | ⭐ UI カタログは Storybook を採用し**手2b として挿入**（階層は役割 9 カテゴリ） | 手2b | decided |
 | [DR-0019](DR-0019-semantic-spacing-typography-vocabulary.md) | semantic な spacing / typography は**用途名で自前定義**する（Tailwind 既定を semantic とみなさない） | 手2 | decided |
 | [DR-0020](DR-0020-dark-mode-out-of-scope.md) | dark モードはトークン差し替えの**対象外**とする | 手2 | decided |
+| [DR-0024](DR-0024-storybook-render-only-and-gate.md) | Storybook は**描画のみ（+ a11y）**で導入し `storybook build` を機械ゲートに追加する | 手2b | decided |
 
 ## 発見（finding）
 
@@ -35,6 +36,9 @@
 | [DR-0021](DR-0021-tailwind-scans-docs-markdown.md) | ⭐ Tailwind v4 は `docs/**.md` を走査し**文章中のクラス名を本番 CSS に生成する** | 手2 | **手5**・PoC |
 | [DR-0022](DR-0022-shadcn-has-component-tokens.md) | ⭐ 思想の 3 層は**3 層とも実在する**（component token は有る）。欠けるのは spacing / typography だけ | 手2 | 手3・段取り訂正 |
 | [DR-0023](DR-0023-real-conflict-is-touch-target.md) | ⭐ tmp-admin と nova の本当の衝突は accent ではなく**タッチターゲット 44px** | 手2 | **手3**・手9 |
+| [DR-0025](DR-0025-storybook-init-is-not-selectable.md) | ⭐ `storybook init` は描画のみを選べず、eslint 設定を壊し、`.storybook/**` はゲート射程外だった | 手2b | **手9**・PoC |
+| [DR-0026](DR-0026-two-css-pipelines-differ.md) | 本体と Storybook は同じトークンを**別形式で出力する**（oklch ↔ hex+lab） | 手2b | 手5・PoC |
+| [DR-0027](DR-0027-token-swap-not-detectable-by-css-diff.md) | ⭐ トークン差し替えは**生成 CSS の diff では判定できない** — 手5 の判定方法が確定 | 手2b | **手5** |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。
 
@@ -51,3 +55,6 @@
 | DR-0021 | 🟥 OBS 候補 | PoC も Tailwind v4。**`docs/` に書いたクラス名が本番 CSS に入る**（PoC の docs は巨大） |
 | DR-0022 | OBS-0003 の前提 | 「shadcn は semantic 1 層」は誤り。3 層とも実在するので案B の議論の土台が変わる |
 | DR-0023 | 🟥 ui.md の材料 | a11y のタッチターゲット下限（44px）を規約に置くかどうか |
+| DR-0025 | 🟥 移送時に必ず出る | `storybook init` は既定を選べない＝**init 後に削る工程**が要る。`.storybook/**` を tsconfig の `include` に足さないと「検査していないのに緑」 |
+| DR-0026 | OBS 候補 | Storybook を入れると CSS パイプラインが 2 本になる。値は等価だが色の出力形式が違う |
+| DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
