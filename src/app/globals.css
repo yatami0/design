@@ -10,6 +10,16 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import './tokens.css';
+/* 手5 D2=B / D7=B′: tmp-admin の値は別ファイル。この 1 行で入り切りする。
+ *
+ * 🟥 **末尾には置けない。**CSS の `@import` は他の規則より前でなければならず、
+ *    末尾に置いた 2 回目のビルドでは **import ごと黙って捨てられた**（→ DR-0046）。
+ *    それでもビルドは緑だった。
+ * 🟦 なので位置はここ（＝ shadcn の `@theme inline` / `:root` より前）に固定し、
+ *    順序ではなく **詳細度**で勝つ（tmp-admin.css 側は `:root:root`）。
+ *
+ * 1 周目「素直」= @theme と変数の向け替えだけ。2 周目「無理」は tmp-admin-override.css。 */
+@import './tmp-admin.css';
 /* 手2 D9: Tailwind v4 の自動コンテンツ検出は docs/**.md まで走査し、文章中に書いた
  * クラス名を実際に生成してしまう（実測。→ DR-0021）。手5 は生成 CSS の差分で
  * 「どこが変わらなかったか」を読む手なので、観測が文章の編集で動かないよう走査から外す。 */
