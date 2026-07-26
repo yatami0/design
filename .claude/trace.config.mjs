@@ -18,8 +18,28 @@ export default {
   // 台帳（採番の重複防止・DR の規約）だけを見させるのが最小。
   docsRoot: 'docs/DR',
 
-  // 台帳（1 ファイル = 1 決定 or 1 発見）。ID はファイル名が持つ
-  ledgers: [{ dir: 'docs/DR', idPattern: '^(DR-\\d{4})', idPrefix: '' }],
+  // 台帳（1 ファイル = 1 決定 or 1 発見）。ID はファイル名が持つ。
+  // dir / idPattern / idPrefix はエンジン（検査）が読む。残りは skill が読む。
+  ledgers: [
+    {
+      name: 'dr',
+      dir: 'docs/DR',
+      idPattern: '^(DR-\\d{4})',
+      idPrefix: '',
+      template: 'docs/DR/_template.md',
+      index: 'docs/DR/index.md',
+      commitType: 'docs', // 本 repo の type 語彙に `dr` は無い（CLAUDE.md §git）
+      extraSteps: [
+        '`related` には実在する DR の id だけを書く。無ければ空配列。',
+        '`poc_feedback` は PoC へ戻す候補なら行き先を書く（例: OBS 候補 / ADR-0019 の材料）。無ければ null。',
+        '本 repo に ADR は無い。昇格の判定はしない。',
+      ],
+    },
+  ],
+
+  // コミットの形（CLAUDE.md §git が正本）
+  commitFormat:
+    '<type>(H<N>): 日本語要約 [手N] — 手に属さない作業は scope と [手N] を省く',
 
   // 語彙（閉じた集合）— 正本は docs/DR/_template.md
   // 実データ 27 件は decision→decided / finding→observed にきれいに割れているが、
