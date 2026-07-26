@@ -3,7 +3,7 @@ step: 手1
 title: 'shadcn デフォルト導入と役割 9 カテゴリへの割り当て'
 status: planned
 updated_at: 2026-07-26
-next_action: '§2 の D1（baseColor・不可逆）をユーザーが決定 → H1-01 から実行'
+next_action: '判断ポイントは全件決着済み（D1 = neutral）。H1-01 から実行してよい'
 ---
 
 # 手1 — shadcn デフォルト導入と役割 9 カテゴリへの割り当て
@@ -56,7 +56,7 @@ next_action: '§2 の D1（baseColor・不可逆）をユーザーが決定 → 
 
 | # | 論点 | 選択肢 | 決定（推奨） | 根拠 | 戻せるか |
 |---|---|---|---|---|---|
-| **D1** | `tailwind.baseColor` | neutral / stone / zinc / mauve / olive / mist / taupe | **neutral**（要ユーザー確認） | tmp-admin は「濃紺 chrome / グレー canvas / 白 card」の 3 層で、canvas は無彩色。zinc は青みが乗るため濃紺 chrome と干渉しうる。純グレーの neutral が濁らない | 🟥 **不可逆**（公式が「init 後は変更不可」と明記） |
+| **D1** | `tailwind.baseColor` | neutral / stone / zinc / mauve / olive / mist / taupe | ✅ **neutral**（ユーザー決定 2026-07-26） | tmp-admin は「濃紺 chrome / グレー canvas / 白 card」の 3 層で、canvas は無彩色。zinc は青みが乗るため濃紺 chrome と干渉しうる。純グレーの neutral が濁らない | 🟥 **不可逆**（公式が「init 後は変更不可」と明記） |
 | **D2** | CLI の版 | `shadcn@latest` / `shadcn@4.15.0` | **4.15.0 に固定** | PoC は全依存を厳密ピンしている。CLI が生成するコードは成果物なので、生成器の版が動くと**再現しない**。手5 の差し替え実験は再現性が前提 | 🟦 戻せる |
 | **D3** | add する部品の範囲 | 全 63 / 一覧画面から逆算した分だけ | **逆算した分だけ**（下記 H1-03 の表） | 使わない部品が lint 赤を出しても判断材料にならず、赤の内訳が濁る。9 カテゴリ割り当ては**表の上で全 63 を扱えば足りる**（コードを置く必要はない） | 🟦 戻せる |
 | **D4** | shadcn のコードが lint / typecheck で赤だったときの扱い | ignore する / ルールを緩める / ラップして直す / **赤のまま記録して進む** | **赤のまま記録して進む**（§5 H1-04 の分岐図） | ignore すると **Q1・Q2 の答えが消え、手5 の判定が甘くなる**。手1 の成果物は「緑の状態」ではなく「赤の内訳」 | 🟦 戻せる |
@@ -65,7 +65,8 @@ next_action: '§2 の D1（baseColor・不可逆）をユーザーが決定 → 
 | **D7** | `style` | new-york のみ（`default` は deprecated） | **new-york** | 選択肢が 1 つしかない。記録のみ | — |
 | **D8** | aliases の配置 | — | `components: @/components` / `ui: @/components/ui` / `lib: @/lib` / `hooks: @/hooks` / `utils: @/lib/utils` | 手0 で入れた `paths: {"@/*": ["./src/*"]}` と整合。PoC の `apps/redmine/src/lib/` 構成とも並ぶ | 🟦 戻せる |
 
-> **🟥 D1 だけがユーザー判断を要する。**不可逆で、かつ tmp-admin の見た目（手5）に効くため。他は上記のとおり決めて進む。
+> ✅ **判断ポイントは全件決着済み**（D1 は 2026-07-26 にユーザーが `neutral` を決定）。着手してよい。
+> 実行中に §2 に無い選択肢が出たら、**その場で決めずにここへ追記してから進む。**
 
 ---
 
