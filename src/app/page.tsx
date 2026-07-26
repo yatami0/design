@@ -1,20 +1,40 @@
 import type { ReactNode } from 'react';
 
-// 手0 の疎通確認ページ。Tailwind のユーティリティが効いていれば余白・文字色・罫線が乗る。
-// 手1 以降でここは shadcn の部品カタログに置き換わる。
+import { Container } from '@/components/Layout/Container';
+import { Section } from '@/components/Layout/Section';
+import { Stack } from '@/components/Layout/Stack';
+
+// 手3 で製品層の最初の利用者になった。
+// 🟥 手0 の版は `p-8` / `mt-2` / `text-gray-600` を直書きしており、
+//    D4=B′ の lint（数値の段・パレット色の禁止）で 3 行が赤になった。
+//    ここを書き直すことが「枠が本当に閉じたか」の最初の実証になる。
 export default function Home(): ReactNode {
   return (
-    <main className="mx-auto max-w-2xl p-8">
-      <h1 className="text-2xl font-semibold">design — UI 検証</h1>
-      <p className="mt-2 text-sm text-gray-600">
-        手0（土台）完了。Tailwind v4 が配線され、PoC と同一版・同一 lint
-        で動いている。
-      </p>
-      <ul className="mt-6 space-y-1 border-t border-gray-200 pt-4 text-sm">
-        <li>手1: shadcn デフォルト導入 + 役割 9 カテゴリへの割り当て</li>
-        <li>手2: トークン語彙のマッピング（値はデフォルトのまま）</li>
-        <li>手3: Components 層（Layout / Overlay の自作テンプレ）</li>
-      </ul>
-    </main>
+    <Container width="content">
+      <Stack gap="lg" inset="lg">
+        <Section heading="design — UI 検証" gap="sm">
+          <p className="text-body text-muted-foreground">
+            手3（② Components
+            層）。素材層（shadcn）と製品層（自作共通部品）の境界を 引き、Layout
+            プリミティブを製品層に置いた。
+          </p>
+        </Section>
+
+        <Section heading="このページが証明していること" gap="sm">
+          <Stack gap="sm">
+            <p className="text-body text-muted-foreground">
+              このファイルには数値の段（`p-8`）もパレット色（`text-gray-600`）も
+              1 つも無い。余白は Layout の props で、色は semantic
+              な用途名で指定している。
+            </p>
+            <p className="text-label text-muted-foreground">
+              枠を守っているのは lint ではなく props の型（DR-0032）。lint
+              は補助として `cva` / `cn` / `className` の 3
+              文脈を見ている（DR-0033）。
+            </p>
+          </Stack>
+        </Section>
+      </Stack>
+    </Container>
   );
 }

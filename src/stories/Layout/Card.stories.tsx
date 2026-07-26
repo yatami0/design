@@ -7,8 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+} from '@/components/Layout/Card';
+import { Button } from '@/components/Action/Button';
 
 /**
  * shadcn で唯一の Layout 部品（Box / Stack / Grid / Container / Spacer / Section は無い。DR-0012）。

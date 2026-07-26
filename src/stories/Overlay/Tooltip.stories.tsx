@@ -5,8 +5,8 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Tooltip';
+import { Button } from '@/components/Action/Button';
 
 /**
  * ★ Q3 の答えが出る部品。**state は持たないが `TooltipProvider` の配線が必須**（部品カタログ 表4）。

@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Dialog';
+import { Button } from '@/components/Action/Button';
 
 /**
  * Radix Root の薄い再輸出で **自身は state を持たない**（DR-0013）。

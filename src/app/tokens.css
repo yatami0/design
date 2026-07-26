@@ -35,6 +35,22 @@
   --spacing-inline-sm: calc(var(--spacing) * 1.5); /* 6px  アイコンとラベル */
   --spacing-inline-md: calc(var(--spacing) * 2); /* 8px  ボタン間 */
 
+  /* ── タッチターゲット（手3 D7 / DR-0034） ──────────────────────
+     44px の出どころは apple.md（Apple HIG の公式値）。ただし tmp-admin が
+     名指しで適用しているのは nav-item の min-height だけ（DR-0030）。
+     それ以外の部品は「見た目 32px / 当たり判定 44px」で解く。
+     値は書かず --spacing への参照で表す。 */
+  --spacing-touch-min: calc(var(--spacing) * 11); /* 44px  nav-item の下限 */
+  --spacing-hit-expand: calc(var(--spacing) * 1.5); /* 6px  (44-32)/2 の片側 */
+
+  /* ── レイアウト幅（手3 H3-03 / Q1 の答え）─────────────────────
+     🟥 Container を書こうとして初めて「最大幅の語彙が無い」ことが分かった。
+     トークンマッピング 2.4 が「--content-max / --content-wide / --gutter は
+     手3 の Layout テンプレで持つ」と予告していた箇所。既定への参照で足す。 */
+  --container-content: var(--container-4xl); /* 56rem 本文・フォーム */
+  --container-wide: var(--container-7xl); /* 80rem 一覧・データ表 */
+  --spacing-gutter: calc(var(--spacing) * 6); /* 24px 画面端の余白 */
+
   /* ── タイポ: 用途名 ────────────────────────────────────────────
      用途の切り方は tmp-admin §4.3 の使い分け規定に対応させる
      （本文 / テーブル本文 / th・補助 / 氏名・検索 / シート見出し）。 */

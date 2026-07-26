@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/Selection/Select';
 
 // Radix の薄い再輸出で state を持たない（DR-0013）。open は制御 props としてパススルーされる。
 const meta = {

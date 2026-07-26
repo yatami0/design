@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/Action/Button';
 
 // 役割カテゴリ = Action（部品カタログ 表1）
 const meta = {

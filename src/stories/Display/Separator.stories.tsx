@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@/components/Display/Separator';
 
 // 思想の Divider に対応（部品カタログ 表1）。色は --border ← tmp-admin の --color-separator。
 const meta = {

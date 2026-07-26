@@ -6,8 +6,8 @@ import {
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
-} from '@/components/ui/empty';
-import { Button } from '@/components/ui/button';
+} from '@/components/Communication/Empty';
+import { Button } from '@/components/Action/Button';
 
 /**
  * 思想③ Patterns 層の「空状態」を、shadcn は部品として供給している（部品カタログ 表1）。

@@ -31,6 +31,59 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import tailwindcss from 'eslint-plugin-tailwindcss';
 import storybook from 'eslint-plugin-storybook';
 
+// 手3 D4=B′（DR-0033）: 枠は層ごとに違う手段で閉じる。
+//   素材層 = 触らない（git diff で判定）／製品層・アプリ層 = 何を書いたかで判定。
+//
+// 🟥 `tailwindcss/no-arbitrary-value` は角括弧しか見ない（DR-0028）。
+//    `p-13` は正当な Tailwind クラスなので素通りし、`w-99`(396px) まで書けてしまう。
+//    v4 の spacing は calc(var(--spacing) * n) の動的生成で n に上限が無いため。
+const NUMERIC_STEP =
+  '/(^|\\s)-?(p|px|py|pt|pb|pl|pr|ps|pe|m|mx|my|mt|mb|ml|mr|ms|me|gap|gap-x|gap-y|w|h|size|min-w|min-h|max-w|max-h|space-x|space-y|inset|inset-x|inset-y|top|right|bottom|left|basis)-[0-9]/';
+
+// 色も同じ穴を持つ。`text-gray-600` は Tailwind のパレット 288 色の 1 つで、
+// 用途を一切言っていない＝ primitive。ユーザー要求は「**色と余白**は定義したものだけ」。
+const PRIMITIVE_COLOR =
+  '/(^|\\s)(bg|text|border|ring|outline|fill|stroke|from|via|to|divide|placeholder|caret|accent|decoration|shadow)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-[0-9]/';
+
+// 検査する文脈は `tailwindcss/no-arbitrary-value` に合わせる（実測: className / cva / cn は見る、
+// 素の const や object literal は見ない）。同じ穴を空けないよう同じ 3 文脈を張る。
+const NUMERIC_STEP_MESSAGE =
+  '数値の段（primitive）は製品層・アプリ層では使えない。semantic な用途名（--spacing-inset-* / stack / inline）を使うこと（DR-0032・DR-0033）';
+const COLOR_MESSAGE =
+  'パレット色（primitive）は製品層・アプリ層では使えない。semantic な色（bg-card / text-muted-foreground など）を使うこと（DR-0033）';
+
+const restrict = (pattern, message) => [
+  {
+    selector: `JSXAttribute[name.name='className'] Literal[value=${pattern}]`,
+    message,
+  },
+  {
+    selector: `JSXAttribute[name.name='className'] TemplateElement[value.raw=${pattern}]`,
+    message,
+  },
+  {
+    selector: `CallExpression[callee.name=/^(cn|cva|clsx|classnames|tv)$/] Literal[value=${pattern}]`,
+    message,
+  },
+  {
+    selector: `CallExpression[callee.name=/^(cn|cva|clsx|classnames|tv)$/] TemplateElement[value.raw=${pattern}]`,
+    message,
+  },
+];
+
+const noPrimitiveValues = [
+  ...restrict(NUMERIC_STEP, NUMERIC_STEP_MESSAGE),
+  ...restrict(PRIMITIVE_COLOR, COLOR_MESSAGE),
+];
+
+// Server Actions 禁止（PoC §4.5 と同じ趣旨）。no-restricted-syntax は
+// **後のブロックが前のブロックを置き換える**ので、製品層側にも同じ制約を再掲する。
+const noServerActions = {
+  selector: "ExpressionStatement[directive='use server']",
+  message:
+    'Server Actions は禁止。部品層でも第 2 の経路を作らない（PoC §4.5 と同じ趣旨）',
+};
+
 export default defineConfig(
   {
     ignores: ['**/dist/**', '**/.next/**', '**/storybook-static/**'],
@@ -76,12 +129,38 @@ export default defineConfig(
       //   これが効いていないと「トークンを差し替えれば見た目が変わる」（手5）は成立しない。
       'tailwindcss/no-arbitrary-value': 'error',
 
-      'no-restricted-syntax': [
+      'no-restricted-syntax': ['error', noServerActions],
+    },
+  },
+
+  // 手3 D4=B′: 製品層とアプリ層だけ「数値の段」を禁じる。
+  // 素材層（src/components/ui/**）は 128 箇所が直書きなので**開いたまま**にする——
+  // 閉じると余白が全部消えるうえ、ビルドは緑のまま通ってしまう（DR-0028）。
+  {
+    name: 'repo/product-layer-frame',
+    files: ['src/components/**/*.{ts,tsx}', 'src/app/**/*.{ts,tsx}'],
+    ignores: ['src/components/ui/**'],
+    rules: {
+      'no-restricted-syntax': ['error', noServerActions, ...noPrimitiveValues],
+    },
+  },
+
+  // 手3 D3=B: 画面と story は製品層しか見ない。
+  // 製品層自身と `.storybook/**` は素材層を包む側なので対象外。
+  {
+    name: 'repo/import-through-product-layer',
+    files: ['src/app/**/*.{ts,tsx}', 'src/stories/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
         'error',
         {
-          selector: "ExpressionStatement[directive='use server']",
-          message:
-            'Server Actions は禁止。部品層でも第 2 の経路を作らない（PoC §4.5 と同じ趣旨）',
+          patterns: [
+            {
+              group: ['@/components/ui/*', '**/components/ui/*'],
+              message:
+                '素材層（shadcn）は直接使わない。製品層 @/components/<役割カテゴリ>/… から import すること（D3=B）',
+            },
+          ],
         },
       ],
     },

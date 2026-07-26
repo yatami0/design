@@ -8,7 +8,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from '@/components/Navigation/Pagination';
 
 // tmp-admin はページャに 3 案を残したまま停止している（段取り §7）。手4 で選ぶ。
 const meta = {

@@ -7,8 +7,8 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/Popover';
+import { Button } from '@/components/Action/Button';
 
 const meta = {
   title: 'Overlay/Popover',

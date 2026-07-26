@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
+} from '@/components/Navigation/Sidebar';
 
 /**
  * ★ 本 repo で最も重い部品。32 export・lint 赤 33 件のうち 17 件がここ（DR-0013）。

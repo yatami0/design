@@ -7,8 +7,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+} from '@/components/Overlay/DropdownMenu';
+import { Button } from '@/components/Action/Button';
 
 /**
  * 🟥 この部品は typecheck ベースラインの赤 1 件の出どころ

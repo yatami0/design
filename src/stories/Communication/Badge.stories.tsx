@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Communication/Badge';
 
 /**
  * tmp-admin V4 は「ステータスは tint pill + 色ドット」と規定するが、
