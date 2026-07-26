@@ -65,8 +65,11 @@ node -e "const r=require('/tmp/lint.json');const m={};for(const f of r)for(const
 ```bash
 cd ~/git/design
 pnpm install          # node 24 / pnpm 10（mise.toml で node 24 を固定）
-pnpm dev              # 開発サーバ
+pnpm storybook        # UI カタログ → http://localhost:6006
+pnpm dev              # 本体アプリ  → http://localhost:3000
 ```
+
+**起動して何を見るか・トークン差し替えを手で試す手順は [README](../README.md#ローカルで起動する) にある。**
 
 依存は**すべて PoC の catalog と同一値で厳密ピン**（DR-0003）。`^` で入っているのは shadcn が追加した 7 件のみ（DR-0016）。
 Storybook 関連 6 件（手2b）も**厳密ピン**。カタログは `pnpm storybook`（開発）／ `pnpm build-storybook`（ゲート）。
