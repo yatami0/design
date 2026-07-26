@@ -50,6 +50,8 @@
 | [DR-0030](DR-0030-touch-target-provenance-corrected.md) | ⭐ 44px は**全コントロールの不可侵下限ではない** — DR-0023 の発見 2 を訂正 | 手3 | **手3 D7**・手9 |
 | [DR-0031](DR-0031-sidebar-red-is-not-state.md) | Sidebar の赤 17 件のうち 11 件は任意値 — **state を切り出しても減らない** | 手3 | **手3 D6/D10** |
 | [DR-0038](DR-0038-arbitrary-value-rule-sees-three-contexts.md) | `no-arbitrary-value` が見る文脈は **className / cva / cn の 3 つだけ** | 手3 | **手3**・PoC |
+| [DR-0039](DR-0039-pattern-layer-is-not-uniform.md) | ⭐ **③ Patterns 層は一様ではない** — 3 件のうち 1 件は component の足し算で書けた | 手4 | 思想への指摘・手5 |
+| [DR-0040](DR-0040-frame-leaks-when-a-layer-is-added.md) | ⭐ **枠は層を足すたびに漏れる** — 新ディレクトリは lint の射程に自動では入らない | 手4 | **手5 以降**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -80,4 +82,6 @@
 | DR-0036 | OBS-0003 の材料 | 案B に「**レイヤ外からの上書き**」を足せる |
 | DR-0037 | OBS 候補 | 役割分類に「部品でないもの（Provider / Context）」の置き場が無い問題は PoC にも波及する |
 | DR-0038 | 🟥 OBS 候補 | 任意値禁止は `cva` / `cn` / `className` を経由しない文字列を検査しない |
+| DR-0039 | OBS 候補 | ③ 層に置く条件は「状態を持つ」or「複数カテゴリをまたぐ」。packages/ui の層構成に効く |
+| DR-0040 | 🟥 OBS 候補 | ディレクトリ単位の規約は**層を足すたびに漏れる**。運用手順が要る |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

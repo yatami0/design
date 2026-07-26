@@ -2,10 +2,10 @@
 type: procedure
 step: 手4
 title: '③ Patterns / Templates 層 — チケット一覧を製品層だけで組む'
-status: planned # planned | in-progress | done | blocked
+status: done # planned | in-progress | done | blocked
 date: 2026-07-26
 updated_at: 2026-07-26
-next_action: 'H4-01（ベースライン確認とゲートの射程テスト）から実行する'
+next_action: '完了。Q1〜Q8 すべて回答済み（実行記録 §手4）。次は手5 の手順書を書く（未決 #18 の数え直しが先）'
 ---
 
 # 手4 — ③ Patterns / Templates 層と一覧
