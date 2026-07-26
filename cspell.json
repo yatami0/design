@@ -3,7 +3,10 @@
   "version": "0.2",
   "ignorePaths": ["node_modules", "pnpm-lock.yaml", ".next", "dist"],
   "words": [
+    "aisy",
     "codemod",
+    "dodds",
+    "dtcg",
     "figjam",
     "fixit",
     "frontmatter",
@@ -13,6 +16,7 @@
     "luma",
     "lyra",
     "maia",
+    "martinfowler",
     "nextjs",
     "noto",
     "npmjs",
@@ -30,6 +34,7 @@
     "sera",
     "shadcn",
     "shadcndesign",
+    "shadeed",
     "storybook",
     "tanstack",
     "tsconfck",
@@ -37,6 +42,7 @@
     "turborepo",
     "vega",
     "vitest",
+    "wcag",
     "yiping",
     "zenn"
   ]
