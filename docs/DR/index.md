@@ -14,6 +14,7 @@
 | [DR-0005](DR-0005-token-ownership-and-two-stage.md) | トークン語彙の正本は design 側・値は tmp-admin・投入は 2 段階 | — | decided |
 | [DR-0006](DR-0006-shadcn-base-radix-preset-nova.md) | shadcn は base=radix / preset=nova | 手1 | decided |
 | [DR-0007](DR-0007-shadcn-output-handling.md) | shadcn 出力は整形対象外にするが lint の赤は ignore しない | 手1 | decided |
+| [DR-0017](DR-0017-storybook-as-catalog.md) | ⭐ UI カタログは Storybook を採用し**手2b として挿入**（階層は役割 9 カテゴリ） | 手2b | decided |
 
 ## 発見（finding）
 
@@ -28,6 +29,7 @@
 | [DR-0014](DR-0014-exact-optional-property-types-incompatible.md) | ⭐ `exactOptionalPropertyTypes` と shadcn は非互換 | 手1 | **手3**・手9 |
 | [DR-0015](DR-0015-findings-against-component-philosophy.md) | 共通コンポーネント思想への指摘 3 点 | 手1 | ユーザー判断 |
 | [DR-0016](DR-0016-shadcn-deps-are-caret-ranges.md) | shadcn が追加する依存は `^` レンジ | 手1 | 手5・手9 |
+| [DR-0018](DR-0018-design-sync-takes-preview-html.md) | ⭐ `/design-sync` が受け取るのは**プレビュー HTML** — story も React も渡らない | — | **手6**・手2b |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。
 

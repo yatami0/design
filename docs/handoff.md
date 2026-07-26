@@ -21,10 +21,11 @@
 | 手0 | 土台（Next.js + Tailwind v4 + PoC 同一版・同一 lint） | （無し。フォーマット確定前） | ✅ **done** |
 | 手1 | shadcn デフォルト導入 + 役割 9 カテゴリ割り当て | [手1](手順/手1_shadcn導入と役割分類.md) | ✅ **done** |
 | 手2 | ① Tokens 層（3 層トークン ↔ shadcn 語彙 ↔ tmp-admin のマッピング） | 未作成 | ⬜ **次はここ** |
+| **手2b** | **UI カタログ（Storybook 10.5）**。階層は役割 9 カテゴリ＝**手5 の判定装置** | 未作成 | ⬜ 🆕 |
 | 手3 | ② Components 層（Layout / Overlay の自作テンプレ・状態は hook へ） | 未作成 | ⬜ |
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | 未作成 | ⬜ |
 | 手5 | ★ トークン差し替え実験 | 未作成 | ⬜ |
-| 手6 | `/design-sync` で登録 → 役割・フラグが渡るか観測 | 未作成 | ⬜ |
+| 手6 | **プレビュー HTML を作り** `/design-sync` で登録 → フラグ無しで部品を選べるか | 未作成 | ⬜ |
 | 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | 未作成 | ⬜ |
 | 手8 | 出力は lint / validate.mjs を通るか | 未作成 | ⬜ |
 | 手9 | 移送手順（人が実行）+ PoC の docs へ DR/OBS で戻す | 未作成 | ⬜ |
@@ -72,6 +73,8 @@ pnpm dev              # 開発サーバ
 | トークン投入 | **2 段階**（shadcn デフォルトで組み切ってから流し込む） | DR-0005 |
 | shadcn | `base=radix` / `preset=nova` / CLI `4.15.0` 固定 / 部品 18 件 | DR-0006 |
 | 赤の扱い | ignore もルール緩和もしない。**赤の内訳が成果物** | DR-0007 |
+| UI カタログ | **Storybook 10.5**（`@storybook/nextjs-vite`）を手2b で導入。階層は役割 9 カテゴリ | DR-0017 |
+| Claude Design への受け渡し | **プレビュー HTML**（`@dsCard group="…"`）。story も React も渡らない | DR-0018 |
 
 ## 次にやること（手2）
 
@@ -98,6 +101,16 @@ pnpm dev              # 開発サーバ
 - shadcn の現行トークン: `src/app/globals.css`（138 行・init が生成）
 - PoC の語彙: `~/git/PoC/packages/tailwind-config/theme.css`
 
+## その次（手2b）— Storybook 導入
+
+方針は [DR-0017](DR/DR-0017-storybook-as-catalog.md) で確定済み。**問いの種も同 DR §「手2b で答えを出す問い」にある**ので、手順書はそこから起こす。
+
+- `@storybook/nextjs-vite@10.5.4`（peer に `next: ^16` を明示。実測確認済み）
+- 階層は役割 9 カテゴリ（`title: 'Action/Button'`）→ [部品カタログ.md](部品カタログ.md) の表と同じ構造
+- Tailwind は `.storybook/preview.ts` で `import '../src/app/globals.css'` するだけ
+- 🟥 **Vite が新規依存**。本体の Next ビルドと別系統になる＝「本体では通るが Storybook では壊れる」を観測項目に入れる
+- 🟨 `@storybook/addon-vitest`（＋ Playwright）まで入れるかは手2b の判断ポイント
+
 ## 未決・保留
 
 | # | 論点 | いつ決めるか |
@@ -109,6 +122,9 @@ pnpm dev              # 開発サーバ
 | 5 | 手5 の判定方法を「どこが変わらなかったか」の列挙に変える | 手5 の手順書作成時（DR-0010） |
 | 6 | `preset` ごと差し替える軸を手5 に含めるか（トークン差し替えとは別の軸） | 手5（DR-0016） |
 | 7 | ダミーデータの作り方（契約は `/ping` 1 本のみ＝使えるデータがゼロ） | 手4。**仮置き: 使い捨ての手書き**（契約の正本を割らないため） |
+| 8 | 🆕 `@storybook/addon-vitest`（＋ Playwright）まで入れるか、描画のみに留めるか | 手2b（DR-0017） |
+| 9 | 🆕 `storybook build` を機械ゲートに入れるか | 手2b（DR-0017） |
+| 10 | 🆕 フラグ（stateful / behaviorHook 等）は `/design-sync` で渡らない。辞書を Claude Code 側（skill / rules）に持たせるか | 手6（DR-0018） |
 
 ## セッション申し送り
 
@@ -121,3 +137,6 @@ pnpm dev              # 開発サーバ
 - **計画に無い選択肢が出たとき、その場で決めずに手順書 §2 へ追記してから進む規律が機能した。**CLI v4 の設定モデルが公式 docs と食い違っていた件（DR-0006）がその実例。
 - ⚠ **1 件訂正した。**「`baseColor` は論点ごと消滅」と記録したが、init 後の `components.json` には実在し既定値 `neutral` が入っていた。手順書・実行記録の両方を訂正済み。**一次情報（docs）も古くなる**ので、実物で裏を取る規律を続けること。
 - **仕組み化はまだしない。**CC-Skills の `web-design-mock` / `distill` skill を React/shadcn 版へ拡張するのは「同じ需要の 2 回目」だが、1 周して通らなかった箇所が分かるまで何を仕組み化すべきか決まらない。**手9 で判断する。**
+- ⚠ **段取りの穴をユーザーが 1 つ見つけた（Storybook）。**PoC の `architecture.md` が「UI カタログ = Storybook」「story を単一ソースにする」と明記しているのを**引用しておきながら段取りに落とさなかった**。→ 手2b として挿入（DR-0017）。
+  副産物として **`/design-sync` が受け取るのはプレビュー HTML であって story でも React でもない**ことが判明し（DR-0018）、**手6 の作業内容と観測点が書き換わった**。
+  → **教訓: 引用した根拠が段取りの行に化けているかを、段取り更新のたびに突き合わせる。**
