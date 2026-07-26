@@ -1,0 +1,6 @@
+/* src/app/globals.css
+ * 手0 時点では Tailwind の取り込みだけ。トークン（@theme / @theme inline）は手2 で入れる。
+ * ここに直接 @theme を書き始めないこと——「shadcn デフォルトのまま組み切ってから
+ * 後で流し込む」の 2 段階が、手5 のトークン差し替え実験の前提になっている。
+ */
+@import 'tailwindcss';

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "ignorePaths": ["node_modules", "pnpm-lock.yaml", ".next", "dist"],
+  "words": [
+    "figjam",
+    "fixit",
+    "genai",
+    "nextjs",
+    "oklch",
+    "orval",
+    "pnpm",
+    "postcss",
+    "qiita",
+    "radix",
+    "redmine",
+    "shadcn",
+    "shadcndesign",
+    "tanstack",
+    "turborepo",
+    "vitest",
+    "yiping",
+    "zenn"
+  ]
+}
