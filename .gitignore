@@ -21,3 +21,7 @@ Thumbs.db
 
 *storybook.log
 storybook-static
+
+# === 手5 の計測器（tools/visual-probe.mjs）の出力 ===
+# スクリーンショットと実測値は成果物ではなく観測の副産物。値は実行記録に転記する。
+tmp/

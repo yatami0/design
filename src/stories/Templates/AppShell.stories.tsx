@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Button } from '@/components/Action/Button';
 import { Inline } from '@/components/Layout/Inline';
 import { Section } from '@/components/Layout/Section';
+import { SidebarProvider } from '@/components/Navigation/Sidebar';
 import { AppShell } from '@/templates/AppShell';
 
 const meta = {
@@ -18,6 +19,17 @@ const meta = {
     // 全画面の骨格なので Storybook の余白を外す
     layout: 'fullscreen',
   },
+  // 🟥 **配線が要る。**AppShell は中で Sidebar を使うので SidebarProvider が要る。
+  //    最初これを忘れて story が `useSidebar must be used within a SidebarProvider` で
+  //    落ちていたが、**`pnpm build-storybook` は exit 0 だった**（→ DR-0048）。
+  //    本体アプリでは `AppProviders`（src/components/providers.tsx）が配っている。
+  decorators: [
+    (Story) => (
+      <SidebarProvider>
+        <Story />
+      </SidebarProvider>
+    ),
+  ],
 } satisfies Meta<typeof AppShell>;
 
 export default meta;

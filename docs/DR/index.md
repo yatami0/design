@@ -59,6 +59,8 @@
 | [DR-0045](DR-0045-opacity-modifiers-were-invisible-to-lint.md) | ⭐ **不透明度修飾 58 箇所が事前特定から漏れていた** — 出発点に lint の赤を使ったため。色は追うが不透明度は焼き込み | 手5 | **手5**・手9・PoC |
 | [DR-0046](DR-0046-theme-swap-loses-to-source-order.md) | ⭐ **トークン差し替えは「`@theme` に書く」では効かない** — 罠が 2 つ、どちらもビルドは緑。`:root:root` で詳細度に勝つ | 手5 | **手5**・**手9**・PoC |
 | [DR-0047](DR-0047-cost-of-forcing-the-swap-through.md) | ⭐ **「無理をして通す」代償を実測した** — 追従 +29 と引き換えに取り残し 7・語彙 +6・内部依存 +9 | 手5 | **OBS-0005**・手9 |
+| [DR-0048](DR-0048-build-storybook-does-not-render.md) | ⭐ **`build-storybook` の緑は描画を保証しない** — story が実行時に落ちても exit 0 | 手5 | **未決 #14**・手9・PoC |
+| [DR-0049](DR-0049-hit-area-reaches-44px-only-at-default-size.md) | ⭐ **当たり判定 44px は default サイズだけ** — 拡張量が一律なので 4 サイズ中 2 つが未達。DR-0034 の射程を訂正 | 手5 | **未決 #23 を閉じた**・手9 |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -69,6 +71,7 @@
 > 🟥 **DR-0044 は [DR-0041](DR-0041-tailwind-v4-seams-differ-per-utility.md) の「影響」節の推論を訂正する**（観測した CSS 出力の表は維持）。
 > 　あわせて **[DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) の内訳が動く**（影 7 箇所が 乙 → 甲。**丙 1 件という結論は変わらない**）。
 > 🟥 **DR-0045 は [DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) に第 5 の分類「丁（部分追従）」を足す**（17 種 60 箇所。**丙 1 件は変わらない**）。
+> 🟥 **DR-0049 は [DR-0034](DR-0034-touch-target-visual-32-hit-44.md) の「44px が成立している」を訂正する**（決定＝見た目と当たり判定を分けることは維持。成立は `default` と `lg` のみ）。
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 
@@ -103,4 +106,6 @@
 | DR-0045 | 🟥 ADR-0019 / OBS 候補 | **任意値禁止 lint は `/NN` を見ない。**「トークン化されていない値」の集合は lint の赤では取れない（DR-0028 の穴に 1 つ追加） |
 | DR-0046 | 🟥 **移送時に必ず出る** | shadcn の `globals.css` は `@theme inline` + `:root` の 2 段構え。テーマ差し替えは**詳細度で勝つ**必要があり、`@import` は末尾に置けない |
 | DR-0047 | 🟥 OBS-0003 の材料 | 案B に「レイヤ外上書き」を入れるなら**代償 3 種を明記する**。特にユーティリティクラス名への依存は「shadcn を更新できない」形で返る |
+| DR-0048 | 🟥 architecture.md の材料 | 「story を単一ソースにする」なら、**`build-storybook` の緑が何を保証しないか**を明示する |
+| DR-0049 | 🟥 ui.md の材料 | a11y 規約を「当たり判定」に書くなら、**サイズごとに**成立を確かめる。固定拡張では小さい variant が届かない |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
