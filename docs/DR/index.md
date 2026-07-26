@@ -55,6 +55,7 @@
 | [DR-0041](DR-0041-tailwind-v4-seams-differ-per-utility.md) | ⭐ **トークンの継ぎ目は utility ごとに違う** — `font-medium`/`backdrop-blur-xs` は `var()`、`shadow-*` はリテラル | 手5 | **手5**・PoC |
 | [DR-0042](DR-0042-layer-external-override-reaches-properties.md) | ⭐ レイヤ外の上書きは**プロパティにも届く** — DR-0029 §4 の射程を訂正 | 手5 | **手5**・PoC |
 | [DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) | ⭐ **手5 の「変わらない箇所」は 15 件ではなく 1 件** — 6 件は差し替え先が無く、6 件は素材層を触らず解ける | 手5 | **手5**・手9 |
+| [DR-0044](DR-0044-tailwind-resolves-tokens-at-build-time-too.md) | ⭐ **「var() を出さない」と「`@theme` が効かない」は別物** — 解決は実行時 / ビルド時 / しない の 3 種。影は `@theme` で動く | 手5 | **手5**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -62,6 +63,8 @@
 > 🟨 **DR-0029 は [DR-0022](DR-0022-shadcn-has-component-tokens.md) の射程を拡張する**（「唯一の接続点」→「接続方式」）。
 > 🟥 **DR-0042 は [DR-0029](DR-0029-component-token-overridable-outside-layer.md) §4 の但し書きを訂正する**（「効くのは変数だけ」→ 任意値にも届く）。
 > 🟥 **DR-0043 は [トークンマッピング §5](../トークンマッピング.md) の「15 件」を 1 件へ更新する**（[DR-0010](DR-0010-shadcn-invents-values.md) の見立ては緩和方向に外れた）。
+> 🟥 **DR-0044 は [DR-0041](DR-0041-tailwind-v4-seams-differ-per-utility.md) の「影響」節の推論を訂正する**（観測した CSS 出力の表は維持）。
+> 　あわせて **[DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) の内訳が動く**（影 7 箇所が 乙 → 甲。**丙 1 件という結論は変わらない**）。
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 
@@ -92,4 +95,5 @@
 | DR-0041 | 🟥 OBS 候補 | Tailwind v4 で「トークンを差し替えれば追従する」は **utility 単位で成否が割れる**。ソースを見ても分からず生成 CSS を見る必要がある |
 | DR-0042 | 🟥 OBS-0003 の材料を訂正 | 案B の「レイヤ外からの上書き」は**任意値にも届く**。ただし変異を潰すので「向け替え」と「上書き」を区別して書く |
 | DR-0043 | 🟥 OBS-0003 の前提を更新 | 「箱を触らずテーマだけ変える」の**不成立範囲は見積もりより 1 桁小さい**（15 → 1） |
+| DR-0044 | 🟥 OBS-0003 の材料を訂正 | テーマ差し替えの可否は「**実行時に切り替わるか**」と「**ビルドし直せば変わるか**」を分けて論じる。`shadow-*` は後者だけ成立する |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
