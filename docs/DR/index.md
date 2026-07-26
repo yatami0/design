@@ -49,6 +49,7 @@
 | [DR-0029](DR-0029-component-token-overridable-outside-layer.md) | ⭐ component token は**カスケードレイヤの外から**部品を触らず向け替えられる | 手3 | **手3 D8**・**手5** |
 | [DR-0030](DR-0030-touch-target-provenance-corrected.md) | ⭐ 44px は**全コントロールの不可侵下限ではない** — DR-0023 の発見 2 を訂正 | 手3 | **手3 D7**・手9 |
 | [DR-0031](DR-0031-sidebar-red-is-not-state.md) | Sidebar の赤 17 件のうち 11 件は任意値 — **state を切り出しても減らない** | 手3 | **手3 D6/D10** |
+| [DR-0038](DR-0038-arbitrary-value-rule-sees-three-contexts.md) | `no-arbitrary-value` が見る文脈は **className / cva / cn の 3 つだけ** | 手3 | **手3**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -78,4 +79,5 @@
 | DR-0034 | 🟥 ui.md の材料 | a11y のタッチターゲット規約は「見た目」ではなく**「当たり判定」に対して**書く |
 | DR-0036 | OBS-0003 の材料 | 案B に「**レイヤ外からの上書き**」を足せる |
 | DR-0037 | OBS 候補 | 役割分類に「部品でないもの（Provider / Context）」の置き場が無い問題は PoC にも波及する |
+| DR-0038 | 🟥 OBS 候補 | 任意値禁止は `cva` / `cn` / `className` を経由しない文字列を検査しない |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

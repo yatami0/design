@@ -1,9 +1,9 @@
 ---
 step: 手3
 title: '② Components 層 — 素材層（shadcn）と製品層（自作共通部品）の境界を確定する'
-status: planned # planned | in-progress | done | blocked
+status: done # planned | in-progress | done | blocked
 updated_at: 2026-07-26
-next_action: '§2 の D1〜D11 は全件確定（DR-0032〜0037）。次は H3-01（ベースライン確認とゲートの射程テスト）から実行する'
+next_action: '完了。Q1〜Q8 すべて回答済み（実行記録 §手3）。次は手4（③ Patterns / Templates 層）の手順書を書く'
 ---
 
 # 手3 — ② Components 層（素材層と製品層の分離）
