@@ -1,0 +1,8 @@
+# ロックファイル・ビルド出力
+pnpm-lock.yaml
+.next/
+dist/
+node_modules/
+next-env.d.ts
+# markdown は対象外（PoC の DR-0012 と同じ理由: 表の再整形で全行 diff になる）
+**/*.md
