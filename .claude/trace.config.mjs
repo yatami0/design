@@ -26,6 +26,7 @@ export default {
       dir: 'docs/DR',
       idPattern: '^(DR-\\d{4})',
       idPrefix: '',
+      filename: '{id}-{slug}', // {slug} は英小文字ケバブ（{title} なら日本語の短い題）
       template: 'docs/DR/_template.md',
       index: 'docs/DR/index.md',
       commitType: 'docs', // 本 repo の type 語彙に `dr` は無い（CLAUDE.md §git）
