@@ -172,7 +172,8 @@ flowchart TD
 | 手2 | [手2_トークン層マッピング.md](手順/手2_トークン層マッピング.md) | ✅ done |
 | 手2b | [手2b_UIカタログStorybook.md](手順/手2b_UIカタログStorybook.md) | ✅ done |
 | 手3 | [手3_Components層と製品層の分離.md](手順/手3_Components層と製品層の分離.md) | ✅ done |
-| 手4〜手9 | 未作成 | ⬜ |
+| 手4 | [手4_PatternsTemplates層と一覧.md](手順/手4_PatternsTemplates層と一覧.md) | ✅ done |
+| 手5〜手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 
