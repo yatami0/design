@@ -138,7 +138,13 @@ export default defineConfig(
   // 閉じると余白が全部消えるうえ、ビルドは緑のまま通ってしまう（DR-0028）。
   {
     name: 'repo/product-layer-frame',
-    files: ['src/components/**/*.{ts,tsx}', 'src/app/**/*.{ts,tsx}'],
+    files: [
+      'src/components/**/*.{ts,tsx}',
+      'src/app/**/*.{ts,tsx}',
+      // 手4 D8: ③ 層も同じ枠に入れる。H4-01 の赤テストで射程外だと分かった
+      'src/patterns/**/*.{ts,tsx}',
+      'src/templates/**/*.{ts,tsx}',
+    ],
     ignores: ['src/components/ui/**'],
     rules: {
       'no-restricted-syntax': ['error', noServerActions, ...noPrimitiveValues],
@@ -149,7 +155,13 @@ export default defineConfig(
   // 製品層自身と `.storybook/**` は素材層を包む側なので対象外。
   {
     name: 'repo/import-through-product-layer',
-    files: ['src/app/**/*.{ts,tsx}', 'src/stories/**/*.{ts,tsx}'],
+    files: [
+      'src/app/**/*.{ts,tsx}',
+      'src/stories/**/*.{ts,tsx}',
+      // 手4 D8: ③ 層は ② の上にあるので、素材層を直接触ってよい理由が無い
+      'src/patterns/**/*.{ts,tsx}',
+      'src/templates/**/*.{ts,tsx}',
+    ],
     rules: {
       'no-restricted-imports': [
         'error',
