@@ -1,9 +1,9 @@
 ---
 step: 手1
 title: 'shadcn デフォルト導入と役割 9 カテゴリへの割り当て'
-status: planned
+status: done
 updated_at: 2026-07-26
-next_action: '判断ポイントは全件決着済み（D1 = neutral）。H1-01 から実行してよい'
+next_action: '完了。Q1〜Q7 すべて回答済み。次は手2（Tokens 層のマッピング）'
 ---
 
 # 手1 — shadcn デフォルト導入と役割 9 カテゴリへの割り当て
@@ -56,21 +56,21 @@ next_action: '判断ポイントは全件決着済み（D1 = neutral）。H1-01 
 
 | # | 論点 | 選択肢 | 決定（推奨） | 根拠 | 戻せるか |
 |---|---|---|---|---|---|
-| ~~**D1**~~ | ~~`tailwind.baseColor`~~ | ~~neutral / stone / zinc / …~~ | ❌ **論点ごと消滅**（H1-02 実行時に判明） | CLI v4 に `baseColor` も `cssVariables` も**存在しない**。公式の components.json ページが CLI の実装より古かった。設定モデルは `base` + `preset` に置き換わっている → **D9 / D10** | — |
+| **D1** | `tailwind.baseColor` | neutral / stone / zinc / … | ✅ **neutral**（結果的に満たされた） | **CLI フラグとしては存在しない**が、`components.json` の設定キーとしては実在し、CLI が既定値 `neutral` を書き込んだ。設定モデルの主軸は `base` + `preset` に移っている → **D9 / D10**<br>⚠ 本行は当初「論点ごと消滅」と書いたが、init 実行後の `components.json` を読んで**誤りと判明**したため訂正した | 🟥 不可逆 |
 | **D2** | CLI の版 | `shadcn@latest` / `shadcn@4.15.0` | **4.15.0 に固定** | PoC は全依存を厳密ピンしている。CLI が生成するコードは成果物なので、生成器の版が動くと**再現しない**。手5 の差し替え実験は再現性が前提 | 🟦 戻せる |
 | **D3** | add する部品の範囲 | 全 63 / 一覧画面から逆算した分だけ | **逆算した分だけ**（下記 H1-03 の表） | 使わない部品が lint 赤を出しても判断材料にならず、赤の内訳が濁る。9 カテゴリ割り当ては**表の上で全 63 を扱えば足りる**（コードを置く必要はない） | 🟦 戻せる |
 | **D4** | shadcn のコードが lint / typecheck で赤だったときの扱い | ignore する / ルールを緩める / ラップして直す / **赤のまま記録して進む** | **赤のまま記録して進む**（§5 H1-04 の分岐図） | ignore すると **Q1・Q2 の答えが消え、手5 の判定が甘くなる**。手1 の成果物は「緑の状態」ではなく「赤の内訳」 | 🟦 戻せる |
 | **D5** | DataDisplay の Table をどう供給するか | 素の `Table` のみ / `Data Table`（TanStack Table を導入） | **手1 では素の `Table` のみ**。TanStack Table の導入判断は手3 へ送る | shadcn の Data Table は単一部品ではなく **TanStack Table を使う組み立てガイド**。PoC の catalog に `@tanstack/react-table` は無く、**新規依存の追加は移送に影響する**。手1 の問い（Q1〜Q7）はどれも Table の中身に依存しない | 🟦 戻せる |
-| ~~**D6**~~ | ~~`tailwind.cssVariables`~~ | ~~true / false~~ | ❌ **論点ごと消滅** | D1 と同じ理由。CLI v4 に該当キーが無い。**CSS 変数によるテーマ上書きは既定の唯一の道**になった（メンテナが「ソースを触らず CSS カスタムプロパティで上書きせよ」と明言）＝思想①の前提は満たされる | — |
-| ~~**D7**~~ | ~~`style` = new-york~~ | — | ❌ **意味が変わった** | `style` は preset 名を保持するフィールドになった（→ D10） | — |
+| **D6** | `tailwind.cssVariables` | true / false | ✅ **true**（既定値で満たされた） | D1 と同じ。CLI フラグには無いが設定キーは実在し、既定 `true`。**CSS 変数によるテーマ上書きは既定の唯一の道**（メンテナが「ソースを触らず CSS カスタムプロパティで上書きせよ」と明言）＝思想①の前提は満たされる | 🟦 戻せる |
+| ~~**D7**~~ | ~~`style` = new-york~~ | — | ❌ **意味が変わった** | `style` は preset 名（`radix-nova`）を保持するフィールドになった（→ D10） | — |
 | **D8** | aliases の配置 | — | `components: @/components` / `ui: @/components/ui` / `lib: @/lib` / `hooks: @/hooks` / `utils: @/lib/utils` | 手0 で入れた `paths: {"@/*": ["./src/*"]}` と整合。PoC の `apps/redmine/src/lib/` 構成とも並ぶ | 🟦 戻せる |
 
 ### 追記（2026-07-26・H1-02 着手時に判明）
 
 **CLI v4 の設定モデルが公式ドキュメントの記述と食い違っていた。**
 `shadcn init --help` の実測で、`--base-color` に相当するフラグが存在せず、代わりに `--base`（プリミティブ実装）と `--preset`（設計システム）の 2 軸になっていることが判明した。
-`shadcn info` が出力する `components.json` のフィールドは `base` / `style` / `rsc` / `tsx` / `tailwind.config` / `tailwind.css` / `iconLibrary` / `aliases` / `registries` で、**`tailwind.baseColor` も `tailwind.cssVariables` も無い**。
-→ **D1・D6・D7 は論点ごと消滅**し、下記 D9・D10 に置き換わる。
+実際に生成された `components.json` のフィールドは `style`(=preset 名) / `rsc` / `tsx` / `tailwind.{config,css,baseColor,cssVariables,prefix}` / `iconLibrary` / `rtl` / `aliases` / `menuColor` / `menuAccent` / `registries`。
+→ 設定モデルの主軸が **D9・D10** に移った（D1・D6 は設定キーとしては残り、既定値が当初の決定と一致していた）。
 
 > 🟦 **一次情報を実測で置き換える規律が効いた例。**公式 docs（二次的に古い）だけで進めていたら、存在しないフラグを前提に手順を組んでいた。
 
