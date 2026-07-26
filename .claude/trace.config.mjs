@@ -70,6 +70,22 @@ export default {
   // コミットの形（CLAUDE.md §git が正本）
   commitFormat:
     '<type>(H<N>): 日本語要約 [手N] — 手に属さない作業は scope と [手N] を省く',
+  commitTypes: [
+    'feat',
+    'fix',
+    'docs', // 台帳・ノート・README
+    'chore',
+    'build',
+    'procedure', // docs/手順/ の作成・改訂
+    'refactor',
+    'test',
+  ],
+  commitExtraSteps: [
+    '`main` が安定点。手ごとに `step/h<N>-<slug>` を切り、完了したら `main` へ `--no-ff` マージ。',
+    '手に属さない作業（文書整備・証跡整理）は `main` に直接コミットしてよい。',
+    '`docs/共通コンポーネント思想.md` は**ユーザーの持ち物**。書き換えず、指摘は DR に書く（CLAUDE.md）。',
+    '機械ゲートは `pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell`。赤がベースラインなので、`docs/handoff.md` の表と件数を比べて「新しい赤」だけを見る。',
+  ],
 
   // 語彙（閉じた集合）— ここが正本。各 _template.md は読むための写し。
   // decision/finding: 実データ 27 件は decision→decided / finding→observed に割れているが、
