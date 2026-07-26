@@ -2,10 +2,18 @@
  * 手0 時点では Tailwind の取り込みだけ。トークン（@theme / @theme inline）は手2 で入れる。
  * ここに直接 @theme を書き始めないこと——「shadcn デフォルトのまま組み切ってから
  * 後で流し込む」の 2 段階が、手5 のトークン差し替え実験の前提になっている。
+ *
+ * 手2: 自前の semantic 語彙は ./tokens.css に分けた（D1）。本ファイルは shadcn CLI が
+ * 書き換える領域なので、混ぜると「ツールが何を変えたか」が git diff で読めなくなる。
  */
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+@import './tokens.css';
+/* 手2 D9: Tailwind v4 の自動コンテンツ検出は docs/**.md まで走査し、文章中に書いた
+ * クラス名を実際に生成してしまう（実測。→ DR-0021）。手5 は生成 CSS の差分で
+ * 「どこが変わらなかったか」を読む手なので、観測が文章の編集で動かないよう走査から外す。 */
+@source not '../../docs';
 /* ---break---
  */
 @custom-variant dark (&:is(.dark *));

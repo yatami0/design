@@ -107,7 +107,7 @@ flowchart TD
 | 1 | shadcn は役割で並んでいない（アルファベット順のフラット一覧） | 9 カテゴリへの割り当て表を自分で作る。整備の最初の実務 |
 | 2 | Layout カテゴリが shadcn にほぼ無い（Card はあるが Box/Stack/Grid/Container/Spacer/Section が無い） | 🟦 思想の「Layout/Overlay は自作テンプレ」と shadcn の欠落が**同じ場所を指す**。理由は違うが作る場所は一致 |
 | 3 | 🟥 **状態の置き場が食い違う** | shadcn の Overlay 部品は Radix 由来で `open`/`onOpenChange` を自分で持つ。思想は「開閉は `useXxxModal()` へ」。思想を通すなら**ラッパー層が要り、shadcn の素の使い方から一段ずれる**＝判断が要る |
-| 4 | トークンの層数が違う | 思想＝3 層（primitive/semantic/component）、shadcn＝実質 semantic 1 層（primitive は Tailwind パレット、component token 無し）、tmp-admin＝Apple 系語彙。**3 者のマッピング表**が要る |
+| 4 | ~~トークンの層数が違う~~ → **層は揃っていた**（手2 で訂正） | ~~思想＝3 層、shadcn＝実質 semantic 1 層（component token 無し）~~ → 🟦 **実測では 3 層とも実在する**（primitive 419 = Tailwind ／ semantic 色 18 ／ component 11 = `--sidebar-*`・`--card-spacing`）。**欠けているのは層ではなく semantic 層のうち spacing / typography だけ**（[DR-0022](DR/DR-0022-shadcn-has-component-tokens.md)）。マッピング表は [トークンマッピング.md](トークンマッピング.md) に完成 |
 | 5 | DataDisplay の Table | shadcn の Table は素のマークアップのみ。DataGrid 相当は TanStack Table との組み合わせ＝自前の組み合わせ部品 |
 
 ---
@@ -169,7 +169,8 @@ flowchart TD
 |---|---|---|
 | 手0 | （無し。フォーマット確定前に実行した） | ✅ done |
 | 手1 | [手1_shadcn導入と役割分類.md](手順/手1_shadcn導入と役割分類.md) | ✅ done |
-| 手2〜手9 | 未作成 | ⬜ |
+| 手2 | [手2_トークン層マッピング.md](手順/手2_トークン層マッピング.md) | ✅ done |
+| 手2b〜手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 
