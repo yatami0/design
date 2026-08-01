@@ -15,7 +15,8 @@
   マージは `git -C ~/conductor/repos/design merge --no-ff <branch>` の形で打つ。
 - 🆕 **手7 に着手した。**ブランチ `step/h7-design-agent-behavior`（`b7a97f3` から分岐）。
   **[手順書](手順/手7_ClaudeDesignに一覧を組ませる.md)は `status: in-progress`。**
-  🟦 **§2 の D1〜D7 は全件決着**（推奨どおり）／🟦 **H7-01〜H7-06 まで完了。**🟥 **D8（2 周目を回すか）が未決。**
+  🟦 **§2 の D1〜D9 は全件決着**／🟦 **H7-01〜H7-07（再同期）まで完了。**
+  🟥 **次は「同じ依頼文でもう 1 周打つ」だけ**——人が claude.ai/design で実行する。
 - ★★ **手7 の 1 周目が通った。[Q1 は 🟦「使う」](実行記録.md)。**——**明示していないのに 9/14 部品を使い、`<div>` も `<button>` も `<table>` も 0 件。**
   🟦 **Q2 も効いた**（未決 #10 の後半に答え）——**カードにも `.d.ts` にも `.prompt.md` にも無い `AppProviders` が、conventions header の散文だけで最外に 1 回だけ正しく置かれた。**
   🟨 **Q3 は半分**——禁止語彙 0 件だが、header が「complete vocabulary」と書いた表の**外の語が 4 つ**（`rounded-md` / `border` / `tabular-nums` / `font-emphasis`）。**全部実在しトークン参照**（架空のクラスはゼロ）。
@@ -358,20 +359,12 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 ✅ **手6 は完了し `main` へマージ済み**（`b7a97f3`）。
 🆕 **手7 の手順書は起草済み**（[手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md)）。
 
-### 🟥 1. `/design-sync` を打ち直す（**人が実行する**）
+### ✅ 1. 再同期は完了した（2026-08-02）
 
-🟦 **素材層 16 件を足す準備は完了**（D5 を B → A へ変更・2026-08-02）。同期範囲 **14 → 30 部品**。
-🟥 **`/design-sync` は Claude 側から起動できない**（手6 D6 と同じ）。
+🟦 **`design — UI検証` は 30 部品になった。**採点 **30/30 全件 `match`**（`close` 0 / `mismatch` 0 / `bad` 0 / `thin` 0）。
+conventions header は**ドリフト無し**（書き換えていない）。詳細は [実行記録 §H7-07](実行記録.md)。
 
-```
-/design-sync
-```
-
-- **既存の `design — UI検証`（`3acbb737-…`）へ差分同期**。新規プロジェクトは作らない
-- `.design-sync/config.json` は更新済み（`componentSrcMap` +16 ／ `titleMap` の `null` 削除 ／ `buildCmd` に `pnpm build:types` を追加）
-- 🟨 **Overlay 5 件で `[GRID_OVERFLOW]` が出たら `cfg.overrides.<Name>.cardMode: "single"` を足す**（`Sidebar` / `AppShell` と同じ）。**先回りでは足していない**——出るかどうかも観測点
-
-### 2. 同じ依頼文でもう 1 周打つ（**人が実行する**）
+### 🟥 2. 同じ依頼文でもう 1 周打つ（**人が実行する**）
 
 ★ **変数は「DS の中身」1 つだけ。**[H7-03 の依頼文](手順/手7_ClaudeDesignに一覧を組ませる.md)を**1 文字も変えずに**新しいデザインで打つ。
 

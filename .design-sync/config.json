@@ -54,6 +54,12 @@
   ],
 
   "overrides": {
+    "Dialog": {
+      "cardMode": "single",
+      "primaryStory": "Default",
+      "skip": ["②-素材層-overlay-dialog--open"]
+    },
+    "Tooltip": { "cardMode": "single", "primaryStory": "AlwaysOpen" },
     "Sidebar": { "cardMode": "single", "primaryStory": "Default" },
     "AppShell": { "cardMode": "single", "primaryStory": "Default" }
   },

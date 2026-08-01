@@ -23,21 +23,45 @@
   1 周目の実測で **`Card` が無いために design agent がカード面を手組みした**ため（実行記録 §手7 Q4）。
   `src/index.ts` の import 元は**製品層の再輸出**であって `@/components/ui/**` ではない（窓口は 1 本のまま）。
 
-### 🟥 2 周目（手7）で見張るもの — 事前に書いた予測
+### 2 周目（手7）で見張るもの — 事前に書いた予測と、同期を回した結果
 
-| # | 予測 | 外れたら何を意味するか |
+| # | 予測 | 結果（2026-08-02） |
 | --- | --- | --- |
-| 1 | **Overlay 5 件（`Dialog` / `DropdownMenu` / `Popover` / `Sheet` / `Tooltip`）で `[GRID_OVERFLOW]` が出る** | portal / fixed がセル外に出るため。**出たら `cfg.overrides.<Name>.cardMode: "single"` を足す**（`Sidebar` / `AppShell` と同じ）。🟥 **先回りでは足していない**——converter が検出するかどうかも観測点 |
-| 2 | **カードは 14 → 30 になる** | カード数を決めるのは export ではなく **story**。素材層 16 件には story が 1 本ずつある。**30 でなければ、その前提が誤り** |
-| 3 | ★ **`Box` + `bg-card rounded-md border` の手組みが消え、`Card` が使われる** | **語彙表（conventions header）は 1 文字も変えていない。**消えれば「宣言語彙を外れた原因は部品の欠落」が確定する。消えなければ**語彙表の書き方の問題** |
-| 4 | **`_adherence.oxlintrc.json` の規則が 16 部品ぶん増える** | 受け手は `.d.ts` から規則を作る（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)）。素材層は `className` を受けるので、**Layout 部品のような厳しい規則にはならないはず** |
-| 5 | 🟥 **`buildCmd` に `pnpm build:types` を入れた**（下記 Re-sync risk #1 への対処） | 入れる前は「型が古いまま緑で完走」しうる状態だった。**入れたことで risk #1 が塞がったかを確認する** |
+| 1 | Overlay **5 件**で `[GRID_OVERFLOW]` が出る | 🟨 **外れ（過大）。出たのは `Dialog` と `Tooltip` の 2 件だけ。**`DropdownMenu` / `Popover` / `Sheet` は**閉じた状態の story しか無い**ので flag されない。**「Overlay だから」ではなく「開いた状態の story があるか」で決まる** |
+| 2 | カードは 14 → 30 になる | 🟦 **的中**（`componentCount: 30` / `window.Design` 129 export のうち部品 30） |
+| 3 | ★ `Box` + `bg-card rounded-md border` の手組みが消え `Card` が使われる | ⬜ **未判定。**これは design agent 側の観測——**同じ依頼文でもう 1 周打ってから数える** |
+| 4 | `_adherence.oxlintrc.json` の規則が 16 部品ぶん増える | ⬜ **未確認**（アップロード後にリモートを読み直す） |
+| 5 | `buildCmd` に `pnpm build:types` を入れたことで risk #1 が塞がる | 🟥 **外れ。`buildCmd` は converter が実行しない**（下記）。**risk #1 は塞がっていない**——手で回すしかない |
 
 - **`① Tokens` の story は部品ではないので `titleMap: null` で除外した。**
   トークン自体は `_ds_bundle.css`（Storybook から採取したコンパイル済み CSS）経由で
   `styles.css` の `@import` closure に載るので design agent には届く。**`tokens/` は空のまま**が正常。
 
-- **`Sidebar` / `AppShell` は `cardMode: "single"`**（`[GRID_OVERFLOW]`＝fixed/portal がセル外に出るため）。
+- **`Sidebar` / `AppShell` / `Dialog` / `Tooltip` は `cardMode: "single"`**（`[GRID_OVERFLOW]`＝fixed/portal がセル外に出るため）。
+  🟨 **Overlay 全部ではない。**`DropdownMenu` / `Popover` / `Sheet` は**閉じた状態の story しか無い**ので flag されない。
+
+- 🟥 **`Dialog` の `Open` story は storybook 側でも描画されない**（`sb-error: no storybook root content`）。
+  → `cfg.overrides.Dialog.skip` に `②-素材層-overlay-dialog--open` を入れてある。**preview 側の問題ではない。**
+
+- 🟥 **`Tooltip` の `Always Open` は「参照側が足りない」形の差が出る。**
+  storybook のショットは `#storybook-root` だけを撮るので、**portal されたツールチップが枠外**に落ちて写らない。
+  preview 側は正しく描いている。**ルーブリックの「gated な参照より preview が多く描くのは `close` ではない」に従い `match`。**
+  次回も同じ形で出るので、シートだけ見て mismatch と読まないこと。
+
+- 🟨 **`buildCmd` は converter が実行しない。**`lib/common.mjs` の設定キー一覧にあるだけで実行経路が無い。
+  **`.design-sync/config.json` の `buildCmd` は「再同期の前に人が回すもの」の申し送り**として読むこと。
+  今回は `pnpm i --frozen-lockfile && pnpm build:types` を手で回した。
+
+- 🟨 **[GENERAL] `pnpm` は PATH に無い。**`~/Library/pnpm/.tools/pnpm/10.0.0/bin` に **10.0.0** が入っている。
+  🟥 **`corepack pnpm` は 11 系を解決し、`node_modules` の purge を要求して失敗する**（`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`）。
+  **corepack を使わず上記の絶対パスを PATH に足す。**
+
+- 🟨 **`[REFERENCE_STALE?]` は config だけ変えた再ビルドでも出る。**
+  参照 Storybook は `src/index.ts` を変えた後に建て直してあるので、この警告は空振り。
+  **DS ソース（`src/**`）を触ったときだけ建て直す。**
+
+- 🟨 **`AppShell` が毎回 `[SPOT_CHECK]` に出る**（3 回連続、`trigger: render_churn`）。
+  ソースは変わっていないので grades は保持される。**シートを確認して記録済み grade と一致すればそのまま進んでよい。**
 
 - **`guidelinesGlob` は明示指定。**既定の `docs/*.md` は工程記録（handoff・実行記録・段取り・思想への指摘）まで
   さらってしまい、design agent には雑音になる。**設計判断に効く 6 本だけ**に絞ってある。
@@ -61,11 +85,17 @@
 
 ## 🟥 Re-sync risks（次の実行が見張るもの）
 
+> 最終更新: 2026-08-02（手7 の再同期。14 → **30 部品**）
+
 | # | 見張るもの | なぜ |
 | --- | --- | --- |
-| 1 | 🟥 **`dist/types` の鮮度** | `pnpm build:types` を忘れると **古い型のまま緑で完走**する。部品の props を変えたら必ず先に走らせる |
-| 2 | 🟥 **`src/index.ts` の export 漏れ** | conventions header の validate で `useListDetail` の漏れを 1 件検出した。**export していない hook / 型は design agent から使えない**のに、Storybook では story 内で呼べてしまうので気づけない |
-| 3 | 🟨 **フォント実体は同梱していない** | いまは system stack。Geist 等を DS のフォントにするなら ① Tokens 層に置き、`cfg.extraFonts` で同梱する必要がある |
-| 4 | 🟨 **`_ds_bundle.css` は参照 Storybook 由来** | Storybook のビルド設定が変わると CSS の中身も変わる。**DS ソースを触ったら参照を建て直す** |
-| 5 | 🟨 **grade は `close` ゼロ・全件 `match`** | 部分的に verify した箇所は無い。story cap（既定 6）に当たった部品も無い（最大 4 story） |
-| 6 | 🟨 **`.d.ts` の props に React の継承分が混ざる** | `ButtonProps` に `ref` / `className` / `style` 等が出る。**Layout 部品は `className` を受けない設計**なので、conventions header 側で明示的に打ち消してある |
+| 1 | 🟥 **`dist/types` の鮮度** | `pnpm build:types` を忘れると **古い型のまま緑で完走**する。🟥 **`buildCmd` に書いても converter は実行しない**（上記）ので、**人か agent が明示的に回す**。部品の props を変えたら必ず先に |
+| 2 | 🟥 **`src/index.ts` の export 漏れ** | export していない hook / 型は design agent から使えないのに、Storybook では story 内で呼べてしまうので気づけない（手6 で `useListDetail` を 1 件検出） |
+| 3 | 🟨 **フォント実体は同梱していない** | いまは system stack。Geist 等を DS のフォントにするなら ① Tokens 層に置き `cfg.extraFonts` で同梱する |
+| 4 | 🟨 **`_ds_bundle.css` は参照 Storybook 由来**（`[CSS_FROM_STORYBOOK]`） | Storybook のビルド設定が変わると CSS の中身も変わる。**DS ソースを触ったら参照を建て直す** |
+| 5 | 🟦 **grade は 30/30 全件 `match`** | `close` ゼロ・`mismatch` ゼロ。`bad` 0 / `thin` 0 / `variantsIdentical` 0。story cap には当たっていない（最大 4 story） |
+| 6 | 🟨 **`.d.ts` の props に React の継承分が混ざる** | Layout 部品は `className` を受けない設計なので conventions header 側で打ち消してある |
+| 7 | 🆕 🟥 **素材層 16 件は `export *` で出している** | 上流（shadcn）の API が変わると export 面がまるごと動く。**`window.Design` は 129 export（うち部品 30）**。`.d.ts` から受け手の lint 規則が生成されるので、**型が動くと相手の規則も動く**（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） |
+| 8 | 🆕 🟨 **`Dialog.Open` の skip は「storybook 側が描けない」ことに依存** | story 側が直れば skip は不要になる。**skip を惰性で残さない** |
+| 9 | 🆕 🟨 **`tokens/` は空のままが正常** | converter の `tokens/` は別パッケージ用。本 repo の値は `_ds_bundle.css` に焼き込まれる |
+| 10 | 🆕 🟨 **`x-omelette.tokens` にパレット色が載る** | `src/app/tokens.css` が semantic 色を**パレット色への参照**で定義しているため（`--color-success: var(--color-emerald-600)` ほか）。**conventions header の「パレット色を書くな」と字面が食い違う**——手7 の観測対象 |
