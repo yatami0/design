@@ -42,7 +42,7 @@
 | [DR-0014](DR-0014-exact-optional-property-types-incompatible.md) | ⭐ `exactOptionalPropertyTypes` と shadcn は非互換 | 手1 | **手3**・手9 |
 | [DR-0015](DR-0015-findings-against-component-philosophy.md) | 共通コンポーネント思想への指摘 3 点 | 手1 | ユーザー判断 |
 | [DR-0016](DR-0016-shadcn-deps-are-caret-ranges.md) | shadcn が追加する依存は `^` レンジ | 手1 | 手5・手9 |
-| [DR-0018](DR-0018-design-sync-takes-preview-html.md) | ⭐ `/design-sync` が受け取るのは**プレビュー HTML** — story も React も渡らない | — | **手6**・手2b |
+| [DR-0018](DR-0018-design-sync-takes-preview-html.md) | ~~⭐ `/design-sync` が受け取るのは**プレビュー HTML** — story も React も渡らない~~ 🟥 **superseded → [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md)** | — | **手6**・手2b |
 | [DR-0021](DR-0021-tailwind-scans-docs-markdown.md) | ⭐ Tailwind v4 は `docs/**.md` を走査し**文章中のクラス名を本番 CSS に生成する** | 手2 | **手5**・PoC |
 | [DR-0022](DR-0022-shadcn-has-component-tokens.md) | ⭐ 思想の 3 層は**3 層とも実在する**（component token は有る）。欠けるのは spacing / typography だけ | 手2 | 手3・段取り訂正 |
 | [DR-0023](DR-0023-real-conflict-is-touch-target.md) | ⭐ tmp-admin と nova の本当の衝突は accent ではなく**タッチターゲット 44px** | 手2 | **手3**・手9 |
@@ -68,6 +68,7 @@
 | [DR-0050](DR-0050-three-surfaces-collapsed-into-two.md) | ⭐ **「面は 3 層」が 2 層になっていた** — 部品単位では見えず、中身の詰まったテンプレートで初めて出た | 手5 | **手5**・手9・PoC |
 | [DR-0053](DR-0053-viewpoints-must-be-answerable-by-eye.md) | ⭐ **観点は「誰が答えられるか」で分ける** — 目で答えられないものを比較ペアに入れると止まる。ラベルを 3 箇所間違えていた | 手5 | **手5**・PoC |
 | [DR-0054](DR-0054-mock-specimens-cannot-reproduce-stacked-states.md) | ⭐ **模型の検体は「状態の重なり」を再現しない** — フォーカス ＋ `aria-invalid` は実物で測って決着（destructive がソース順で勝つ） | 手5 | **手5**・PoC |
+| [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md) | ⭐ **`/design-sync` が上げるのはコンパイル済みの実コンポーネント** — プレビュー HTML は人間用のカード。Storybook は入力かつ基準器で、Playwright は「変換」ではなく「検証」に要る（[DR-0018](DR-0018-design-sync-takes-preview-html.md) を訂正） | 手6 | **手6**・手7・手9・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -79,6 +80,7 @@
 > 　あわせて **[DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) の内訳が動く**（影 7 箇所が 乙 → 甲。**丙 1 件という結論は変わらない**）。
 > 🟥 **DR-0045 は [DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) に第 5 の分類「丁（部分追従）」を足す**（17 種 60 箇所。**丙 1 件は変わらない**）。
 > 🟥 **DR-0049 は [DR-0034](DR-0034-touch-target-visual-32-hit-44.md) の「44px が成立している」を訂正する**（決定＝見た目と当たり判定を分けることは維持。成立は `default` と `lg` のみ）。
+> 🟥 **DR-0057 は [DR-0018](DR-0018-design-sync-takes-preview-html.md) を supersede する**（「story も React も渡らない」「フラグを載せる場所は無い」の 2 点が誤り。`group` と `thin` / `variantsIdentical` は維持）。**手6 の作業内容が書き換わった。**
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 
@@ -120,6 +122,7 @@
 | DR-0054 | 🟥 OBS 候補 | レビュー用の検体は「**単独の見た目**」と「**状態の重なり**」で作り分ける。模型（素の div）は後者を再現しない。あわせて **shadcn のリングは 1 本しか出ない**＝エラー中の入力欄はフォーカスしても見た目が変わらない |
 | DR-0055 | 🟥 候補 | PoC も DR / OBS 台帳を持つ。**finding に推論を混ぜる問題は同型で起きる**ので、§影響 の割り方をそのまま渡せる |
 | DR-0056 | 🟥 要確認 | PoC が shadcn を採るなら、**preset の選定と差し替え可能性は同じ論点**になる |
+| DR-0057 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」は好みの問題ではない。**Claude Design 連携の入力形式そのもの**。あわせて **packages/ui を「ライブラリとしてビルドできる形」にしておく**必要がある（converter がビルド済み `dist/` を要求する） |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
