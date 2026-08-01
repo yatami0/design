@@ -3,6 +3,9 @@
   "version": "0.2",
   "ignorePaths": ["node_modules", "pnpm-lock.yaml", ".next", "dist"],
   "words": [
+    "Consolas",
+    "Menlo",
+    "Segoe",
     "aisy",
     "appshell",
     "braid",

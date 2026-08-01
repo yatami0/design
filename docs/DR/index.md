@@ -28,6 +28,7 @@
 | [DR-0052](DR-0052-unreachable-spots-are-avoided-by-not-using-them.md) | ⭐ **差し替えが届かない箇所は「使わない」で回避する**（上書きを重ねない） | 手5 | decided ／ 🔺 **ADR 昇格候補** |
 | [DR-0055](DR-0055-finding-impact-splits-observation-from-inference.md) | DR の §影響 を「観測から直接言えること」と「推論（未検証）」に分ける（[OBS-0007](../OBS/OBS-0007_発見に推論を混ぜると後続が数え間違える.md) 昇格・3 例で 2 回ルール成立） | — | decided |
 | [DR-0056](DR-0056-preset-swap-is-its-own-step.md) | **preset 差し替えは独立した手（手8b）**。手7 の「作り直しの是非」とは別軸（[OBS-0006](../OBS/OBS-0006_preset差し替えは何の検証なのか.md) 昇格・未決 #6 を閉じた） | — | decided |
+| [DR-0058](DR-0058-app-only-font-never-reached-the-design-system.md) | ⭐ **本体だけが持っていたフォントを外し ① Tokens 層の既定へ戻す**（手6 D8）。`--font-sans` の自己参照を `layout.tsx` だけが埋めていた＝Storybook もプレビューも移送先も追従できない | 手6 | decided |
 
 ## 発見（finding）
 
@@ -81,6 +82,7 @@
 > 🟥 **DR-0045 は [DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) に第 5 の分類「丁（部分追従）」を足す**（17 種 60 箇所。**丙 1 件は変わらない**）。
 > 🟥 **DR-0049 は [DR-0034](DR-0034-touch-target-visual-32-hit-44.md) の「44px が成立している」を訂正する**（決定＝見た目と当たり判定を分けることは維持。成立は `default` と `lg` のみ）。
 > 🟥 **DR-0057 は [DR-0018](DR-0018-design-sync-takes-preview-html.md) を supersede する**（「story も React も渡らない」「フラグを載せる場所は無い」の 2 点が誤り。`group` と `thin` / `variantsIdentical` は維持）。**手6 の作業内容が書き換わった。**
+> 🟥 **DR-0058 は [DR-0026](DR-0026-two-css-pipelines-differ.md) の「判定は Storybook 側に固定する」の前提を 1 点訂正する**（色空間は等価だったが**フォントは等価ではなかった**）。あわせて **手5 の観点 D タイポの判定がセリフ体の上で行われていた**ことになる。
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 

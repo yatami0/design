@@ -25,3 +25,12 @@ storybook-static
 # === 手5 の計測器（tools/visual-probe.mjs）の出力 ===
 # スクリーンショットと実測値は成果物ではなく観測の副産物。値は実行記録に転記する。
 tmp/
+
+# === 手6 /design-sync（skill の storybook §2.2 が指定する集合）===
+# 残すのは .design-sync/ のうち下記に該当しないもの（config.json・NOTES.md・conventions.md・previews/・overrides/）。
+.design-sync/sb-reference/
+.design-sync/learnings/
+.design-sync/.cache/
+.design-sync/node_modules
+.ds-sync/
+ds-bundle/
