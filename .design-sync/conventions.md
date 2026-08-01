@@ -47,8 +47,20 @@ for spacing and type, and the semantic colour classes the components already car
 ## How components are organised, and what each one is
 
 Components are grouped by **role**, which is the folder name under `components/`:
-`action`, `datadisplay`, `layout`, `navigation`, plus the composite layers `patterns` and `templates`.
-Pick by role first.
+`action`, `communication`, `datadisplay`, `display`, `layout`, `navigation`, `overlay`, `selection`,
+`textinput`, plus the composite layers `patterns` and `templates`. Pick by role first.
+
+This system ships two tiers. Both are real, shipped components — reach for either rather than writing
+your own markup:
+
+- **Composed** — `AppShell`, `ListDetail`, `EmptyState`, `DataGrid`, `StatusPill`, `Button`, and the
+  layout primitives. These carry this system's own decisions and follow the prop rules above.
+- **Base** — `Card`, `Table`, `Badge`, `Label`, `Separator`, `Input`, `Checkbox`, `Select`, `Skeleton`,
+  `Empty`, `Pagination`, `Dialog`, `DropdownMenu`, `Popover`, `Sheet`, `Tooltip`. These are the
+  unmodified upstream primitives, exposed so that a screen never has to hand-build a surface, a form
+  control, or an overlay. They accept `className`; the composed tier's prop-only rule does not apply to
+  them. Compound ones ship their parts (`CardHeader`, `DialogContent`, `SelectItem`, `TableRow`, …) —
+  read `<Name>.prompt.md` for the exact shape.
 
 This system also classifies components by facet. Two facets change how you use a component:
 

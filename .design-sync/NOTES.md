@@ -16,9 +16,22 @@
     **`tsc` は `paths` を出力に書き戻さず、converter 側の ts-morph には `paths` が無い。**
     → `build:types` に組み込み済み。書き換え漏れがあれば `exit 1`。
 
-- **同期範囲は手6 D2 で決めた「① Tokens ＋ 製品層 ＋ ③ ＋ ④」＝ 14 部品。**
-  素材層 16 件（`② 素材層/…`）と ★ Review 6 件は `cfg.titleMap` の `null` で除外している。
-  🟥 **素材層を足すときは手3 D3=B（画面は製品層しか見ない）を境界の向こうでも守れるか先に判断すること。**
+- ~~**同期範囲は手6 D2 で決めた「① Tokens ＋ 製品層 ＋ ③ ＋ ④」＝ 14 部品。**~~
+  🆕 **手7 D5=A（2026-08-02）で素材層 16 件を足した。同期範囲は 30 部品。**
+  ★ Review 6 件と ① Tokens は引き続き `cfg.titleMap` の `null` で除外している。
+  🟥 **手3 D3=B（画面は製品層しか見ない）は、境界の向こうでは維持しないことにした。**
+  1 周目の実測で **`Card` が無いために design agent がカード面を手組みした**ため（実行記録 §手7 Q4）。
+  `src/index.ts` の import 元は**製品層の再輸出**であって `@/components/ui/**` ではない（窓口は 1 本のまま）。
+
+### 🟥 2 周目（手7）で見張るもの — 事前に書いた予測
+
+| # | 予測 | 外れたら何を意味するか |
+| --- | --- | --- |
+| 1 | **Overlay 5 件（`Dialog` / `DropdownMenu` / `Popover` / `Sheet` / `Tooltip`）で `[GRID_OVERFLOW]` が出る** | portal / fixed がセル外に出るため。**出たら `cfg.overrides.<Name>.cardMode: "single"` を足す**（`Sidebar` / `AppShell` と同じ）。🟥 **先回りでは足していない**——converter が検出するかどうかも観測点 |
+| 2 | **カードは 14 → 30 になる** | カード数を決めるのは export ではなく **story**。素材層 16 件には story が 1 本ずつある。**30 でなければ、その前提が誤り** |
+| 3 | ★ **`Box` + `bg-card rounded-md border` の手組みが消え、`Card` が使われる** | **語彙表（conventions header）は 1 文字も変えていない。**消えれば「宣言語彙を外れた原因は部品の欠落」が確定する。消えなければ**語彙表の書き方の問題** |
+| 4 | **`_adherence.oxlintrc.json` の規則が 16 部品ぶん増える** | 受け手は `.d.ts` から規則を作る（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)）。素材層は `className` を受けるので、**Layout 部品のような厳しい規則にはならないはず** |
+| 5 | 🟥 **`buildCmd` に `pnpm build:types` を入れた**（下記 Re-sync risk #1 への対処） | 入れる前は「型が古いまま緑で完走」しうる状態だった。**入れたことで risk #1 が塞がったかを確認する** |
 
 - **`① Tokens` の story は部品ではないので `titleMap: null` で除外した。**
   トークン自体は `_ds_bundle.css`（Storybook から採取したコンパイル済み CSS）経由で

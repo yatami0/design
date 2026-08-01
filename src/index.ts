@@ -41,6 +41,36 @@ export { AppShell } from '@/templates/AppShell';
 // ── Provider（部品ではなく「動くための前提条件」＝ DR-0037）──────
 export { AppProviders } from '@/components/providers';
 
+// ── ② 素材層 16 件（手7 D5=A で追加。手6 D2 の 2 周目）──────────
+//
+// 🟥 **1 周目は意図的に渡していなかった。**手3 D3=B（画面は製品層しか見ない）を
+//    境界の向こうでも守れるかを見るため。**その結果 Q4 に実害が出た**——
+//    `Card` が無いので design agent が `Box` + `bg-card rounded-md border` で
+//    カード面を手組みし、宣言語彙の外に出た 3 語がそこに集中した（実行記録 §手7 Q4）。
+// → **足りない部品を足すのが先**と判断した（ユーザー判断 2026-08-02・手7 D5 を B → A へ変更）。
+//
+// 🟥 **import 元は製品層の再輸出**（`@/components/<役割>/…`）であって
+//    `@/components/ui/**` ではない。窓口は 1 本に保つ（手3 D2=A・no-restricted-imports）。
+// 🟨 `export *` にしているのは、複合部品が部分（`DialogContent` 等）を必要とするため。
+//    **カードの数を決めるのは export ではなく story**（手6 で `Sidebar` の `export *` が
+//    カード 1 枚だったのと同じ）。素材層 16 件には story が 1 本ずつある。
+export * from '@/components/Communication/Badge';
+export * from '@/components/Communication/Empty';
+export * from '@/components/Communication/Skeleton';
+export * from '@/components/DataDisplay/Table';
+export * from '@/components/Display/Label';
+export * from '@/components/Display/Separator';
+export * from '@/components/Layout/Card';
+export * from '@/components/Navigation/Pagination';
+export * from '@/components/Overlay/Dialog';
+export * from '@/components/Overlay/DropdownMenu';
+export * from '@/components/Overlay/Popover';
+export * from '@/components/Overlay/Sheet';
+export * from '@/components/Overlay/Tooltip';
+export * from '@/components/Selection/Checkbox';
+export * from '@/components/Selection/Select';
+export * from '@/components/TextInput/Input';
+
 // ── 型（design agent が読む API 契約 `.d.ts` の材料）─────────────
 export type { BoxProps } from '@/components/Layout/Box';
 export type { ContainerProps } from '@/components/Layout/Container';
