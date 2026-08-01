@@ -26,6 +26,8 @@
 | [DR-0037](DR-0037-providers-belong-to-product-layer.md) | Provider は**製品層が持つ**（部品ではなく「動くための前提条件」だから） | 手3 | decided |
 | [DR-0051](DR-0051-storybook-organized-by-layer-with-viewpoint-cards.md) | ⭐ **Storybook を層で並べ、実測値を観点カードとして story に載せる**（認識合わせの仕掛け） | 手5 | decided |
 | [DR-0052](DR-0052-unreachable-spots-are-avoided-by-not-using-them.md) | ⭐ **差し替えが届かない箇所は「使わない」で回避する**（上書きを重ねない） | 手5 | decided ／ 🔺 **ADR 昇格候補** |
+| [DR-0055](DR-0055-finding-impact-splits-observation-from-inference.md) | DR の §影響 を「観測から直接言えること」と「推論（未検証）」に分ける（[OBS-0007](../OBS/OBS-0007_発見に推論を混ぜると後続が数え間違える.md) 昇格・3 例で 2 回ルール成立） | — | decided |
+| [DR-0056](DR-0056-preset-swap-is-its-own-step.md) | **preset 差し替えは独立した手（手8b）**。手7 の「作り直しの是非」とは別軸（[OBS-0006](../OBS/OBS-0006_preset差し替えは何の検証なのか.md) 昇格・未決 #6 を閉じた） | — | decided |
 
 ## 発見（finding）
 
@@ -116,6 +118,8 @@
 | DR-0050 | 🟥 OBS 候補 | **写し方の誤りは部品カタログでは検出できない。**面の構成はテンプレートでしか測れない |
 | DR-0053 | 🟥 OBS 候補 | レビュー観点を設計するときは「**誰が答えられるか**」を先に決める。目視と機械を混ぜると止まる |
 | DR-0054 | 🟥 OBS 候補 | レビュー用の検体は「**単独の見た目**」と「**状態の重なり**」で作り分ける。模型（素の div）は後者を再現しない。あわせて **shadcn のリングは 1 本しか出ない**＝エラー中の入力欄はフォーカスしても見た目が変わらない |
+| DR-0055 | 🟥 候補 | PoC も DR / OBS 台帳を持つ。**finding に推論を混ぜる問題は同型で起きる**ので、§影響 の割り方をそのまま渡せる |
+| DR-0056 | 🟥 要確認 | PoC が shadcn を採るなら、**preset の選定と差し替え可能性は同じ論点**になる |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
