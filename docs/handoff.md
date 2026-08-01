@@ -3,20 +3,20 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-01（**手5 完了・`main` へマージ済み**。**手6 の手順書を起草**。Q1〜Q8 に答えを出し、OBS の棚卸しを初回実施した）
+最終更新: 2026-08-01（**手6 完了**。Claude Design へ 14 部品を同期し、Q1〜Q8 に答えを出した）
 
 ---
 
 ## 現在地
 
-- **手0〜手5 が完了**（すべて `main` へ `--no-ff` マージ済み）。
+- **手0〜手6 が完了**（手5 までは `main` へ `--no-ff` マージ済み）。
   ✅ **手5 のマージも済んだ**——`e88311a`（`step/h5-token-swap` を `--no-ff`・2026-08-01）。`main` と作業ツリーは clean。
-  ✅ **手6 の手順書を起草した**（ブランチ `step/h6-preview-html`・`status: planned`）。**初稿は前提が崩れて書き直した**（[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md)）。
-  🟥 **次の一手は手6 §2 の D1〜D6 を決着させること**（下記「次にやること」）。**D1（ライブラリビルドが無い）が最大の障害。**
+  ✅ **手6 も完了した**——**Claude Design へ 14 部品を同期済み**（`status: done`・完了条件 10 件を検証済み）。
+  🟥 **ブランチ `step/h6-preview-html` が `main` へ未マージ。次の一手はマージ**（下記「次にやること」）。
 - ★ **手5 は Q1〜Q8 すべてに答えが出て、完了条件 10 件も検証済み**（[実行記録 §手5 の締め](実行記録.md)）。
-- **決定 22 件・発見 35 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜**0057**）。
+- **決定 23 件・発見 35 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜**0058**）。
   🟥 **[DR-0018](DR/DR-0018-design-sync-takes-preview-html.md) を superseded にした**——[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md) が訂正（**手6 の作業内容が書き換わった**）。
-- 🟨 **OBS は `open` 4 件**（[docs/OBS/](OBS/index.md)）。**棚卸しを初回実施し、2 件を DR へ昇格させた**（OBS-0006→DR-0056 / OBS-0007→DR-0055）。
+- 🟨 **OBS は `open` 5 件**（[docs/OBS/](OBS/index.md)）。🆕 **OBS-0010 を起票**（フォント修正で手5 の観点 D をやり直すか）。**棚卸しを初回実施し、2 件を DR へ昇格させた**（OBS-0006→DR-0056 / OBS-0007→DR-0055）。
   🟥 **残る 4 件のうち [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) だけが他をブロックしている**（OBS-0004 の指摘 8 が学習待ち）。
 
 ### 手5 でここまでに分かったこと（次の手が前提にすること）
@@ -89,7 +89,7 @@
 | 手3 | ② Components 層（**素材層と製品層の境界**・Layout 自作テンプレ・枠を閉じる） | [手3](手順/手3_Components層と製品層の分離.md) | ✅ **done** |
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | [手4](手順/手4_PatternsTemplates層と一覧.md) | ✅ **done** |
 | 手5 | ★ トークン差し替え実験 | [手5](手順/手5_トークン差し替え実験.md) | ✅ **done**（2026-08-01・`main` へマージ済み `e88311a`） |
-| 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | 🟨 **in-progress**（**同期は完了**。14 部品アップロード済み・Q1/Q2/Q5/Q6/Q7 に答え。残るは Q3/Q4/Q8 の締めと完了条件の照合） |
+| 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | ✅ **done**（2026-08-01）。🟥 **`main` へ未マージ** |
 | 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | 未作成 | ⬜ |
 | 手8 | 出力は lint / validate.mjs を通るか | 未作成 | ⬜ |
 | **手8b** | 🆕 **preset 差し替え**（値では解けない「形」の衝突を、部品の作りを選び直して解けるか） | 未作成 | ⬜ 🟨 **「やらない」も結論**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)） |
@@ -106,16 +106,27 @@
 pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && pnpm build-storybook
 ```
 
-| ゲート | 手3 完了時 | 手4 完了時 | **手5 完了時（2026-08-01）** | 備考 |
+| ゲート | 手4 完了時 | 手5 完了時 | **手6 完了時（2026-08-01）** | 備考 |
 |---|---|---|---|---|
 | `pnpm typecheck` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | 🟥 **借金で緑になった。**手3 D5=A で `exactOptionalPropertyTypes` を false にしただけ（DR-0014） |
-| `pnpm lint` | 🟥 赤 33 | 🟥 error 33 / warning 1 | 🟥 **error 33 ／ warning 1**（ゼロ増） | **error はゼロ増**（全部素材層）。warning は TanStack Table 由来（React Compiler が DataGrid の最適化をスキップ） |
+| `pnpm lint` | 🟥 error 33 / warning 1 | 🟥 error 33 / warning 1 | 🟥 **error 33 ／ warning 1**（ゼロ増） | **error はゼロ増**（全部素材層）。warning は TanStack Table 由来。🟥 **手6 で一度 14,047 まで跳ねた**（下記） |
 | `pnpm build` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | typecheck と同一原因＝**同じ借金** |
-| `pnpm format:check` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | shadcn 出力は `.prettierignore`（DR-0007） |
-| `pnpm spell` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | 第 3 セッションで固有名詞 6 語を追加（下記の陳腐化の件）。第 4 セッションで `oklab` を追加（DR-0041 の実測値が赤を出した） |
-| `pnpm build-storybook` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | story **29 → 37 本**（③④ 層 2 + Review 6 を追加）。🟥 **緑は描画を保証しない**（DR-0048） |
+| `pnpm format:check` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | shadcn 出力と手6 の生成物は `.prettierignore`（DR-0007） |
+| `pnpm spell` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | 手6 で固有名詞 3 語（`Menlo` / `Consolas` / `Segoe`）＋ 生成識別子 `datadisplay` を追加 |
+| `pnpm build-storybook` | 🟦 緑 | 🟦 緑 | 🟦 **緑** | story **37 本**（手6 では増えていない）。🟥 **緑は描画を保証しない**（DR-0048） |
 
-**手2〜手5 とも新しい赤はゼロ。**
+**手2〜手6 とも、最終的な新しい赤はゼロ。**
+
+> 🟥 **手6 で射程が漏れて lint が error 33 → 14,047 になった。**内訳は生成物だけ——
+> `.design-sync/sb-reference` 12,739 ／ `ds-bundle` 1,307 ／ `.design-sync/.cache` 14 ／ `.ds-sync` 6。
+> **ソースは 34 件のままだった**（`src/components` 31 + `src/hooks` 3）。
+> → `eslint.config.mjs` / `.prettierignore` / `.gitignore` に生成物 4 集合を追加して復帰。
+> **[DR-0040](DR/DR-0040-frame-leaks-when-a-layer-is-added.md)（層を足すたびに射程が漏れる）の 3 例目**（1 例目は手2b の `.storybook/**`、2 例目は手4 の ③ 層）。
+> 🟦 `.design-sync/` は丸ごと外さず**生成物だけ**を外した（`previews/` と config/NOTES は検査対象に残す）。
+
+> 🆕 **手6 で「対象 0 件で緑」が 2 例出た（通算 11・12 例目）。**どちらも converter が
+> **`exit 0` で `✓ wrote ./ds-bundle` まで出しながら `components: 0`** だった
+> （① `dist/types` が無い ② `.d.ts` の `@/` が解決できない）。**終了コードでは分からず、ログの数字で気づいた。**
 
 > 🟨 **第 5 セッションで `pnpm spell` に新しい赤が 2 度出たが、どちらも辞書を触らず消した。**
 > ① 私がコメントに書いた綴り（story id の打ち間違いを本文にそのまま書いた）② DR 本文の同じ綴り。
@@ -258,11 +269,7 @@ Storybook 関連 6 件（手2b）も**厳密ピン**。カタログは `pnpm sto
 - `src/app/tokens.css` — 語彙 15 → 21 ＋ `--card-spacing` の向け替え 2 規則
 - story に**層タグ**（`vendor` 16 ／ `wrapped` 2 ／ `own` 7）— 手5 で由来を切り分けるため
 
-## 次にやること
-
-**手5 は `main` へマージ済み（`e88311a`）。作業ツリー clean。手の途中で止まっているものは無い。**
-
-### 🟦 0. 手6 の同期は完了した（2026-08-01）
+## 手6 の成果（次の手が前提にすること）
 
 **Claude Design プロジェクト `design — UI検証`**（`3acbb737-85fe-4098-95f4-c99070168ba1`）に
 **14 部品**が入った。URL: <https://claude.ai/design/p/3acbb737-85fe-4098-95f4-c99070168ba1>
@@ -274,9 +281,9 @@ Storybook 関連 6 件（手2b）も**厳密ピン**。カタログは `pnpm sto
 | **Q5** 役割 9 カテゴリは `group` に載るか | 🟦 **そのまま載った**（`action` / `datadisplay` / `layout` / `navigation` / `patterns` / `templates`）。[DR-0051](DR/DR-0051-storybook-organized-by-layer-with-viewpoint-cards.md) の棚の組み替えが境界の向こうで効いた |
 | **Q6** 素材層を触るか | 🟦 **0 行（7 回連続）** |
 | **Q7** `thin` / `variantsIdentical` に弾かれるか | 🟦 **ゼロ**（total 14 / bad 0 / thin 0 / variantsIdentical 0）。**story 1 本の Layout プリミティブも弾かれなかった**＝手順書の懸念は外れ |
-| **Q3** tmp-admin の値は載るか | 🟨 **載った**（`_ds_bundle.css` 経由・サイドバー紺やステータス色が両パネルで一致）。🟥 **ただし `tokens/` は空**——converter の `tokens/` は「別パッケージのトークン」用で、本 repo は CSS に焼き込まれる形 |
+| **Q3** tmp-admin の値は載るか | 🟦 **載った。赤テストで確定**——`#003a63` / `#005fa2` / `#009fe8` / `#34c759` / `#ff3b30` / `#ff9500` が `_ds_bundle.css` に計 10 箇所。🟥 **ただし `tokens/` は空**（converter の `tokens/` は別パッケージ用で、本 repo は CSS に焼き込まれる形） |
 | **Q4** フラグ 5 種は書けるか | 🟦 **書けた**（conventions header）。🟥 **効くかどうかは手7** |
-| **Q8** 思想への指摘 9 件目 | 🟥 **未判定**（手6 の締めで整理する） |
+| **Q8** 思想への指摘 9 件目 | 🟥 **yes。9 件目**——[分類の軸が 3 本あるのに、渡し先の器は 1 本しか持てない](共通コンポーネント思想への指摘.md)。層と役割は `group` 1 本に潰れ、フラグは散文へ手で翻訳した |
 
 🟥 **conventions header の validate 工程が実装の穴を 1 件掘り当てた**——
 **`useListDetail` を `src/index.ts` から export しておらず、`ListDetail` が組み立て不能だった。**
@@ -285,14 +292,9 @@ Storybook では story 内で hook を直接呼べるので露見せず、**機�
 🟥 **ゲートの射程がまた漏れた（[DR-0040](DR/DR-0040-frame-leaks-when-a-layer-is-added.md) の 3 例目）。**
 生成物を lint が拾って **error 33 → 14,047**（ソースは 34 のまま）。`eslint` / `prettier` / `gitignore` に 4 集合を追加。
 
-### 🟥 1. 手6 の締め（残り）
+✅ **手6 は完了した**（完了条件 10 件とも**チェックを付ける前に検証**）。
 
-- [ ] **Q8** の判定と [思想への指摘](共通コンポーネント思想への指摘.md) の更新
-- [ ] 🟨 **手5 の観点 D タイポを再確認するか決める**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)。**セリフ体の上で判定していた**）
-- [ ] 手順書 §6 の完了条件 10 件を照合し、`status: done` にする
-- [ ] `main` へ `--no-ff` マージを**提案**する（実行は人）
-
-### 2. 手6 §2 の D1〜D6（**すべて決着済み**・記録用）
+#### 手6 §2 の判断 D1〜D8（すべて決着済み・記録用）
 
 手順書 → [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md)（ブランチ `step/h6-preview-html`）。
 
@@ -311,7 +313,7 @@ Storybook では story 内で hook を直接呼べるので露見せず、**機�
 | **D7** | 登録先と外向き操作の承認 | ✅ **ユーザー判断**（Claude Design なら問題なし） | 🟦 公式 skill が first sync で必ず新規プロジェクトを作るので既存資産は無傷 |
 | **D8** | 本体と Storybook のフォント差 | **D**（ユーザー判断） | 🟥 **合わせる先が逆だった**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)） |
 
-### ✅ H6-01 は通った（2026-08-01・[実行記録 §手6](実行記録.md)）
+#### H6-01 — 射程と認証（2026-08-01）
 
 ```
 DesignSync({method: 'list_projects'}) → {"projects":[]}
@@ -328,19 +330,50 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 **skill を起動しないとそのパスが手に入らない**＝手で写して走らせる案（D6=B）は事実上とれない。
 → 🟥 **手6 の実行は「ユーザーが `/design-sync` と打つ」から始まる。**
 
-### 環境の穴（2026-08-01 実測）
+#### 環境の穴（2026-08-01 実測）
 
 | 状態 | 内容 |
 | --- | --- |
 | 🟦 **塞がった** | **`trace` plugin が使えるようになった**（`trace:dr` / `trace:obs` / `trace:handoff` / `trace:commit` / `trace:adr`）。🟨 ただし **DR-0057 と手6 の手順書は plugin が無い間に書いた**ので、語彙は手で `.claude/trace.config.mjs` と突き合わせただけ——**機械検査は通していない** |
 | 🟨 **残る** | **chromium バイナリが未導入**（`playwright` 1.58.0 は devDependency にあるがブラウザは別）。storybook shape では compare ループが必須なので、H6-06 の前に要る |
 
-### 2. 🔺 ADR 起案の時機（未決 #20）
+## 次にやること
+
+✅ **手6 は完了した**（完了条件 10 件とも**チェックを付ける前に検証**）。
+**ブランチ `step/h6-preview-html` は作業ツリー clean。🟥 `main` へは未マージ。**
+
+### 🟥 1. `main` へ `--no-ff` マージする（**人が実行する**）
+
+**マージは提案までが Claude の仕事**（stateLedger の規律）。
+
+```bash
+git switch main && git merge --no-ff step/h6-preview-html
+```
+
+### 2. 手7 の手順書を書く
+
+**★ この検証の核心その 2。**「Claude Design は登録した共通部品を**使う**のか**作り直す**のか」。
+手6 で**渡す側は全部揃った**ので、手7 は純粋に受け手の挙動を測る手になる。
+
+| 手6 が用意した前提 | 手7 で効くこと |
+| --- | --- |
+| 🟦 実コンポーネント 14 件が `window.Design.*` で描画される | **「使う」を選べる状態は成立している。**作り直したら受け手側の判断 |
+| 🟦 `.d.ts` と `.prompt.md` が部品ごとに載っている | API を間違えたら**渡し方**ではなく**受け手**の問題 |
+| 🟦 conventions header が system prompt に inline される | **フラグ 5 種を散文で渡した。効くかどうかがここで分かる**（未決 #10 の後半） |
+| 🟥 層と役割が `group` 1 本に潰れている（[指摘 9](共通コンポーネント思想への指摘.md)） | `layout` と `patterns` が兄弟に見える。**選択を誤ったらこれが原因候補** |
+| 🟥 素材層 16 件は渡していない | 「足りない」と言われたら **2 周目で素材層を足す**判断（手6 D2 の 2 周目） |
+
+### 3. 🟨 [OBS-0010](OBS/OBS-0010_フォント修正で手5の目視判定をやり直すか.md)（数分で解ける）
+
+**手5 の観点 D タイポは、セリフ体の上で判定していた**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)）。
+`pnpm storybook` で `★ Review/D タイポ` を開き直すだけ。**揺れるのは 6 観点中 D だけ**（他は書体に依存しない）。
+
+### 4. 🔺 ADR 起案の時機（未決 #20）
 
 昇格候補 **4 件**: [DR-0032](DR/DR-0032-layout-primitives-take-props-not-classname.md) / [DR-0033](DR/DR-0033-step5-criteria-differ-per-layer.md) / [DR-0034](DR/DR-0034-touch-target-visual-32-hit-44.md) / [DR-0052](DR/DR-0052-unreachable-spots-are-avoided-by-not-using-them.md)。
 **起案はまだしていない**（判定と起案を分ける規律）。🟨 **4 件溜まったので起案の時機かもしれない。**
 
-### 3. 🟥 [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) の学習（他をブロックしている唯一の観点）
+### 5. 🟥 [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) の学習（他をブロックしている観点）
 
 不透明度と状態面の**概念**が分かると、[思想への指摘 8](共通コンポーネント思想への指摘.md)（合成をトークンの内側でやるか外側でやるか）が判断できるようになる。
 **手に紐づかないので、いつやってもよい。**
@@ -377,8 +410,8 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 | 21 | **`Box` への逃げ回数を監視する。**手3・手4・**手5** とも **0 回**。増え続けるなら D11 の枠に穴がある | 毎手 |
 | 22 | 🆕 **Sidebar の Cmd/Ctrl+B 占有が別用途と衝突するか。**衝突したら D6 を A → B（state を切り出す）へ変える **1 回目の証明**になる | 手4（DR-0035） |
 | ~~23~~ | ✅ **閉じた（[DR-0049](DR/DR-0049-hit-area-reaches-44px-only-at-default-size.md)・2026-07-27）。**Playwright の `hasTouch` で実測した結果、**4 サイズ中 2 つが 44px 未達**（xs 36px / sm 40px / default 44px / lg 48px）。拡張量が全サイズ一律のため。🟥 **対処は [OBS-0008](OBS/OBS-0008_当たり判定44pxをどう扱うか.md) に積んだ** |
-| 24 | 🆕 **[DR-0055](DR/DR-0055-finding-impact-splits-observation-from-inference.md) の効果を検算する。**§影響 を観測 / 推論に割ったが、**節を割れば混入が減るかは未検証**。🟥 **4 例目が出たら「器では解けなかった」ことになり、手順書側に工程を足す話へ移る**（棚卸しで却下ではなく保留にした案） | 毎手（DR を書くたび） |
-| 25 | 🆕 **思想への指摘の偏りは「規定の細かさ」か「使い込みの量」か。**本人回答は「両方 / まだ言えない」（2026-08-01）。🟨 **判定材料は数えるだけで取れる**——手6 以降で ① / ③ 層への指摘が出れば**使い込みの量**、出なければ**規定の細かさ**に寄る | 次の `/obs review`（手6 完了後） |
+| 24 | **[DR-0055](DR/DR-0055-finding-impact-splits-observation-from-inference.md) の効果を検算する。**🆕 **手6 で DR-0057・0058 の 2 本が §影響 を割った形で書けた（4・5 例目）。**§影響 を観測 / 推論に割ったが、**節を割れば混入が減るかは未検証**。🟥 **4 例目が出たら「器では解けなかった」ことになり、手順書側に工程を足す話へ移る**（棚卸しで却下ではなく保留にした案） | 毎手（DR を書くたび） |
+| 25 | **思想への指摘の偏りは「規定の細かさ」か「使い込みの量」か。**本人回答は「両方 / まだ言えない」（2026-08-01）。🆕 **材料が 1 つ出た**——手4（③ 層）・手5（① 層）・**手6（分類を初めて外へ渡した）**と **3 手連続で「初めて使った面から 1 件ずつ」**出ている。🟨 **規定が粗い ① ③ からも同じ率で出ている**ので「使い込みの量」に寄る観測。🟥 **n=3 で率は数えていない**（正規化は手9） | 次の `/obs review` |
 
 ## セッション申し送り
 
@@ -653,3 +686,40 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 - 🟥 **次セッションの最初の一手は `main` へ `--no-ff` マージすること（人が実行）。**
   ブランチ `step/h5-token-swap` が **`main` へ未マージ**、作業ツリー clean。
   → ✅ **実行済み**（`e88311a`・2026-08-01 16:18）。本節は当時の記述のまま残す。現在地は冒頭の「現在地」が正。
+
+### 2026-08-01（第 6 セッション）— 手6 を通し、Claude Design へ 14 部品を同期した
+
+- ★ **一番の収穫は「ツールの仕様は読んだが、それを使う skill を読んでいなかった」。**
+  手6 の手順書を「プレビュー HTML を自前で作る手」として書き上げた直後、
+  ユーザーの **「Claude 公式が提供しているコマンドがあったはず。それは Playwright を使う訳ではないと思う」**
+  という指摘で一次情報を取りに行き、**前提が丸ごと崩れた**（[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md)）。
+  `/design-sync` skill は `~/.claude/skills/` に無く**バイナリに埋め込まれていた**ので、`strings` で抽出して全文を読んだ。
+  🟥 **[DR-0018](DR/DR-0018-design-sync-takes-preview-html.md) を superseded にした**——「React は渡らない」「フラグを載せる場所は無い」の 2 点が誤り。
+  → **一次情報を実測で置き換える規律の 6 例目。新しい抜け方だった。**
+- ★ **Q1 の答えは「ライブラリビルドは不要ではなく、宣言だけ必要」。**
+  `[NO_DIST]` から **3 段**（`cfg.entry` ／ `dist/types` ／ `.d.ts` の `@/` 相対化）でようやく 14/14。
+  🟥 **後ろ 2 段はどちらも「対象 0 件で緑」**（通算 11・12 例目）。`exit 0` で `✓ wrote` まで出るのに `components: 0`。
+  **気づけたのは終了コードではなくログの数字を読んだから。**
+- ★ **compare ループの最初の検体で、本物の欠陥を掘り当てた**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)）。
+  両パネルともセリフ体で「一致」していたが、skill が **「両側が同じフォールバックに落ちることを合格にするな」**と
+  名指ししていたので追った。`--font-sans` が自己参照で、埋めていたのは `layout.tsx` の `next/font` だけだった。
+  🟥 **`tmp-admin` は `--font-sans` を定義していない**——Geist はデザインシステムの語彙ではなく**アプリ 1 枚の選択**。
+  🟥 **6 本の機械ゲートは一度も検出していない**（「対象 0 件で緑」の 10 例目）。
+  🟨 **副作用: 手5 の観点 D タイポはセリフ体の上で判定していた** → [OBS-0010](OBS/OBS-0010_フォント修正で手5の目視判定をやり直すか.md)。
+- ★ **conventions header の validate 工程が実装の穴を 1 件掘り当てた。**
+  skill が「**存在しない名前を書くのは書かないより悪い**」として必須にしている突き合わせを回すと **3 件が誤り**で、
+  うち 1 件は **`useListDetail` の export 漏れ＝ `ListDetail` が組み立て不能**だった。
+  🟥 **Storybook では story 内で hook を直接呼べるので露見せず、機械ゲート 6 本も通っていた。**
+- 🟦 **手2b と DR-0051 の投資が、想定と違う形で効いた。**
+  「開発カタログ」として入れた Storybook が**連携の入力形式そのもの**で、
+  層×役割に組み替えた棚の**役割側がそのまま `group` になった**（Q5）。
+- 🟥 **思想への指摘が 9 件目**（Q8）——[分類の軸が 3 本あるのに、渡し先の器は 1 本しか持てない](共通コンポーネント思想への指摘.md)。
+  層と役割は `group` 1 本に潰れ（4 グループは役割・2 グループは層）、フラグは**散文へ手で翻訳**した。
+  🟨 **未決 #25 に材料が 1 つ増えた**——手4（③）・手5（①）・手6（分類の外出し）と**3 手連続で「初めて使った面から 1 件」**。
+- 🟥 **ゲートの射程が 3 例目の漏れ**（[DR-0040](DR/DR-0040-frame-leaks-when-a-layer-is-added.md)）。生成物で lint が 14,047 件に。
+  **`.design-sync/` を丸ごと外さず生成物だけを外した**——`previews/` は自分で書いて commit するファイルなので検査対象に残す。
+- 🟦 **環境の穴が 1 つ塞がった。**`trace` plugin が使えるようになり、`docs-meta --check` を初めて回せた（**ERROR 0**）。
+  plugin 不在の間に手で語彙を突き合わせた DR-0057 と手6 の手順書が、機械でも通ることを確認した。
+- **台帳の現在地**: DR **58 件**（決定 23 / 発見 35）・OBS **10 件**（`open` 5・`promoted` 2）・手順書 **7 本**・story 37 本。
+- 🟥 **次セッションの最初の一手は `main` へ `--no-ff` マージすること（人が実行）。**
+  ブランチ `step/h6-preview-html` が **`main` へ未マージ**、作業ツリー clean。

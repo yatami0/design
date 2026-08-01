@@ -2,10 +2,10 @@
 type: procedure
 step: 手6
 title: '/design-sync で Claude Design へ同期する — 3 層とフラグは境界を越えるか'
-status: in-progress # planned | in-progress | done | blocked
+status: done # planned | in-progress | done | blocked
 date: 2026-08-01
 updated_at: 2026-08-01
-next_action: 'H6-01 は通った（認証 OK・プロジェクト 0 件＝新規作成になる）。次は §2 の D1〜D6 の決着。🟥 D1（ライブラリビルドが無い）が最優先——ここが通らないと converter が走らない。🟥 `/design-sync` は人が打つスラッシュコマンド（D6）'
+next_action: '完了（2026-08-01）。Q1〜Q8 すべてに答えが出て、14 部品を Claude Design へ同期した。次は ① `main` へ `--no-ff` マージの提案 ② 手7 の手順書。🟥 持ち越し: OBS-0010（フォント修正で手5 の観点 D をやり直すか）'
 ---
 
 # 手6 — `/design-sync` で Claude Design へ同期する
@@ -429,16 +429,22 @@ flowchart TD
 
 ## 6. 完了条件
 
-- [ ] 機械ゲート 6 本が**ベースラインと一致**。**新しい赤があれば内訳と扱いが実行記録に書かれていること**
-- [ ] §0 の Q1〜Q8 すべてに答え、または「答えが出なかった理由」が出ている
-- [ ] §2 の D1〜D6 がすべて決着し、根拠が書かれている
-- [ ] 🟥 **`src/components/ui/**` の diff が 0 行**（Q6・7 回連続）
-- [ ] `package-validate.mjs` が exit 0 で、compare の判定が全件出ている（`skip` は NOTES.md に理由つき）
-- [ ] 🟥 **tmp-admin の実値を `ds-bundle/tokens/` と `styles.css` に grep して 0 件でない**（Q3。緑を信用しない）
-- [ ] 🟥 **conventions header に書いた語彙を、生成された `README.md` に grep して確認済み**（Q4）
-- [ ] [実行記録.md](../実行記録.md) に §手6 の節が追加されている
-- [ ] [handoff.md](../handoff.md) の現在地・進捗ボード・ベースライン表・次にやることが更新されている
-- [ ] コミット済み（`<type>(H6): 要約 [手6]`）
+> ✅ **10 件すべて検証済み（2026-08-01）。**チェックを付ける前に実測した。
+
+- [x] 機械ゲート 6 本が**ベースラインと一致**（typecheck 緑 / lint error 33・warning 1 / build 緑 / format 緑 / spell 緑 / build-storybook 緑）。
+      🟥 **一度 error 33 → 14,047 になった**——生成物が lint の射程に入っていた。内訳と対処は実行記録に記載
+- [x] §0 の Q1〜Q8 すべてに答えが出ている（Q3 は「載ったが `tokens/` は空」という形の答え）
+- [x] §2 の D1〜D8 がすべて決着し、根拠が書かれている（D8 は実行中に追記した 4 例目）
+- [x] 🟥 **`src/components/ui/**` の diff が 0 行**（Q6・**7 回連続**）— `git diff --stat main -- src/components/ui/` が空
+- [x] `package-validate.mjs` が exit 0。compare は **14/14・全 20 story が `match`**（`skip` も `close` もゼロ）
+- [x] 🟥 **tmp-admin の実値が出荷 CSS に届いている**（Q3 の赤テスト）—
+      `#003a63` / `#005fa2` / `#009fe8` / `#34c759` / `#ff3b30` / `#ff9500` が `_ds_bundle.css` に **計 10 箇所**。
+      🟨 `styles.css` は `@import` の殻なので 0 件が正常。🟥 **`tokens/` は空**（converter の `tokens/` は別パッケージ用）
+- [x] 🟥 **conventions header の語彙を成果物に grep 済み**（Q4）— **class 20 / component 14 / bundle export 4 の全件実在**。
+      🟥 **この工程が実装の穴を 1 件掘り当てた**（`useListDetail` の export 漏れ）
+- [x] [実行記録.md](../実行記録.md) に §手6 の節がある
+- [x] [handoff.md](../handoff.md) の現在地・進捗ボード・次にやることを更新した
+- [x] コミット済み（`docs(H6)` 2 件 ＋ `feat(H6)` 2 件 ＋ 本コミット）
 
 ---
 
