@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/styles.css">
+<script src="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; min-height: 100%; }
+</style>
+</helmet>
+<x-import component-from-global-scope="Design.AppProviders" hint-size="100%,100%">
+  <x-import component-from-global-scope="Design.AppShell" brand="{{ brand }}" nav="{{ nav }}" hint-size="100%,100%">
+    <x-import component-from-global-scope="Design.Section" heading="チケット一覧" gap="md" hint-size="100%,auto">
+
+      <x-import component-from-global-scope="Design.Inline" justify="between" align="center" hint-size="100%,40px">
+        <span class="text-label text-muted-foreground">{{ countLabel }}</span>
+        <x-import component-from-global-scope="Design.Button" hint-size="auto,40px">新規チケット</x-import>
+      </x-import>
+
+      <x-import component-from-global-scope="Design.Box" inset="md" class-name="bg-card rounded-md border" hint-size="100%,auto">
+        <x-import component-from-global-scope="Design.Stack" gap="sm" hint-size="100%,auto">
+
+          <x-import component-from-global-scope="Design.Inline" gap="sm" align="center" wrap="{{ true }}" hint-size="100%,auto">
+            <span class="text-label text-muted-foreground">ステータス</span>
+            <sc-for list="{{ statusChips }}" as="chip" hint-placeholder-count="5">
+              <x-import component-from-global-scope="Design.Button" variant="{{ chip.variant }}" size="sm" onClick="{{ chip.onClick }}" hint-size="auto,36px">{{ chip.label }}</x-import>
+            </sc-for>
+          </x-import>
+
+          <x-import component-from-global-scope="Design.Inline" gap="sm" align="center" wrap="{{ true }}" hint-size="100%,auto">
+            <span class="text-label text-muted-foreground">担当者</span>
+            <sc-for list="{{ assigneeChips }}" as="chip" hint-placeholder-count="5">
+              <x-import component-from-global-scope="Design.Button" variant="{{ chip.variant }}" size="sm" onClick="{{ chip.onClick }}" hint-size="auto,36px">{{ chip.label }}</x-import>
+            </sc-for>
+          </x-import>
+
+        </x-import>
+      </x-import>
+
+      <x-import component-from-global-scope="Design.DataGrid" data="{{ rows }}" columns="{{ columns }}" empty="{{ emptyState }}" hint-size="100%,420px"></x-import>
+
+    </x-import>
+  </x-import>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;brand&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Redmine&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;emptyPreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;表示確認&quot;}}">
+const ISSUES = [
+  { id: 'REDM-1042', subject: 'ログイン後にダッシュボードが白紙になる', status: '新規', priority: '緊急', assignee: '佐藤 健', updated: '2026/08/01' },
+  { id: 'REDM-1041', subject: 'チケット一覧の並び替えが保存されない', status: '進行中', priority: '高', assignee: '田中 実', updated: '2026/08/01' },
+  { id: 'REDM-1038', subject: 'CSV エクスポートの文字化け', status: '進行中', priority: '通常', assignee: '鈴木 花子', updated: '2026/07/31' },
+  { id: 'REDM-1035', subject: 'ガントチャートの祝日表示を追加', status: '新規', priority: '低', assignee: '未割り当て', updated: '2026/07/30' },
+  { id: 'REDM-1031', subject: 'メール通知が二重に送信される', status: '解決', priority: '高', assignee: '田中 実', updated: '2026/07/30' },
+  { id: 'REDM-1028', subject: '添付ファイルのサイズ上限を 50MB に', status: '却下', priority: '通常', assignee: '鈴木 花子', updated: '2026/07/29' },
+  { id: 'REDM-1024', subject: 'プロジェクト切替時にフィルタが残る', status: '進行中', priority: '通常', assignee: '佐藤 健', updated: '2026/07/29' },
+  { id: 'REDM-1019', subject: 'ワークフロー設定画面の権限チェック漏れ', status: '新規', priority: '緊急', assignee: '未割り当て', updated: '2026/07/28' },
+  { id: 'REDM-1015', subject: 'API のレスポンスが 5 秒を超える', status: '解決', priority: '高', assignee: '佐藤 健', updated: '2026/07/27' },
+  { id: 'REDM-1009', subject: 'リポジトリ連携のドキュメント更新', status: '解決', priority: '低', assignee: '鈴木 花子', updated: '2026/07/26' },
+  { id: 'REDM-1004', subject: 'カスタムフィールドの入力検証を強化', status: '却下', priority: '低', assignee: '田中 実', updated: '2026/07/24' },
+];
+
+const STATUSES = ['新規', '進行中', '解決', '却下'];
+const TONE = { '新規': 'neutral', '進行中': 'warning', '解決': 'success', '却下': 'danger' };
+
+class Component extends DCLogic {
+  state = { status: 'all', assignee: 'all' };
+
+  filtered() {
+    if (this.props.emptyPreview) return [];
+    const { status, assignee } = this.state;
+    return ISSUES.filter(
+      (i) => (status === 'all' || i.status === status) && (assignee === 'all' || i.assignee === assignee)
+    );
+  }
+
+  chips(key, values) {
+    const cur = this.state[key];
+    return [{ label: 'すべて', value: 'all' }, ...values.map((v) => ({ label: v, value: v }))].map((o) => ({
+      label: o.label,
+      variant: cur === o.value ? 'default' : 'outline',
+      onClick: () => this.setState({ [key]: o.value }),
+    }));
+  }
+
+  renderVals() {
+    const D = window.Design || {};
+    const h = React.createElement;
+    const rows = this.filtered();
+    const assignees = [...new Set(ISSUES.map((i) => i.assignee))];
+
+    const columns = [
+      { accessorKey: 'id', header: 'ID', cell: (c) => h('span', { className: 'text-muted-foreground tabular-nums' }, c.getValue()) },
+      { accessorKey: 'subject', header: '題名', cell: (c) => h('span', { className: 'font-emphasis' }, c.getValue()) },
+      { accessorKey: 'status', header: 'ステータス', cell: (c) => h(D.StatusPill, { tone: TONE[c.getValue()] || 'neutral' }, c.getValue()) },
+      { accessorKey: 'priority', header: '優先度', cell: (c) => h('span', { className: ['緊急', '高'].includes(c.getValue()) ? 'font-emphasis' : 'text-muted-foreground' }, c.getValue()) },
+      { accessorKey: 'assignee', header: '担当者', cell: (c) => h('span', { className: c.getValue() === '未割り当て' ? 'text-muted-foreground' : undefined }, c.getValue()) },
+      { accessorKey: 'updated', header: '更新日', cell: (c) => h('span', { className: 'text-muted-foreground tabular-nums' }, c.getValue()) },
+    ];
+
+    const emptyState = D.EmptyState
+      ? h(D.EmptyState, {
+          title: '条件に合うチケットがありません',
+          description: 'フィルタを解除するか、条件を変えて検索してください。',
+          action: h(D.Button, { variant: 'outline', size: 'sm', onClick: () => this.setState({ status: 'all', assignee: 'all' }) }, 'フィルタを解除'),
+        })
+      : null;
+
+    return {
+      brand: this.props.brand ?? 'Redmine',
+      nav: [
+        { key: 'issues', label: 'チケット', active: true },
+        { key: 'projects', label: 'プロジェクト' },
+        { key: 'settings', label: '設定' },
+      ],
+      countLabel: `${rows.length} 件 / 全 ${ISSUES.length} 件`,
+      statusChips: this.chips('status', STATUSES),
+      assigneeChips: this.chips('assignee', assignees),
+      rows,
+      columns,
+      emptyState,
+    };
+  }
+}
+</script>
+</body>
+</html>

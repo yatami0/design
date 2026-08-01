@@ -1,7 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
-  "ignorePaths": ["node_modules", "pnpm-lock.yaml", ".next", "dist"],
+  "ignorePaths": [
+    "node_modules",
+    "pnpm-lock.yaml",
+    ".next",
+    "dist",
+    "artifacts"
+  ],
   "words": [
     "Consolas",
     "Menlo",
