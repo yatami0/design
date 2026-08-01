@@ -68,10 +68,10 @@ export const VIEWPOINTS = {
     look: 'V5「on-dark は --sidebar-* 名前空間に隔離」が成立しているか。とくに本文側に濃紺が漏れていないか。8 変数の 1:1 対応は手2 で「最大の符合」と記録した箇所。',
   },
   I: {
-    title: '層の比較 — vendor と own で追従の質に差が出るか',
+    title: '層の比較 — 製品層を作った意味はあったか',
     q: 'Q6',
     pri: true,
-    look: 'own が綺麗に追従し vendor が取り残されるなら、製品層を作った意味が実証されたことになる。差が出ないなら製品層の存在意義を問い直す材料になる。wrapped がどちら寄りかも見てほしい。',
+    look: '🟥 これは部品の良し悪しではなく、手3 の設計判断（D1 = 欠落品 + 既定値ラッパー）そのものへの問い。下に 4 つのペアがある。各ペアは「左が vendor・右が own」で、見るプロパティが見出しに書いてある——そこだけを見てほしい。ペア 4（wrapped）だけは判断が要る（vendor 寄り / own 寄り / どちらとも言えない）。詳しい解説はアーティファクト側にある。',
   },
   J: {
     title: '当たり判定 44px — 拡張量が全サイズ一律',
@@ -142,6 +142,81 @@ export function Viewpoint({ obs }: { obs: keyof typeof VIEWPOINTS }) {
         </div>
       )}
     </section>
+  );
+}
+
+/**
+ * 🆕 **比較ペア。**「どれとどれを、どのプロパティで比べるか」を名指しする。
+ *
+ * 🟥 3 群をただ並べるだけでは観点が伝わらなかった（観点 I の 1 回目）。
+ *    **同じ役割のものを 2 つ選び、1 つのプロパティだけを見る**形にすると伝わる。
+ */
+export function Pair({
+  n,
+  title,
+  prop,
+  look,
+  left,
+  right,
+}: {
+  n: number;
+  title: string;
+  /** 見るプロパティ。**ここだけを見る**という指示になる */
+  prop: string;
+  /** 🟥 ここを見てほしい、を具体的に書く */
+  look: string;
+  left: Side;
+  right: Side;
+}) {
+  return (
+    <section className="border-border mb-6 border">
+      <div className="border-border flex flex-wrap items-baseline gap-2 border-b p-3">
+        <span className="font-emphasis text-heading leading-none">{n}</span>
+        <span className="font-emphasis flex-1 text-sm">{title}</span>
+        <span className="border-ring text-ring border px-2 py-0.5 font-mono text-xs">
+          {prop}
+        </span>
+      </div>
+      <div className="grid sm:grid-cols-2">
+        <SideBlock {...left} />
+        <div className="border-border border-t sm:border-t-0 sm:border-l">
+          <SideBlock {...right} />
+        </div>
+      </div>
+      <p className="bg-muted/50 border-border border-t p-3 text-sm">
+        <span className="font-emphasis">🟥 ここを見る：</span>
+        {look}
+      </p>
+    </section>
+  );
+}
+
+interface Side {
+  /** vendor / own / wrapped など、由来のラベル */
+  tag: string;
+  name: string;
+  /** 実際に書かれているクラスやトークン */
+  code: string;
+  note: string;
+  /** 現物 */
+  demo: React.ReactNode;
+}
+
+function SideBlock({ tag, name, code, note, demo }: Side) {
+  return (
+    <div className="p-3">
+      <p className="text-muted-foreground font-mono text-xs tracking-wider uppercase">
+        {tag}
+      </p>
+      <p className="font-emphasis mt-1 font-mono text-sm">{name}</p>
+      <p className="bg-muted text-muted-foreground my-2 inline-block px-1.5 py-0.5 font-mono text-xs break-all">
+        {code}
+      </p>
+      <p className="text-muted-foreground mb-3 text-xs">{note}</p>
+      <div className="border-border flex min-h-16 items-center gap-2 border-t pt-3">
+        {demo}
+      </div>
+    </div>
   );
 }
 

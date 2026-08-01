@@ -25,6 +25,7 @@
 | [DR-0036](DR-0036-card-spacing-points-to-semantic.md) | `--card-spacing` を **semantic 層へ向け替える**（レイヤ外の 2 規則） | 手3 | decided |
 | [DR-0037](DR-0037-providers-belong-to-product-layer.md) | Provider は**製品層が持つ**（部品ではなく「動くための前提条件」だから） | 手3 | decided |
 | [DR-0051](DR-0051-storybook-organized-by-layer-with-viewpoint-cards.md) | ⭐ **Storybook を層で並べ、実測値を観点カードとして story に載せる**（認識合わせの仕掛け） | 手5 | decided |
+| [DR-0052](DR-0052-unreachable-spots-are-avoided-by-not-using-them.md) | ⭐ **差し替えが届かない箇所は「使わない」で回避する**（上書きを重ねない） | 手5 | decided ／ 🔺 **ADR 昇格候補** |
 
 ## 発見（finding）
 
@@ -111,5 +112,6 @@
 | DR-0048 | 🟥 architecture.md の材料 | 「story を単一ソースにする」なら、**`build-storybook` の緑が何を保証しないか**を明示する |
 | DR-0049 | 🟥 ui.md の材料 | a11y 規約を「当たり判定」に書くなら、**サイズごとに**成立を確かめる。固定拡張では小さい variant が届かない |
 | DR-0050 | 🟥 OBS 候補 | **写し方の誤りは部品カタログでは検出できない。**面の構成はテンプレートでしか測れない |
+| DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
