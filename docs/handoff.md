@@ -89,7 +89,7 @@
 | 手3 | ② Components 層（**素材層と製品層の境界**・Layout 自作テンプレ・枠を閉じる） | [手3](手順/手3_Components層と製品層の分離.md) | ✅ **done** |
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | [手4](手順/手4_PatternsTemplates層と一覧.md) | ✅ **done** |
 | 手5 | ★ トークン差し替え実験 | [手5](手順/手5_トークン差し替え実験.md) | ✅ **done**（2026-08-01・`main` へマージ済み `e88311a`） |
-| 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | 🟨 **planned**（§2 の D1〜D6 が未決） |
+| 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | 🟨 **in-progress**（H6-01 通過。§2 の D1〜D6 が未決） |
 | 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | 未作成 | ⬜ |
 | 手8 | 出力は lint / validate.mjs を通るか | 未作成 | ⬜ |
 | **手8b** | 🆕 **preset 差し替え**（値では解けない「形」の衝突を、部品の作りを選び直して解けるか） | 未作成 | ⬜ 🟨 **「やらない」も結論**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)） |
@@ -282,16 +282,29 @@ Storybook 関連 6 件（手2b）も**厳密ピン**。カタログは `pnpm sto
 ✅ **外向き操作は承認済み。**出る先が Claude Design なら問題ない、というユーザー判断（2026-08-01）。
 🟦 **公式 skill は first sync で必ず新規プロジェクトを作る**ので、既存資産を汚す経路が既定では存在しない。
 
-🟥 **人にお願いすることが 1 つある**——**認証**。`/design-login` は対話セッションでないと回せない。
+### ✅ H6-01 は通った（2026-08-01・[実行記録 §手6](実行記録.md)）
 
-### 🟥 この環境で効いていないもの（2026-08-01 実測）
+```
+DesignSync({method: 'list_projects'}) → {"projects":[]}
+```
 
-| 欠けているもの | 影響 |
+| 確認点 | 結果 |
 | --- | --- |
-| 🟥 **`trace` plugin が未インストール**（`~/.claude/plugins/repos/` に実体なし） | `/dr` `/obs` skill が使えない。**新規 md の frontmatter と採番を止める hook が動いていない**。`docs-meta.mjs --check` も打てない。→ 手6 の手順書と DR-0057 は**語彙を手で `.claude/trace.config.mjs` と突き合わせた**（機械検査はしていない） |
-| 🟨 **`/design-sync` skill が skill 一覧に出ない** | ただし**バイナリには実体がある**（`2.1.220` から全文抽出して読んだ＝DR-0057 の根拠）。`DesignSync` ツールも取れるので手6 は進む見込み。起動可否は H6-01 で確かめる |
+| 認証 | 🟦 **通った**（ユーザーが `/design-login` を実施） |
+| 書き込み可能なプロジェクト | 🟦 **0 件** → **新規作成になる**（skill §1 の既定と一致） |
 
-🟥 **これは「対象 0 件で緑」と同じ形**——検査が走っていないのに、走っているつもりで書ける。
+🟥 **代わりに起動経路の問題が確定した**——**`/design-sync` は Claude 側から起動できない。**
+`/design` のサブコマンドとして登録された**人が打つスラッシュコマンド**で、skill 一覧には出ない。
+しかも converter 本体（`package-build.mjs` / `compare.mjs`）は `<skill-base-dir>` から staging される想定なので、
+**skill を起動しないとそのパスが手に入らない**＝手で写して走らせる案（D6=B）は事実上とれない。
+→ 🟥 **手6 の実行は「ユーザーが `/design-sync` と打つ」から始まる。**
+
+### 環境の穴（2026-08-01 実測）
+
+| 状態 | 内容 |
+| --- | --- |
+| 🟦 **塞がった** | **`trace` plugin が使えるようになった**（`trace:dr` / `trace:obs` / `trace:handoff` / `trace:commit` / `trace:adr`）。🟨 ただし **DR-0057 と手6 の手順書は plugin が無い間に書いた**ので、語彙は手で `.claude/trace.config.mjs` と突き合わせただけ——**機械検査は通していない** |
+| 🟨 **残る** | **chromium バイナリが未導入**（`playwright` 1.58.0 は devDependency にあるがブラウザは別）。storybook shape では compare ループが必須なので、H6-06 の前に要る |
 
 ### 2. 🔺 ADR 起案の時機（未決 #20）
 

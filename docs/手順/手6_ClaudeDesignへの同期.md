@@ -2,10 +2,10 @@
 type: procedure
 step: 手6
 title: '/design-sync で Claude Design へ同期する — 3 層とフラグは境界を越えるか'
-status: planned # planned | in-progress | done | blocked
+status: in-progress # planned | in-progress | done | blocked
 date: 2026-08-01
 updated_at: 2026-08-01
-next_action: '§2 の D1〜D6 をユーザーと決着させる。🟥 D1（ライブラリビルドが無い）が最優先——ここが通らないと converter が走らない'
+next_action: 'H6-01 は通った（認証 OK・プロジェクト 0 件＝新規作成になる）。次は §2 の D1〜D6 の決着。🟥 D1（ライブラリビルドが無い）が最優先——ここが通らないと converter が走らない。🟥 `/design-sync` は人が打つスラッシュコマンド（D6）'
 ---
 
 # 手6 — `/design-sync` で Claude Design へ同期する
@@ -215,10 +215,18 @@ compare ループは **story 数 × 周回**。skill 自身が「>100 部品な�
 
 ### 2.6 D6 — skill の起動と認証
 
-**推奨: A（`/design-sync` を叩く）＋ 認証は人が先に済ませる。**
-skill はバイナリに実体があり（`name: design-sync`）、`DesignSync` ツールも `ToolSearch` で取れる。
-🟥 **本セッションは非対話なので OAuth が回せない。**`/design-login` は**人が対話セッションで**実行する。
-B（中身を写して手で走らせる）は skill 自身が「off-script generation は正当だが**off-script の検証は正当ではない**」と条件を付けているので、**検証だけは公式ハーネス（`compare.mjs`）に通す**必要がある。
+**推奨: A（`/design-sync` を人が打つ）。**
+
+✅ **認証は済んだ**（H6-01・2026-08-01）。残るのは**起動経路**。
+
+🟥 **`/design-sync` は Claude 側から起動できない。**skill 一覧に出ず、`/design` のサブコマンド
+（`subcommands: {sync: "design-sync", login: "design-login", …}`）として登録されている＝**人が打つスラッシュコマンド**。
+→ **A を採るなら、コマンドを打つのはユーザー。**
+
+B（中身を写して手で走らせる）は skill 自身が
+「**off-script generation は正当だが、off-script の検証は正当ではない**」と条件を付けている。
+しかも converter 本体（`package-build.mjs` / `compare.mjs` / `lib/`）は `<skill-base-dir>` から staging される想定で、
+**skill を起動しないとそのパスが手に入らない。**→ 🟥 **B は事実上とれない。**
 
 ### 2.7 D7 — ✅ 登録先と外向き操作の承認（決着）
 
@@ -275,6 +283,7 @@ flowchart TD
 - **観測**: 不確定要素 1・2
 - **判断**: 🟥 **通らなければここで止め、人に `/design-login` を依頼する。**推測で先へ進まない
 - **詰まったら**: 認証エラーのメッセージは環境に応じて出し分けられている。**そのまま人に伝える**（skill の指示）
+- ✅ **実施済み（2026-08-01）。**結果は [実行記録 §手6](../実行記録.md)
 
 ### H6-02 Q1 — ライブラリビルドが `--entry` で通るか（D1=A）
 
