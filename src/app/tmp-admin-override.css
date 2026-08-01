@@ -1,0 +1,81 @@
+/* src/app/tmp-admin-override.css
+ * 手5 の 2 周目「無理」— 1 周目で通らなかったところを、外から力ずくで通す。
+ *
+ * 🟥 このファイルの中身は成果物ではなく **代償の実測値**。
+ *    出すのは追従率そのものではなく「追従率の増分」と、それを得るために払ったもの:
+ *      ① 潰れた variant の件数
+ *      ② 足した語彙の数
+ *      ③ shadcn 内部構造（data-slot 名・段の比率）への依存箇所数
+ *    → OBS-0005「どこまで無理をして通すべきかの判断軸が無い」の材料。
+ *
+ * 🟦 1 周目（tmp-admin.css）は消さない。重ねるだけ。
+ *    切り戻し: globals.css の `@import './tmp-admin-override.css';` を 1 行コメントアウト。
+ */
+
+/* ══ 語彙の追加（🟥 代償②）══════════════════════════════════════════════
+ * 1 周目には無かった語彙。`:root:root` に置くのは、Tailwind の `@theme` が
+ * 「使われているキーしか出力しない」ため——参照専用の値は @theme に置くと消える。 */
+:root:root {
+  --radius-apple-s: 8px; /* apple --radius-s   小コントロール */
+  --radius-apple-m: 12px; /* apple --radius-m   ボタン・入力 */
+  --radius-apple-l: 18px; /* apple --radius-l   カード */
+  --radius-apple-xl: 28px; /* apple --radius-xl  シート・大面 */
+  --radius-apple-pill: 980px; /* apple --radius-pill */
+  --color-scrim: rgba(0, 0, 0, 0.4); /* tmp --scrim */
+}
+
+/* ══ 無理① 角丸の非線形 5 段（手5 §2 D5 = B）════════════════════════════
+ * 1 周目（D5=A）では `--radius` 1 変数で 7 段が比率どおり動いたが、
+ * apple の 8 / 12 / 18 / 28 は**非線形**なので基数 1 段（lg=12px）しか一致しなかった。
+ *
+ * 🟥 **`@theme` での段ごと再定義は効かない**（実測）。
+ *    globals.css の `@theme inline` が **`--color-*` 31 + `--radius-*` 7 = 38 キー**を握っており、
+ *    それが `@import` より後ろにあるので、先に import した `@theme` は必ず負ける（DR-0046 の一般形）。
+ *    色は shadcn 自身の変数名（`--primary` 等）へ書いて迂回できたが、
+ *    **段には迂回先の変数が無い**（段は `--radius` から導出される計算式そのもの）。
+ *
+ * 🟥 したがって残る手は **ユーティリティクラスを外から上書きする**ことだけ。
+ *    これは「向け替え」ではなく「上書き」で、1 段“無理”のレベルが上がっている:
+ *      色     → shadcn の変数名に書く（**構造に乗る**）
+ *      角丸段 → ユーティリティを潰す（**構造を無視する**）
+ *
+ * 🟥 代償①: **variant 付きの角丸には届かない。**`.rounded-lg` は
+ *    `in-data-[slot=button-group]:rounded-lg` とは別のクラスなので、
+ *    variant 側は比率派生のまま取り残される（素材層に 7 個ある）。
+ * 🟥 代償③: 「shadcn のどの段が apple のどれに当たるか」の対応表を**外が持つ**。
+ *           shadcn が段の意味を変えても機械は教えない。 */
+.rounded-sm {
+  border-radius: var(--radius-apple-s);
+}
+.rounded-md {
+  border-radius: var(--radius-apple-s);
+}
+.rounded-lg {
+  border-radius: var(--radius-apple-m);
+}
+.rounded-xl {
+  border-radius: var(--radius-apple-l);
+}
+.rounded-2xl {
+  border-radius: var(--radius-apple-l);
+}
+.rounded-3xl {
+  border-radius: var(--radius-apple-xl);
+}
+.rounded-4xl {
+  border-radius: var(--radius-apple-pill);
+}
+
+/* ══ 無理② スクリム 2 箇所（手5 §2 D1 = D の 2 周目）══════════════════════
+ * `bg-black/10` は `color-mix(in oklab, var(--color-black) 10%, transparent)` を出す。
+ * **色は追うが不透明度 10% はクラス名側に焼き込まれている**ので、
+ * tmp-admin の `--scrim: rgba(0,0,0,0.40)` へは向けられない（DR-0045 の「丁」）。
+ *
+ * 🟦 カスケードレイヤの外に書けば `@layer utilities` の中の宣言に勝つ（DR-0042）。
+ * 🟥 代償①: これは「向け替え」ではなく「**上書き**」。background-color の所有権が外へ移る。
+ *           shadcn が overlay に variant（例: `data-[state]:bg-*`）を足したら**黙って潰す**。
+ * 🟥 代償③: `data-slot` の値 2 つを外がハードコードする。 */
+[data-slot='dialog-overlay'],
+[data-slot='sheet-overlay'] {
+  background-color: var(--color-scrim);
+}

@@ -1,0 +1,27 @@
+# === 依存・ビルド生成物 ===
+node_modules/
+.next/
+# Next が dev(.next/dev) と build(.next) で書き換える生成物（PoC の DR-0018 と同じ扱い）
+next-env.d.ts
+dist/
+coverage/
+*.tsbuildinfo
+
+# === 環境変数 ===
+.env
+.env.*
+!.env.example
+
+# === ログ・OS ===
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+
+*storybook.log
+storybook-static
+
+# === 手5 の計測器（tools/visual-probe.mjs）の出力 ===
+# スクリーンショットと実測値は成果物ではなく観測の副産物。値は実行記録に転記する。
+tmp/

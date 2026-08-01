@@ -1,0 +1,105 @@
+/* src/app/tokens.css
+ * ① Tokens 層 — semantic な余白とタイポの「語彙」だけを置く。
+ *
+ * なぜ別ファイルか（手2 D1）:
+ *   shadcn CLI は globals.css を書き換える（手1 Q3 で観測済み）。自分の語彙を分けておくと
+ *   git diff で「ツールが何を変えたか」が読める＝手2 Q7 に答えられる。
+ *
+ * 🟥 値は書かない（DR-0005 決定3）。
+ *   すべて Tailwind / shadcn の既定への **参照** で定義する。手5 のトークン差し替えは
+ *   「この参照先を tmp-admin の値へ向け替えるだけ」になるのが狙い。
+ *   ここに生値（16px 等）を書いた時点で、手5 の差し替え実験は 2 箇所を直すことになる。
+ *
+ * なぜ用途名か（DR-0019）:
+ *   Tailwind の --spacing / --text-* は「サイズ」を言っていて「用途」を言っていない＝ primitive。
+ *   思想①「UI は semantic だけを使う」を名前で検証できるようにするため、用途名を足す。
+ *   🟥 射程の限界: shadcn の素の部品は spacing を 132 箇所・text サイズを 43 箇所 直書きしており、
+ *      この語彙を使わない。効くのは手3 で自作する Layout テンプレの内側だけ。
+ */
+
+@theme {
+  /* ── 余白: inset（面の内側 = padding） ─────────────────────────── */
+  --spacing-inset-xs: calc(var(--spacing) * 2); /* 8px  セル・小コントロール */
+  --spacing-inset-sm: calc(var(--spacing) * 3); /* 12px 密なカード */
+  --spacing-inset-md: calc(
+    var(--spacing) * 4
+  ); /* 16px カード既定（shadcn の --card-spacing と同値） */
+  --spacing-inset-lg: calc(var(--spacing) * 6); /* 24px ページ本文 */
+
+  /* ── 余白: stack（縦の要素間 = gap / space-y） ──────────────────── */
+  --spacing-stack-sm: calc(var(--spacing) * 2); /* 8px  */
+  --spacing-stack-md: calc(var(--spacing) * 4); /* 16px */
+  --spacing-stack-lg: calc(var(--spacing) * 5); /* 20px カード間 */
+
+  /* ── 余白: inline（横の要素間 = gap） ──────────────────────────── */
+  --spacing-inline-sm: calc(var(--spacing) * 1.5); /* 6px  アイコンとラベル */
+  --spacing-inline-md: calc(var(--spacing) * 2); /* 8px  ボタン間 */
+
+  /* ── タッチターゲット（手3 D7 / DR-0034） ──────────────────────
+     44px の出どころは apple.md（Apple HIG の公式値）。ただし tmp-admin が
+     名指しで適用しているのは nav-item の min-height だけ（DR-0030）。
+     それ以外の部品は「見た目 32px / 当たり判定 44px」で解く。
+     値は書かず --spacing への参照で表す。 */
+  --spacing-touch-min: calc(var(--spacing) * 11); /* 44px  nav-item の下限 */
+  --spacing-hit-expand: calc(var(--spacing) * 1.5); /* 6px  (44-32)/2 の片側 */
+
+  /* ── レイアウト幅（手3 H3-03 / Q1 の答え）─────────────────────
+     🟥 Container を書こうとして初めて「最大幅の語彙が無い」ことが分かった。
+     トークンマッピング 2.4 が「--content-max / --content-wide / --gutter は
+     手3 の Layout テンプレで持つ」と予告していた箇所。既定への参照で足す。 */
+  --container-content: var(--container-4xl); /* 56rem 本文・フォーム */
+  --container-wide: var(--container-7xl); /* 80rem 一覧・データ表 */
+  --spacing-gutter: calc(var(--spacing) * 6); /* 24px 画面端の余白 */
+
+  /* ── 意味色と状態 tint（手4 D3 / 未決 #13）─────────────────────
+     shadcn は destructive しか持たず、ステータス表示（チケット一覧の中核）が組めない。
+     tmp-admin §4.5 は「状態 = tint pill + 色ドット」と規定している。
+     🟥 値は書かない（DR-0005 決定3）。Tailwind パレットへの参照で置き、
+        手5 で tmp-admin の --color-success / --fill-* へ向け替える。 */
+  --color-success: var(--color-emerald-600);
+  --color-warning: var(--color-amber-600);
+  /* 状態 tint（面）。danger は shadcn の destructive と別に持つ（tint は薄面） */
+  --color-fill-success: var(--color-emerald-50);
+  --color-fill-warning: var(--color-amber-50);
+  --color-fill-danger: var(--color-red-50);
+  --color-fill-neutral: var(--color-neutral-100);
+
+  /* ── 行の寸法（手4 D7 / tmp-admin §4.4「行高 60px」）───────────
+     🟥 語彙が無いと Table を組めない。値は --spacing への参照で表す。 */
+  --spacing-row: calc(var(--spacing) * 15); /* 60px 一覧の行高 */
+  --spacing-dot: calc(
+    var(--spacing) * 1.5
+  ); /* 6px  状態ドット（tmp-admin §4.5） */
+  /* ── タイポ: 用途名 ────────────────────────────────────────────
+     用途の切り方は tmp-admin §4.3 の使い分け規定に対応させる
+     （本文 / テーブル本文 / th・補助 / 氏名・検索 / シート見出し）。 */
+  --text-body: var(--text-sm); /* 本文 */
+  --text-table: var(--text-sm); /* テーブル本文 */
+  --text-label: var(--text-xs); /* th・補助・キャプション */
+  --text-emphasis: var(--text-base); /* 氏名・検索など目を引かせる本文 */
+  --text-heading: var(--text-lg); /* セクション・シートの見出し */
+
+  /* ── タイポ: 強調の weight ─────────────────────────────────────
+     tmp-admin V3「強調は色でなく weight 600 ⇔ 400 のコントラスト」の受け皿。
+     shadcn の素の部品は font-medium(500) を 15 箇所使っており 1 段ずれている
+     （→ トークンマッピング.md 表3 #5）。差は手3 で扱う。 */
+  --font-weight-emphasis: var(--font-weight-semibold); /* 600 */
+}
+
+/* ── component token の向け替え（手3 D8 / DR-0036）──────────────────
+ * shadcn の `--card-spacing` は card.tsx の className 内で
+ * `[--card-spacing:--spacing(4)]` と定義され、**primitive を直接指している**。
+ * 3 層トークンの規約（component は semantic を指す）に照らして参照方向が誤っている。
+ *
+ * 🟦 @theme の**外**（＝どのカスケードレイヤにも属さない）に書くと、
+ *    `@layer utilities` の中にある shadcn の宣言に勝つ。
+ *    → **card.tsx を 1 行も触らずに semantic 層へ載せ替えられる**（DR-0029 で実測）。
+ *
+ * 🟨 1 規則だけだと `data-[size=sm]` のバリアントまで潰れるので 2 規則に分ける。
+ */
+[data-slot='card'] {
+  --card-spacing: var(--spacing-inset-md);
+}
+[data-slot='card'][data-size='sm'] {
+  --card-spacing: var(--spacing-inset-sm);
+}
