@@ -86,7 +86,19 @@ const noServerActions = {
 
 export default defineConfig(
   {
-    ignores: ['**/dist/**', '**/.next/**', '**/storybook-static/**'],
+    // 手6: /design-sync の生成物・staging を射程から外す。
+    // 🟥 除外するのは**生成物だけ**。`.design-sync/` を丸ごと外さないのは、
+    //    `previews/`（自分で書いて commit する owned preview）と config/NOTES を
+    //    検査対象に残すため——「層を足すたびに射程が漏れる」（DR-0040）の 3 例目を作らない。
+    ignores: [
+      '**/dist/**',
+      '**/.next/**',
+      '**/storybook-static/**',
+      '**/.design-sync/sb-reference/**', // 参照 Storybook（基準器・再生成される）
+      '**/.design-sync/.cache/**', // 生成された preview wrapper・compare の作業状態
+      '**/ds-bundle/**', // converter の出力（アップロードされる成果物）
+      '**/.ds-sync/**', // skill から写した converter スクリプト＋その依存
+    ],
   },
 
   tseslint.configs.strictTypeChecked,

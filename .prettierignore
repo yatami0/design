@@ -15,3 +15,9 @@ next-env.d.ts
 src/components/ui/
 src/hooks/
 src/lib/utils.ts
+
+# 手6: /design-sync の生成物・staging（eslint.config.mjs の ignores と同じ集合）
+.design-sync/sb-reference/
+.design-sync/.cache/
+ds-bundle/
+.ds-sync/

@@ -1,0 +1,71 @@
+{
+  "projectId": "3acbb737-85fe-4098-95f4-c99070168ba1",
+  "shape": "storybook",
+  "storybookConfigDir": ".storybook",
+  "storybookStatic": ".design-sync/sb-reference",
+  "pkg": "design",
+  "globalName": "Design",
+  "entry": "src/index.ts",
+  "buildCmd": "pnpm i --frozen-lockfile",
+
+  "componentSrcMap": {
+    "Button": "src/components/Action/Button.tsx",
+    "Sidebar": "src/components/Navigation/Sidebar.tsx",
+    "DataGrid": "src/components/DataDisplay/DataGrid.tsx",
+    "StatusPill": "src/components/DataDisplay/StatusPill.tsx",
+    "Box": "src/components/Layout/Box.tsx",
+    "Container": "src/components/Layout/Container.tsx",
+    "Grid": "src/components/Layout/Grid.tsx",
+    "Inline": "src/components/Layout/Inline.tsx",
+    "Section": "src/components/Layout/Section.tsx",
+    "Spacer": "src/components/Layout/Spacer.tsx",
+    "Stack": "src/components/Layout/Stack.tsx",
+    "EmptyState": "src/patterns/EmptyState.tsx",
+    "ListDetail": "src/patterns/ListDetail.tsx",
+    "AppShell": "src/templates/AppShell.tsx"
+  },
+
+  "readmeHeader": ".design-sync/conventions.md",
+
+  "guidelinesGlob": [
+    "docs/共通コンポーネント思想.md",
+    "docs/デザイントークン設計.md",
+    "docs/トークンマッピング.md",
+    "docs/タッチターゲットとサイズ密度.md",
+    "docs/部品カタログ.md",
+    "docs/状態とProviderの置き場.md"
+  ],
+
+  "overrides": {
+    "Sidebar": { "cardMode": "single", "primaryStory": "Default" },
+    "AppShell": { "cardMode": "single", "primaryStory": "Default" }
+  },
+
+  "titleMap": {
+    "Tokens": null,
+
+    "Badge": null,
+    "Empty": null,
+    "Skeleton": null,
+    "Table": null,
+    "Label": null,
+    "Separator": null,
+    "Card": null,
+    "Pagination": null,
+    "Dialog": null,
+    "DropdownMenu": null,
+    "Popover": null,
+    "Sheet": null,
+    "Tooltip": null,
+    "Checkbox": null,
+    "Select": null,
+    "Input": null,
+
+    "A状態面": null,
+    "B角丸": null,
+    "C影": null,
+    "Dタイポ": null,
+    "E·Fオーバーレイ": null,
+    "I層の比較": null
+  }
+}

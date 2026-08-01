@@ -2,14 +2,21 @@
 id: DR-0018
 type: finding
 title: '/design-sync が受け取るのはプレビュー HTML — story も React コンポーネントも渡らない'
-status: observed
+status: superseded
 date: 2026-07-26
 step: '-'
-related: [DR-0017, DR-0002]
+related: [DR-0017, DR-0002, DR-0057]
 poc_feedback: null
 ---
 
 # DR-0018: /design-sync が受け取るのはプレビュー HTML
+
+> 🟥 **superseded — [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md)（2026-08-01）が訂正した。**
+> 本 DR は `DesignSync` **ツール**の仕様だけを読んで書かれており、**`/design-sync` skill 本体を読んでいなかった。**
+> 誤りは 2 点——① **React コンポーネントは渡る**（コンパイル済みバンドルとして。型と使い方リファレンスも渡る）
+> ② **フラグを載せる場所はある**（`<Name>.prompt.md` と conventions header）。
+> 正しいままなのは `group` に役割 9 カテゴリが使えること・`thin` / `variantsIdentical` の存在。
+> **本文は記録として残す**（決定は不変に積む規律）。
 
 ## 背景
 
