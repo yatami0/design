@@ -25,6 +25,17 @@
     "AppShell": "src/templates/AppShell.tsx"
   },
 
+  "readmeHeader": ".design-sync/conventions.md",
+
+  "guidelinesGlob": [
+    "docs/共通コンポーネント思想.md",
+    "docs/デザイントークン設計.md",
+    "docs/トークンマッピング.md",
+    "docs/タッチターゲットとサイズ密度.md",
+    "docs/部品カタログ.md",
+    "docs/状態とProviderの置き場.md"
+  ],
+
   "overrides": {
     "Sidebar": { "cardMode": "single", "primaryStory": "Default" },
     "AppShell": { "cardMode": "single", "primaryStory": "Default" }

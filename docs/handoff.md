@@ -89,7 +89,7 @@
 | 手3 | ② Components 層（**素材層と製品層の境界**・Layout 自作テンプレ・枠を閉じる） | [手3](手順/手3_Components層と製品層の分離.md) | ✅ **done** |
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | [手4](手順/手4_PatternsTemplates層と一覧.md) | ✅ **done** |
 | 手5 | ★ トークン差し替え実験 | [手5](手順/手5_トークン差し替え実験.md) | ✅ **done**（2026-08-01・`main` へマージ済み `e88311a`） |
-| 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | 🟨 **in-progress**（H6-01 通過。§2 の D1〜D6 が未決） |
+| 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | 🟨 **in-progress**（**同期は完了**。14 部品アップロード済み・Q1/Q2/Q5/Q6/Q7 に答え。残るは Q3/Q4/Q8 の締めと完了条件の照合） |
 | 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | 未作成 | ⬜ |
 | 手8 | 出力は lint / validate.mjs を通るか | 未作成 | ⬜ |
 | **手8b** | 🆕 **preset 差し替え**（値では解けない「形」の衝突を、部品の作りを選び直して解けるか） | 未作成 | ⬜ 🟨 **「やらない」も結論**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)） |
@@ -262,25 +262,54 @@ Storybook 関連 6 件（手2b）も**厳密ピン**。カタログは `pnpm sto
 
 **手5 は `main` へマージ済み（`e88311a`）。作業ツリー clean。手の途中で止まっているものは無い。**
 
-### 🟥 1. 手6 §2 の D1〜D6 をユーザーと決着させる
+### 🟦 0. 手6 の同期は完了した（2026-08-01）
 
-✅ **手順書は書いた** → [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md)（ブランチ `step/h6-preview-html`）。
-問い **Q1〜Q8** と判断ポイント **D1〜D6** が立っている。**着手の順序は「手順書を書く → 問いを確定させる → 実行する」**なので、次は D の決着。
+**Claude Design プロジェクト `design — UI検証`**（`3acbb737-85fe-4098-95f4-c99070168ba1`）に
+**14 部品**が入った。URL: <https://claude.ai/design/p/3acbb737-85fe-4098-95f4-c99070168ba1>
+
+| 問い | 答え |
+| --- | --- |
+| **Q1** converter のライブラリビルド要求を満たせるか | 🟦 **満たせた。ただし 3 段必要**（`cfg.entry` ＋ `dist/types` ＋ `.d.ts` の `@/` 相対化）。②③ はどちらも**「対象 0 件で緑」**——通算 11・12 例目 |
+| **Q2** Storybook は基準器として使えるか | 🟦 **使えた。14/14・全 20 story が `match`**（`close` も `skip` もゼロ・factual failure ゼロ） |
+| **Q5** 役割 9 カテゴリは `group` に載るか | 🟦 **そのまま載った**（`action` / `datadisplay` / `layout` / `navigation` / `patterns` / `templates`）。[DR-0051](DR/DR-0051-storybook-organized-by-layer-with-viewpoint-cards.md) の棚の組み替えが境界の向こうで効いた |
+| **Q6** 素材層を触るか | 🟦 **0 行（7 回連続）** |
+| **Q7** `thin` / `variantsIdentical` に弾かれるか | 🟦 **ゼロ**（total 14 / bad 0 / thin 0 / variantsIdentical 0）。**story 1 本の Layout プリミティブも弾かれなかった**＝手順書の懸念は外れ |
+| **Q3** tmp-admin の値は載るか | 🟨 **載った**（`_ds_bundle.css` 経由・サイドバー紺やステータス色が両パネルで一致）。🟥 **ただし `tokens/` は空**——converter の `tokens/` は「別パッケージのトークン」用で、本 repo は CSS に焼き込まれる形 |
+| **Q4** フラグ 5 種は書けるか | 🟦 **書けた**（conventions header）。🟥 **効くかどうかは手7** |
+| **Q8** 思想への指摘 9 件目 | 🟥 **未判定**（手6 の締めで整理する） |
+
+🟥 **conventions header の validate 工程が実装の穴を 1 件掘り当てた**——
+**`useListDetail` を `src/index.ts` から export しておらず、`ListDetail` が組み立て不能だった。**
+Storybook では story 内で hook を直接呼べるので露見せず、**機械ゲート 6 本も通っていた。**
+
+🟥 **ゲートの射程がまた漏れた（[DR-0040](DR/DR-0040-frame-leaks-when-a-layer-is-added.md) の 3 例目）。**
+生成物を lint が拾って **error 33 → 14,047**（ソースは 34 のまま）。`eslint` / `prettier` / `gitignore` に 4 集合を追加。
+
+### 🟥 1. 手6 の締め（残り）
+
+- [ ] **Q8** の判定と [思想への指摘](共通コンポーネント思想への指摘.md) の更新
+- [ ] 🟨 **手5 の観点 D タイポを再確認するか決める**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)。**セリフ体の上で判定していた**）
+- [ ] 手順書 §6 の完了条件 10 件を照合し、`status: done` にする
+- [ ] `main` へ `--no-ff` マージを**提案**する（実行は人）
+
+### 2. 手6 §2 の D1〜D6（**すべて決着済み**・記録用）
+
+手順書 → [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md)（ブランチ `step/h6-preview-html`）。
 
 > 🟥 **初稿は捨てて書き直した。**「プレビュー HTML を自前で作る手」として設計していたが、
 > **ユーザーの指摘（「公式コマンドがあったはず。Playwright は使わないはず」）を受けて一次情報を取ったら前提が崩れた**
 > （[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md)）。**手6 は「公式 converter を走らせる手」。**
 
-| # | 論点 | 推奨 | なぜ先に決めるか |
+| # | 論点 | 決定 | 実行してどうだったか |
 | --- | --- | --- | --- |
-| 🟥 **D1** | **ライブラリビルドが無い問題** | D（`--entry` で通るか試す → 駄目ならライブラリビルドを足す） | 🟥 **最大の障害。**converter は**ビルド済み `dist/`** を要求するが、本 repo は `build: next build` で `exports` も `dist/` も無い。**ここが通らないと何も始まらない** |
-| **D2** | 何を同期するか | B（① 1 + 製品層 11 + ③ 2 + ④ 1 = **15**） | 素材層 16 を出すと**手3 D3=B の枠が境界の向こうで破れる**。★ Review 6 は `titleMap` で除外 |
-| **D4** | フラグ 5 種（未決 #10） | **C（`.prompt.md` と conventions header の両方）** | 🟨 **初稿から推奨が変わった。**DR-0018 の「載せ場所が無い」は誤りで、**仕様に書かれた経路が 2 つある** |
-| D3 / D5 / D6 | トークンの版／1 周目のスコープ／skill 起動 | A（tmp-admin 適用後）／ B（製品層に絞る）／ A（`/design-sync`） | いずれも戻せる |
-| ~~D7~~ | ~~登録先と外向き操作の承認~~ | ✅ **決着**（ユーザー判断 2026-08-01・下記） | — |
-
-✅ **外向き操作は承認済み。**出る先が Claude Design なら問題ない、というユーザー判断（2026-08-01）。
-🟦 **公式 skill は first sync で必ず新規プロジェクトを作る**ので、既存資産を汚す経路が既定では存在しない。
+| **D1** | ライブラリビルドが無い問題 | **D**（`--entry` を試す → 駄目なら足す） | 🟦 **`--entry` は通った**が、それだけでは部品 0 件。**宣言ビルド（`dist/types`）と `.d.ts` の `@/` 相対化まで必要**だった |
+| **D2** | 何を同期するか | **B**（ユーザー判断） | 🟦 **14 部品**（① Tokens の story は部品でないので `titleMap: null`。トークン自体は CSS 経由で届く） |
+| **D3** | どのトークンを載せるか | **A**（tmp-admin 適用後） | 🟦 `_ds_bundle.css`（参照 Storybook から採取）に載った |
+| **D4** | フラグ 5 種（未決 #10） | **C**（`.prompt.md` と conventions header の両方） | 🟦 書けた。🟥 **効くかは手7** |
+| **D5** | 1 周目のスコープ | **B**（製品層に絞る） | 🟦 14 部品・20 story で 1 周完了 |
+| **D6** | skill の起動 | **A**（`/design-sync`） | 🟦 **人が打った。**Claude 側からは起動できない |
+| **D7** | 登録先と外向き操作の承認 | ✅ **ユーザー判断**（Claude Design なら問題なし） | 🟦 公式 skill が first sync で必ず新規プロジェクトを作るので既存資産は無傷 |
+| **D8** | 本体と Storybook のフォント差 | **D**（ユーザー判断） | 🟥 **合わせる先が逆だった**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)） |
 
 ### ✅ H6-01 は通った（2026-08-01・[実行記録 §手6](実行記録.md)）
 

@@ -30,6 +30,10 @@ export { StatusPill } from '@/components/DataDisplay/StatusPill';
 // ── ③ Patterns ─────────────────────────────────────────────────
 export { EmptyState } from '@/patterns/EmptyState';
 export { ListDetail } from '@/patterns/ListDetail';
+// 🟥 振る舞い hook。これを出さないと `ListDetail` は `state` を作れず**使えない**
+//    （conventions header の validate 工程が捕まえた）。`use*` は converter の
+//    `isComponentName` が部品から除くので、カードは増えない。
+export { useListDetail } from '@/patterns/useListDetail';
 
 // ── ④ Templates ────────────────────────────────────────────────
 export { AppShell } from '@/templates/AppShell';
@@ -52,4 +56,5 @@ export type {
 } from '@/components/DataDisplay/StatusPill';
 export type { EmptyStateProps } from '@/patterns/EmptyState';
 export type { ListDetailProps } from '@/patterns/ListDetail';
+export type { ListDetail as ListDetailState } from '@/patterns/useListDetail';
 export type { AppShellProps, NavItem } from '@/templates/AppShell';
