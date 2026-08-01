@@ -12,7 +12,7 @@ import {
   StatusPill,
   type StatusTone,
 } from '@/components/DataDisplay/StatusPill';
-import { Card } from '@/components/Layout/Card';
+import { Card, CardContent } from '@/components/Layout/Card';
 import { Grid } from '@/components/Layout/Grid';
 import { Inline } from '@/components/Layout/Inline';
 import { Section } from '@/components/Layout/Section';
@@ -122,6 +122,10 @@ export const Default: Story = {
 /**
  * カードを並べた面。**白カード（面 3）がキャンバス（面 2）から浮いて見えるか。**
  * 影を apple の 2 段へ潰した影響（観点 C）が、実寸で出るのはここ。
+ *
+ * 🟥 **`Card` の直下に中身を置かない**（[DR-0053](../../../docs/DR/DR-0053-viewpoints-must-be-answerable-by-eye.md)）。
+ *    `card.tsx` の root は `py-(--card-spacing)` しか持たず、**左右の余白は `CardContent` 側**にある。
+ *    素の children を直接入れると左右がゼロになり、目視レビューで「カードの左右の余白がない」として出た。
  */
 export const CardSurfaces: Story = {
   args: {
@@ -131,33 +135,45 @@ export const CardSurfaces: Story = {
       <Section heading="ダッシュボード" gap="md">
         <Grid columns={3} gap="md">
           <Card>
-            <Stack gap="sm">
-              <span className="text-label text-muted-foreground">未対応</span>
-              <span className="text-heading font-emphasis tabular-nums">
-                12
-              </span>
-            </Stack>
+            <CardContent>
+              <Stack gap="sm">
+                <span className="text-label text-muted-foreground">未対応</span>
+                <span className="text-heading font-emphasis tabular-nums">
+                  12
+                </span>
+              </Stack>
+            </CardContent>
           </Card>
           <Card>
-            <Stack gap="sm">
-              <span className="text-label text-muted-foreground">進行中</span>
-              <span className="text-heading font-emphasis tabular-nums">5</span>
-            </Stack>
+            <CardContent>
+              <Stack gap="sm">
+                <span className="text-label text-muted-foreground">進行中</span>
+                <span className="text-heading font-emphasis tabular-nums">
+                  5
+                </span>
+              </Stack>
+            </CardContent>
           </Card>
           <Card>
-            <Stack gap="sm">
-              <span className="text-label text-muted-foreground">今週解決</span>
-              <span className="text-heading font-emphasis tabular-nums">
-                28
-              </span>
-            </Stack>
+            <CardContent>
+              <Stack gap="sm">
+                <span className="text-label text-muted-foreground">
+                  今週解決
+                </span>
+                <span className="text-heading font-emphasis tabular-nums">
+                  28
+                </span>
+              </Stack>
+            </CardContent>
           </Card>
         </Grid>
         <Card>
-          <Stack gap="sm">
-            <span className="text-emphasis font-emphasis">最近の更新</span>
-            <DataGrid data={issues.slice(0, 3)} columns={columns} />
-          </Stack>
+          <CardContent>
+            <Stack gap="sm">
+              <span className="text-emphasis font-emphasis">最近の更新</span>
+              <DataGrid data={issues.slice(0, 3)} columns={columns} />
+            </Stack>
+          </CardContent>
         </Card>
       </Section>
     ),
