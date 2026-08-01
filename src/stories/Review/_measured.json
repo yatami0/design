@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-07-26T22:24:36.836Z",
+  "measuredAt": "2026-08-01T02:23:38.027Z",
   "specimens": [
     {
       "obs": "B",
@@ -129,23 +129,44 @@
     },
     {
       "obs": "I",
-      "name": "Checkbox（vendor・生値 4px）",
-      "expect": "4px のまま動かない",
+      "name": "ペア1 vendor Checkbox の角丸",
+      "expect": "4px（生値・動かない）",
       "got": "borderTopLeftRadius: 4px",
       "ok": true
     },
     {
       "obs": "I",
-      "name": "Button（wrapped）",
-      "expect": "角丸は min(--radius-md,12px) / 高さ 32px",
-      "got": "borderTopLeftRadius: 12px / height: 32px",
+      "name": "ペア1 own Card の角丸",
+      "expect": "18px（card.tsx は rounded-xl）",
+      "got": "borderTopLeftRadius: 18px",
       "ok": true
     },
     {
       "obs": "I",
-      "name": "Card（own）",
-      "expect": "--card-spacing → --spacing-inset-md = 16px",
-      "got": "paddingTop: 16px",
+      "name": "ペア2 vendor Badge destructive の面",
+      "expect": "destructive 10%（badge.tsx の実体は /10）",
+      "got": "backgroundColor: oklab(0.654224 0.203716 0.111346 / 0.1)",
+      "ok": true
+    },
+    {
+      "obs": "I",
+      "name": "ペア2 own StatusPill danger の面",
+      "expect": "--color-fill-danger = rgba(255,59,48,0.16)",
+      "got": "backgroundColor: rgba(255, 59, 48, 0.16)",
+      "ok": true
+    },
+    {
+      "obs": "I",
+      "name": "ペア3 vendor Table セルの padding",
+      "expect": "直書き（p-2 系）",
+      "got": "paddingLeft: 8px / paddingTop: 8px",
+      "ok": true
+    },
+    {
+      "obs": "I",
+      "name": "ペア3 own Card の padding",
+      "expect": "🟥 card.tsx の root は py- だけ。px- は CardContent 側",
+      "got": "paddingLeft: 0px / paddingTop: 16px",
       "ok": true
     },
     {

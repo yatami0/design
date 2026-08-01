@@ -220,6 +220,58 @@ function SideBlock({ tag, name, code, note, demo }: Side) {
   );
 }
 
+/**
+ * 🆕 **目では答えられない観点。**
+ *
+ * 🟥 観点には 2 種類ある——**目で答えるもの**と**機械でしか答えられないもの**。
+ *    混ぜると「見ても分からない」で止まる（観点 I のペア 4 で実際に起きた。
+ *    当たり判定は `pointer: coarse` 限定なのでデスクトップの Storybook では発火しない）。
+ *    → **機械側の実測だけで結論まで出し、人には「読み」を確認してもらう**形にする。
+ */
+export function MachineOnly({
+  n,
+  title,
+  why,
+  rows,
+  conclusion,
+}: {
+  n: number;
+  title: string;
+  /** なぜ目では答えられないのか */
+  why: string;
+  rows: { label: string; got: string; read: string }[];
+  /** 機械側が出した結論。人はこれに同意するかだけ判断する */
+  conclusion: string;
+}) {
+  return (
+    <section className="border-ring mb-6 border-2 border-dashed">
+      <div className="border-border flex flex-wrap items-baseline gap-2 border-b p-3">
+        <span className="font-emphasis text-heading leading-none">{n}</span>
+        <span className="font-emphasis flex-1 text-sm">{title}</span>
+        <span className="border-ring text-ring border px-2 py-0.5 font-mono text-xs">
+          機械が答える
+        </span>
+      </div>
+      <p className="border-border border-b p-3 text-sm">{why}</p>
+      <table className="w-full text-xs">
+        <tbody className="font-mono">
+          {rows.map((r) => (
+            <tr key={r.label} className="border-border border-b">
+              <td className="p-2 align-top">{r.label}</td>
+              <td className="p-2 align-top font-bold">{r.got}</td>
+              <td className="text-muted-foreground p-2 align-top">{r.read}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="bg-muted/50 p-3 text-sm">
+        <span className="font-emphasis">機械側の結論：</span>
+        {conclusion}
+      </p>
+    </section>
+  );
+}
+
 /** 1 検体。左に実物、右に「何であるべきか」を書く。 */
 export function Spec({
   label,

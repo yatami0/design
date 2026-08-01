@@ -7,7 +7,6 @@
 // 解説（詳細版）: https://claude.ai/code/artifact/6646b4ea-43f5-433a-89c3-5305f42ecbc0
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { Button } from '@/components/Action/Button';
 import { Badge } from '@/components/Communication/Badge';
 import { StatusPill } from '@/components/DataDisplay/StatusPill';
 import {
@@ -16,10 +15,9 @@ import {
   TableCell,
   TableRow,
 } from '@/components/DataDisplay/Table';
-import { Card } from '@/components/Layout/Card';
-import { Stack } from '@/components/Layout/Stack';
+import { Card, CardContent } from '@/components/Layout/Card';
 import { Checkbox } from '@/components/Selection/Checkbox';
-import { Pair, Viewpoint } from './_spec';
+import { MachineOnly, Pair, Viewpoint } from './_spec';
 
 const meta = {
   title: '★ Review/I 層の比較',
@@ -57,8 +55,8 @@ export const Default: Story = {
         right={{
           tag: 'own',
           name: 'Card',
-          code: 'rounded-lg → var(--radius-apple-m)',
-          note: 'semantic 語彙を経由するので、トークンを動かすと 12px へ追従した。',
+          code: 'rounded-xl → var(--radius-apple-l)',
+          note: 'semantic 語彙を経由するので、トークンを動かすと 18px へ追従した（実測 18px）。',
           demo: (
             <Card>
               <span className="text-label">カード</span>
@@ -71,19 +69,19 @@ export const Default: Story = {
         n={2}
         title="「危険を表す薄い面」の作り方"
         prop="background-color"
-        look="「エラー」バッジと「緊急」ピルの面の濃さ。同じ赤なのに濃さが違う。これは値のずれではなく、作り方そのものが違うことの現れ。"
+        look="「エラー」バッジと「緊急」ピルの面の濃さ。🟦 **own（16%）のほうが濃い**——実測でそうなる。差が小さくて分かりにくいのは当然で、10% と 16% の差でしかない。見てほしいのは濃淡そのものより「**片方は不透明度で、もう片方は専用色で作られている**」こと。"
         left={{
           tag: 'vendor',
           name: 'Badge — destructive',
-          code: 'bg-destructive/20',
-          note: '「意味色 + 不透明度」で作る。色は #ff3b30 に追従したが、20% はクラス名に焼き込み。',
+          code: 'bg-destructive/10',
+          note: '「意味色 + 不透明度」で作る。色は #ff3b30 に追従したが、10% はクラス名に焼き込み（実測 alpha 0.1）。',
           demo: <Badge variant="destructive">エラー</Badge>,
         }}
         right={{
           tag: 'own',
           name: 'StatusPill — danger',
           code: 'bg-fill-danger → --color-fill-danger',
-          note: '専用の tint 色を直接参照する。実測 rgba(255,59,48,0.16)。',
+          note: '専用の tint 色を直接参照する。実測 rgba(255,59,48,0.16)＝ 16%。vendor の 10% より濃い。',
           demo: <StatusPill tone="danger">緊急</StatusPill>,
         }}
       />
@@ -92,7 +90,7 @@ export const Default: Story = {
         n={3}
         title="「面の内側の余白」の取り方"
         prop="padding"
-        look="余白そのものより「語彙の名前で説明できるか」。Card は「inset-md だから 16px」と言えるが、Table は「p-2 だから 8px」としか言えない。見た目は同じでも、意味が乗っているかが違う。"
+        look="🟥 **左右の余白の有無を見る。**Card の root は py- だけで px- を持たない（横の余白は CardContent が持つ）ので、素の children を入れると左右がゼロになる——実測 paddingLeft: 0px。これは私の使い方の誤りで、観点 I とは別のバグ。**正しくは CardContent を使う。**そのうえで見てほしいのは「16px という値がどこから来たか説明できるか」——Card は --card-spacing → --spacing-inset-md と辿れるが、Table は p-2 で行き止まり。"
         left={{
           tag: 'vendor',
           name: 'Table のセル',
@@ -112,41 +110,39 @@ export const Default: Story = {
           tag: 'own',
           name: 'Card / Stack',
           code: '--card-spacing → --spacing-inset-md',
-          note: '用途名の語彙を経由する。実測 16px。',
+          note: '用途名の語彙を経由する。実測 paddingTop: 16px / paddingLeft: 0px（横は CardContent が持つ）。',
           demo: (
             <Card>
-              <Stack gap="sm">
-                <span className="text-label">inset-md</span>
-              </Stack>
+              <CardContent>
+                <span className="text-label">inset-md（CardContent 経由）</span>
+              </CardContent>
             </Card>
           ),
         }}
       />
 
-      <Pair
+      <MachineOnly
         n={4}
         title="wrapped は vendor と own のどちら寄りか"
-        prop="複数"
-        look="Button を vendor 群と own 群の間に置いて眺める。見た目は vendor 寄り（角丸も高さも素材のまま）で、足した 1 点だけが own 寄りのはず。そう見えるなら「ラッパーは薄い」ことの実証。🟥 ここだけは判断が要る——vendor 寄り / own 寄り / どちらとも言えない のどれか。"
-        left={{
-          tag: 'wrapped が足した 1 点',
-          name: 'Button の当たり判定',
-          code: 'pointer-coarse:after:-inset-(--spacing-hit-expand)',
-          note: '製品層が書いた唯一の行。semantic 語彙を参照している＝ own の性質。（タッチ環境でしか出ないので画面上は見えない）',
-          demo: <Button>default</Button>,
-        }}
-        right={{
-          tag: 'wrapped の中身',
-          name: 'Button の角丸・高さ・色',
-          code: 'rounded-[min(var(--radius-md),12px)] / h-8',
-          note: '全部 shadcn のまま。任意値も高さの直書きも残っている＝ vendor の性質。',
-          demo: (
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline">outline</Button>
-              <Button variant="destructive">destructive</Button>
-            </div>
-          ),
-        }}
+        why="🟥 **これは目では答えられない。**Button が足した唯一の 1 点は当たり判定の拡張で、`@media (pointer: coarse)` 限定なので**デスクトップの Storybook では発火しない**。画面上は素材そのままに見える——ユーザー指摘（2026-07-27）で判明した。"
+        rows={[
+          {
+            label: 'Button の角丸',
+            got: '12px',
+            read: 'rounded-[min(var(--radius-md),12px)]。素材のまま＝ vendor の性質',
+          },
+          {
+            label: 'Button の高さ',
+            got: '32px',
+            read: 'h-8 の直書き。素材のまま＝ vendor の性質',
+          },
+          {
+            label: 'Button の当たり判定（pointer: coarse）',
+            got: '見た目 + inset -6px × 2',
+            read: '製品層が足した唯一の行。semantic 語彙を参照＝ own の性質。🟥 デスクトップでは発火しない',
+          },
+        ]}
+        conclusion="**wrapped は「vendor の中身に own の薄皮が 1 枚」。**測れる 3 項目のうち 2 つが vendor の性質で、own の性質は 1 つだけ、しかもそれは目に見えない。→ **ラッパーは薄い**ことの実証。"
       />
 
       <section className="border-border mt-8 border-t pt-4">
