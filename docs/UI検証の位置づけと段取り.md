@@ -180,7 +180,8 @@ flowchart TD
 | 手3 | [手3_Components層と製品層の分離.md](手順/手3_Components層と製品層の分離.md) | ✅ done |
 | 手4 | [手4_PatternsTemplates層と一覧.md](手順/手4_PatternsTemplates層と一覧.md) | ✅ done |
 | 手5 | [手5_トークン差し替え実験.md](手順/手5_トークン差し替え実験.md) | ✅ done |
-| 手6〜手8・**手8b**・手9 | 未作成 | ⬜ |
+| 手6 | [手6_プレビューHTMLとdesign-sync登録.md](手順/手6_プレビューHTMLとdesign-sync登録.md) | 🟨 **planned**（§2 の D1〜D7 が未決） |
+| 手7・手8・**手8b**・手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 
