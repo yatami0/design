@@ -136,6 +136,30 @@ const TARGETS = [
         props: ['backgroundColor'],
         expect: '--color-fill-danger = rgba(255,59,48,.16)',
       },
+      // 🟥 **模型ではなく実物の Input で測る。**目視で「エラー時のフォーカスリングも
+      //    ブランド色に見える」という所見が出たが、素の div にリングを当てた検体では
+      //    「focus-visible と aria-invalid が重なったときの勝敗」を再現できていない（OBS-0009 §1）。
+      {
+        name: '実物 Input（通常・フォーカス時）',
+        sel: '[data-probe="input-plain"]',
+        props: ['boxShadow', 'borderColor'],
+        focus: true,
+        expect: 'ring-ring/50 = ブランド青 #005fa2 の 50%',
+      },
+      {
+        name: '実物 Input aria-invalid（フォーカスなし）',
+        sel: '[data-probe="input-invalid"]',
+        props: ['boxShadow', 'borderColor'],
+        expect: 'ring-destructive/20 = 赤 20%',
+      },
+      {
+        name: '🟥 実物 Input aria-invalid ＋ フォーカス（競合）',
+        sel: '[data-probe="input-invalid-focus"]',
+        props: ['boxShadow', 'borderColor'],
+        focus: true,
+        expect:
+          'CSS 順序で後ろの aria-invalid:ring-destructive/20 が勝つはず＝赤',
+      },
     ],
   },
   {
@@ -301,6 +325,28 @@ const TARGETS = [
     ],
   },
   {
+    // 🟥 DR-0053 が見つけた「Card の直下に children を置くと左右の余白がゼロ」の直しを、
+    //    目視ではなく機械で確かめる検体。`CardContent` を通したら px が出るはず。
+    id: '④-templates-appshell--card-surfaces',
+    label: '④ AppShell — CardSurfaces',
+    obs: 'H',
+    full: true,
+    measure: [
+      {
+        name: 'Card root（px は持たないまま）',
+        sel: '[data-slot="card"]',
+        props: ['paddingLeft', 'paddingTop'],
+        expect: 'paddingLeft: 0px / paddingTop: 16px（card.tsx は py- だけ）',
+      },
+      {
+        name: '🆕 CardContent（左右の余白はここが持つ）',
+        sel: '[data-slot="card-content"]',
+        props: ['paddingLeft', 'paddingRight'],
+        expect: '16px / 16px = px-(--card-spacing)',
+      },
+    ],
+  },
+  {
     id: '③-patterns-listdetail--default',
     label: '③ ListDetail',
     obs: '-',
@@ -315,6 +361,21 @@ const TARGETS = [
     measure: [],
   },
 ];
+
+// 🟥 **story の id を打ち間違えると、全検体が `null` になるだけで止まらない。**
+//    「要素が取れなかった」と区別がつかず、観点カードには 🟥 が並ぶだけになる。
+//    🟥 **実際に踏んだ。**export 名 `CardSurfaces` をそのまま繋げた id を書いたが、
+//    Storybook は kebab に割るので正しくは `--card-surfaces` だった。
+//    → **測る前に id が実在するかを index.json と突き合わせる。**
+const index = JSON.parse(
+  await readFile(join(ROOT, 'index.json'), 'utf8'),
+).entries;
+const unknown = TARGETS.filter((t) => !(t.id in index));
+if (unknown.length > 0) {
+  console.error('🟥 存在しない story id:');
+  for (const t of unknown) console.error(`   ${t.id}（${t.label}）`);
+  process.exit(1);
+}
 
 const server = await serve();
 const browser = await chromium.launch();
@@ -340,13 +401,19 @@ for (const t of TARGETS) {
   const measured = [];
   for (const m of t.measure) {
     const got = await page.evaluate(
-      ({ sel, props }) => {
+      ({ sel, props, focus }) => {
         const el = document.querySelector(sel);
         if (!el) return null;
+        // 🟥 **状態は当てないと出ない。**`:focus-visible` のリングは
+        //    フォーカスしていない要素では読めない（Chromium はテキスト入力を
+        //    常に focus-visible として扱うので `.focus()` で足りる）。
+        if (focus) el.focus();
         const cs = getComputedStyle(el);
-        return Object.fromEntries(props.map((p) => [p, cs[p]]));
+        const out = Object.fromEntries(props.map((p) => [p, cs[p]]));
+        if (focus) el.blur();
+        return out;
       },
-      { sel: m.sel, props: m.props },
+      { sel: m.sel, props: m.props, focus: m.focus ?? false },
     );
     measured.push({ ...m, got });
   }

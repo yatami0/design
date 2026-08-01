@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-08-01T02:23:38.027Z",
+  "measuredAt": "2026-08-01T02:41:19.517Z",
   "specimens": [
     {
       "obs": "B",
@@ -69,6 +69,27 @@
       "name": "StatusPill danger（自作・比較対象）",
       "expect": "--color-fill-danger = rgba(255,59,48,.16)",
       "got": "backgroundColor: rgba(255, 59, 48, 0.16)",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "実物 Input（通常・フォーカス時）",
+      "expect": "ring-ring/50 = ブランド青 #005fa2 の 50%",
+      "got": "boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.475881 -0.0470812 -0.122347 / 0.5) 0px 0px 0px 3px, rgba(0, 0, 0, 0) 0px 0px 0px 0px / borderColor: rgba(60, 60, 67, 0.29)",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "実物 Input aria-invalid（フォーカスなし）",
+      "expect": "ring-destructive/20 = 赤 20%",
+      "got": "boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.654224 0.203716 0.111346 / 0.2) 0px 0px 0px 3px, rgba(0, 0, 0, 0) 0px 0px 0px 0px / borderColor: rgb(255, 59, 48)",
+      "ok": true
+    },
+    {
+      "obs": "A",
+      "name": "🟥 実物 Input aria-invalid ＋ フォーカス（競合）",
+      "expect": "CSS 順序で後ろの aria-invalid:ring-destructive/20 が勝つはず＝赤",
+      "got": "boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.654224 0.203716 0.111346 / 0.2) 0px 0px 0px 3px, rgba(0, 0, 0, 0) 0px 0px 0px 0px / borderColor: rgb(255, 59, 48)",
       "ok": true
     },
     {
@@ -209,6 +230,20 @@
       "name": "nav-item（見た目も 44px・DR-0034）",
       "expect": "44px",
       "got": "minHeight: 44px",
+      "ok": true
+    },
+    {
+      "obs": "H",
+      "name": "Card root（px は持たないまま）",
+      "expect": "paddingLeft: 0px / paddingTop: 16px（card.tsx は py- だけ）",
+      "got": "paddingLeft: 0px / paddingTop: 16px",
+      "ok": true
+    },
+    {
+      "obs": "H",
+      "name": "🆕 CardContent（左右の余白はここが持つ）",
+      "expect": "16px / 16px = px-(--card-spacing)",
+      "got": "paddingLeft: 16px / paddingRight: 16px",
       "ok": true
     },
     {

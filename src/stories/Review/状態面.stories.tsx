@@ -4,6 +4,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { StatusPill } from '@/components/DataDisplay/StatusPill';
+import { Input } from '@/components/TextInput/Input';
 import { Viewpoint, Group, Spec } from './_spec';
 
 const meta = {
@@ -110,6 +111,43 @@ export const Default: Story = {
             <div className="bg-primary/80 size-8 rounded-md" />
             <div className="bg-secondary/80 border-border size-8 rounded-md border" />
           </div>
+        </Spec>
+      </Group>
+
+      {/*
+        🟥 **上の 2 群は素の div にリングを当てただけの模型。**
+           目視レビューで「エラー時のフォーカスリングもブランド色に見える」という所見が出たが、
+           模型では「フォーカスと aria-invalid が重なったとき、どちらが勝つか」を再現できていない
+           （OBS-0009 §1）。**実物の Input を置いて、機械側に測らせる。**
+      */}
+      <Group
+        title="4. 🟥 実物の Input — フォーカスと aria-invalid が重なったとき、どちらの色が勝つか"
+        note="上の 2 群は「素の div にリングを当てた模型」なので、状態が重なったときの勝敗を再現できない。ここだけは実物の Input を置いてある。クリックまたは Tab でフォーカスして、3 つ目のリングが青（ブランド）か赤（destructive）かを見てほしい。実測値は観点カードの表にある。"
+      >
+        <Spec
+          flag="🟦"
+          label="Input（通常）— focus-visible:ring-ring/50"
+          expect="--ring は #005fa2（tmp のブランド青）を追ったはず。50%"
+        >
+          <Input data-probe="input-plain" placeholder="通常" />
+        </Spec>
+        <Spec
+          flag="🟨"
+          label="Input aria-invalid（フォーカスなし）— aria-invalid:ring-destructive/20"
+          expect="赤 20% のリングと destructive の境界線。フォーカスしていなくても出る"
+        >
+          <Input data-probe="input-invalid" aria-invalid placeholder="エラー" />
+        </Spec>
+        <Spec
+          flag="🟥"
+          label="Input aria-invalid ＋ フォーカス — 2 つのリングが競合する"
+          expect="CSS の順序上は aria-invalid:ring-destructive/20 が focus-visible:ring-ring/50 より後ろなので赤が勝つはず。🟥 ここが実測で確かめたい点"
+        >
+          <Input
+            data-probe="input-invalid-focus"
+            aria-invalid
+            placeholder="エラー＋フォーカス"
+          />
         </Spec>
       </Group>
     </div>
