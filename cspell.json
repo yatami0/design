@@ -42,6 +42,8 @@
     "oklab",
     "oklch",
     "orval",
+    "oxlint",
+    "oxlintrc",
     "playwright",
     "pnpm",
     "postcss",
@@ -63,6 +65,7 @@
     "vega",
     "vitest",
     "wcag",
+    "worktree",
     "yiping",
     "zenn"
   ]

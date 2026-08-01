@@ -70,6 +70,7 @@
 | [DR-0053](DR-0053-viewpoints-must-be-answerable-by-eye.md) | ⭐ **観点は「誰が答えられるか」で分ける** — 目で答えられないものを比較ペアに入れると止まる。ラベルを 3 箇所間違えていた | 手5 | **手5**・PoC |
 | [DR-0054](DR-0054-mock-specimens-cannot-reproduce-stacked-states.md) | ⭐ **模型の検体は「状態の重なり」を再現しない** — フォーカス ＋ `aria-invalid` は実物で測って決着（destructive がソース順で勝つ） | 手5 | **手5**・PoC |
 | [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md) | ⭐ **`/design-sync` が上げるのはコンパイル済みの実コンポーネント** — プレビュー HTML は人間用のカード。Storybook は入力かつ基準器で、Playwright は「変換」ではなく「検証」に要る（[DR-0018](DR-0018-design-sync-takes-preview-html.md) を訂正） | 手6 | **手6**・手7・手9・PoC |
+| [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) | ⭐ **受け手が独自の機械ゲートを自動生成していた** — `_adherence.oxlintrc.json` は `.d.ts` から導出されローカルに無い。強制されるのは `<button>` → `<Button>` の 1 本だけで、**`p-4` / `text-gray-600` は検出されない** | 手7 | **手7**・手8・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -125,6 +126,7 @@
 | DR-0055 | 🟥 候補 | PoC も DR / OBS 台帳を持つ。**finding に推論を混ぜる問題は同型で起きる**ので、§影響 の割り方をそのまま渡せる |
 | DR-0056 | 🟥 要確認 | PoC が shadcn を採るなら、**preset の選定と差し替え可能性は同じ論点**になる |
 | DR-0057 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」は好みの問題ではない。**Claude Design 連携の入力形式そのもの**。あわせて **packages/ui を「ライブラリとしてビルドできる形」にしておく**必要がある（converter がビルド済み `dist/` を要求する） |
+| DR-0059 | 🟥 architecture.md / ui.md の材料 | **`.d.ts` の props 型が「相手側の lint 規則」に化ける。**公開 API の型は規約そのものとして扱う（型の鮮度 = 規則の正しさ）。あわせて **任意値禁止は境界の向こうでは効かない**ので、規約は散文でも書く |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

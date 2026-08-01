@@ -181,7 +181,8 @@ flowchart TD
 | 手4 | [手4_PatternsTemplates層と一覧.md](手順/手4_PatternsTemplates層と一覧.md) | ✅ done |
 | 手5 | [手5_トークン差し替え実験.md](手順/手5_トークン差し替え実験.md) | ✅ done |
 | 手6 | [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md) | ✅ done |
-| 手7・手8・**手8b**・手9 | 未作成 | ⬜ |
+| 手7 | [手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md) | 🟨 **planned**（§2 D1〜D7 が未決） |
+| 手8・**手8b**・手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 
