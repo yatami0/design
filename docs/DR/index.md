@@ -77,6 +77,8 @@
 | [DR-0063](DR-0063-forbidding-without-an-alternative-fails.md) | ⭐ **禁止だけでは破られ、代替語彙を与えると守られた** — 3 周の実測。禁止文は 1 文字も変えていないのに逸脱が 5 → 2 → **1** に減った。減らし方は「部品を足す」「語彙を足す」の 2 つだけ | 手7 | **手8**・PoC |
 | [DR-0064](DR-0064-design-project-receives-runtime-only.md) | ⭐ **デザインプロジェクトに複製されるのはランタイムだけ** — `components/**` も `guidelines/**` も届かない。header は**ファイルではなく system prompt** で効いている。🟥 日本語ファイル名は 401（agent 自身の報告・3/3） | 手7 | **手9**・PoC |
 | [DR-0065](DR-0065-claude-design-uses-the-registered-components.md) | ⭐★ **Claude Design は登録した部品を「使う」** — 明示なしの 1 周目から `<div>` `<button>` `<table>` 0 件。**足せば足すだけ使う**（種類 10 → 17 → 18）。**段取り §5 の分岐は「使う」側に決した** | 手7 | **手8**・**手9**・PoC |
+| [DR-0066](DR-0066-neither-side-lints-the-generated-output.md) | ⭐★ **生成物は境界のどちら側でも検査されていない** — 我々は 6 本中 **0 本**。受け手は `no-restricted-syntax` が oxlint に無く**設定ごと parse 不能**。56 セレクタが走ったと仮定しても**当たる 5 件は全部偽陽性**（`.d.ts` からの props 抽出が継承分を落としている）。「食い違い」ではなく「**どちらも見ていない**」 | 手8 | **手9**・PoC |
+| [DR-0067](DR-0067-inherited-asset-was-not-inheritable.md) | ⭐ **「引き継ぐ」と書いた資産が引き継げなかった** — CC-Skills の GitHub は `Initial commit` の README 1 枚。`validate.mjs` / `anti-slop.mjs` は**存在しない**。本 repo は「🟦 流用できる」と判定しただけで**中身を一度も写していなかった** | 手8 | **段取り §7 の訂正**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -139,6 +141,8 @@
 | DR-0063 | 🟥 ui.md / ADR-0019 の材料 | **任意値禁止は「禁止と代替の対」で書く。**禁止だけの規約は破られることが実測で出た |
 | DR-0064 | 🟥 architecture.md の材料 | **日本語ファイル名を成果物のパスに使わない。**あわせて「移送先が実際に受け取るもの」を出荷物の一覧と混同しない |
 | DR-0065 | 🟥 architecture.md の材料 | **往復ワークフローは成立する。**`packages/ui` は「Claude Design へ出して戻す」前提で設計してよい |
+| DR-0066 | 🟥 architecture.md / ui.md の材料 | **「規約を書いた」と「規約が守られているか機械で見ている」は別。**生成 AI に渡す規約は、**検査する側の射程とセットで**設計する。あわせて **`.d.ts` からの props 抽出は継承分を落とす**ので、抽出結果を規則にするなら継承を展開する |
+| DR-0067 | 🟥 architecture.md の材料 | **別リポジトリの資産に依存する計画を書くときは、依存する部分を自分の repo に写してから書く。**「流用できる」は所在の確認であって、可用性の確認ではない |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
