@@ -52,9 +52,16 @@
   **`.design-sync/config.json` の `buildCmd` は「再同期の前に人が回すもの」の申し送り**として読むこと。
   今回は `pnpm i --frozen-lockfile && pnpm build:types` を手で回した。
 
-- 🟨 **[GENERAL] `pnpm` は PATH に無い。**`~/Library/pnpm/.tools/pnpm/10.0.0/bin` に **10.0.0** が入っている。
-  🟥 **`corepack pnpm` は 11 系を解決し、`node_modules` の purge を要求して失敗する**（`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`）。
-  **corepack を使わず上記の絶対パスを PATH に足す。**
+- 🟨 **[GENERAL] `pnpm` 経由の実行は避ける。**（2026-08-02 更新）
+  PATH の `pnpm` は Homebrew の **11.18.0** で、`pnpm <script>` が実行前に依存チェックを走らせ
+  `ERR_PNPM_IGNORED_BUILDS`（`esbuild` / `sharp`）で **`exit 1`** になる。
+  🟥 **副作用でプレースホルダの `pnpm-workspace.yaml` が生える**（`allowBuilds: set this to true or false`）。
+  **生えたら消す**——`cspell` が `esbuild` を拾って repo 側に新しい赤が出る。
+  🟦 **回避: `pnpm` を使わず直接叩く。**`buildCmd` の実体は下の 2 行で足りる:
+  ```bash
+  export PATH="$HOME/.local/share/mise/installs/node/24.18.1/bin:$PATH"   # mise は非対話シェルで効かない（node が 22.16 になる）
+  ./node_modules/.bin/tsc -p tsconfig.dts.json && node tools/dts-alias.mjs
+  ```
 
 - 🟨 **`[REFERENCE_STALE?]` は config だけ変えた再ビルドでも出る。**
   参照 Storybook は `src/index.ts` を変えた後に建て直してあるので、この警告は空振り。
@@ -65,6 +72,18 @@
 
 - **`guidelinesGlob` は明示指定。**既定の `docs/*.md` は工程記録（handoff・実行記録・段取り・思想への指摘）まで
   さらってしまい、design agent には雑音になる。**設計判断に効く 6 本だけ**に絞ってある。
+
+- 🆕 **[GENERAL] Conductor の worktree はフレッシュ clone と同じ。**（2026-08-02）
+  `.ds-sync/` `dist/types` `.design-sync/sb-reference` `.design-sync/.cache` は**全部 gitignore なので存在しない。**
+  再同期の前に**この順で**揃える（`node` は上記の mise パスを通してから）:
+  ```bash
+  cp -r "<skill-base-dir>"/{package-build.mjs,package-validate.mjs,resync.mjs,lib,storybook,non-storybook} .ds-sync/
+  echo '{"name":"ds-sync-deps","private":true}' > .ds-sync/package.json
+  (cd .ds-sync && npm i esbuild ts-morph @types/react playwright && npx playwright install chromium)
+  ./node_modules/.bin/tsc -p tsconfig.dts.json && node tools/dts-alias.mjs        # dist/types
+  ./node_modules/.bin/storybook build -c .storybook -o "$(git rev-parse --show-toplevel)/.design-sync/sb-reference"
+  ```
+  🟦 **ドライバは `--node-modules ./node_modules --entry src/index.ts` で通る。**
 
 ## 警告のうち「想定内」のもの
 
@@ -85,7 +104,7 @@
 
 ## 🟥 Re-sync risks（次の実行が見張るもの）
 
-> 最終更新: 2026-08-02（手7 の再同期。14 → **30 部品**）
+> 最終更新: 2026-08-02（**手8 の再同期。conventions header だけを変えた aux-only 同期**）
 
 | # | 見張るもの | なぜ |
 | --- | --- | --- |
@@ -99,3 +118,20 @@
 | 8 | 🆕 🟨 **`Dialog.Open` の skip は「storybook 側が描けない」ことに依存** | story 側が直れば skip は不要になる。**skip を惰性で残さない** |
 | 9 | 🆕 🟨 **`tokens/` は空のままが正常** | converter の `tokens/` は別パッケージ用。本 repo の値は `_ds_bundle.css` に焼き込まれる |
 | 10 | 🆕 🟨 **`x-omelette.tokens` にパレット色が載る** | `src/app/tokens.css` が semantic 色を**パレット色への参照**で定義しているため（`--color-success: var(--color-emerald-600)` ほか）。**conventions header の「パレット色を書くな」と字面が食い違う**——手7 の観測対象 |
+| 11 | 🆕 🟥 **出荷している `.d.ts` は型検査を通らない（26 件）** | `package-validate.mjs` の「all .d.ts parse cleanly」は **parse であって typecheck ではない。**実測: `tsc --strict --noEmit` を `ds-bundle/components/**/*.d.ts` にかけると **26 エラー**——`React.Ref`（型引数なし）**18 件**／`Cannot find name`: `CSSProperties` ×2・`ColumnDef`・`ListDetailState`・`NavItem`／`ComponentType<DataGridProps>`・`<ListDetailProps>`（総称型に型引数なし）2 件。🟥 **受け手はこの `.d.ts` から lint 規則を生成する**（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)）ので、**抽出が浅い原因の半分はここ**。再現: `docs/実行記録.md §手8 H8-10` |
+| 12 | 🆕 🟨 **README の自動生成部と conventions header が矛盾しうる** | 生成部（`## Where things are`）は `guidelines/` を「読め」と書くが、**デザイン側には届かない**（[DR-0064](../docs/DR/DR-0064-design-project-receives-runtime-only.md)）。→ header 側に**打ち消しの 1 段落**を置いてある。**header を書き換えるときに消さないこと** |
+| 13 | 🆕 🟦 **`[TOKENS_MISSING]` が 9 → 1 に減った** | 前回は `--radix-*` 9 件。今回は「1 missing, below threshold」で **tag そのものが出ない。**原因未特定（sb CSS の採取結果が変わった可能性）。**増えたら見る** |
+| 14 | 🆕 🟦 **`[REFERENCE_STALE?]` と `AppShell` の `[SPOT_CHECK]` は今回出なかった** | どちらも 3 回連続で出ていたもの。**参照 Storybook を同じセッションで建て直したため**と思われる。次回また出たら「建て直しのタイミング」が原因と確定できる |
+
+## 🆕 手8 の再同期（2026-08-02）— aux だけを動かした
+
+**変えたのは `.design-sync/conventions.md` の 1 ファイルだけ。**`src/**` は 1 行も触っていない。
+
+| 観測 | 結果 |
+| --- | --- |
+| ドライバの判定 | 🟦 `ok: true` / `anchor: ok` / `pendingGrade: []` / `canary: null` |
+| 検証 | 🟦 **30 件すべて `verified-by-upload`（carried forward）。**`changed` / `added` / `removed` すべて 0 |
+| アップロード | 🟦 `bundle: false` / `styling: false` / **`aux: true`**・`deletePaths: []` |
+| render check | 🟦 **30/30 clean**（最終レポート用に `--render-sample 0` で全件回した） |
+| 🟥 **conventions header の実在検証** | **ドリフト 0 件。**クラス 26 語・部品/Provider/hook 40 名・props と union 値・否定の主張（`Container` に `inset` が無い等）を**全件実測**。`window.Design` は vm で実際にロードして 129 export を列挙した（grep ではなく） |
+

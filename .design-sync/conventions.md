@@ -100,6 +100,9 @@ are **not** readable from a design — do not go looking for them. Everything yo
 this document or in that CSS closure. The tier and facet vocabulary above is this system's own
 classification; treat this document as its source.
 
+> The generated index further down this README lists `guidelines/` and per-component docs. **Ignore those
+> entries** — they describe the design-system repository, not your project. This section overrides them.
+
 Two more rules that follow from that:
 
 - **Do not add raw CSS.** No `<style>` blocks beyond the document reset, and no inline `style` for
