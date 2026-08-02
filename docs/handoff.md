@@ -3,17 +3,22 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-02（**★ 手7 完了。Q1 = 「使う」——段取り §5 の分岐は往復ワークフロー成立側に決した**）
+最終更新: 2026-08-02（**手7 は `main` へマージ済み。手8 の手順書を起こした——問いは「通るか」から「どこで食い違うか」へ**）
 
 ---
 
 ## 現在地
 
-- **手0〜手6 が完了し、すべて `main` へ `--no-ff` マージ済み。**
-  ✅ **手6 のマージも済んだ**——`b7a97f3`（`step/h6-preview-html` を `--no-ff`・2026-08-01）。
+- **手0〜手7 が完了し、すべて `main` へマージ済み。**
+  ✅ **手7 のマージも済んだ**——`5c36b88`（**GitHub の PR #1** 経由。`step/h7-design-agent-behavior`・2026-08-02）。
+  🟨 **手7 だけマージの打ち方が違う。**手5・手6 はローカルで `--no-ff`、手7 は PR。**次回どちらで揃えるかは未決**（下記「次にやること」§1）。
   🟨 **`main` は別 worktree（`~/conductor/repos/design`）が持っている**ので、作業側から `git switch main` は落ちる。
-  マージは `git -C ~/conductor/repos/design merge --no-ff <branch>` の形で打つ。
-- ✅ **手7 が完了した**（2026-08-02）。ブランチ `step/h7-design-agent-behavior`。🟥 **`main` へ未マージ**。
+  ローカルでマージするなら `git -C ~/conductor/repos/design merge --no-ff <branch>` の形で打つ。
+- 🆕 **環境が変わっている。**handoff の「環境の再現」節は **WSL2 前提**で書かれているが、
+  現在は **macOS ＋ Conductor の worktree**（`~/conductor/workspaces/design/<name>`）。
+  🟥 **`~/git/CC-Skills` がこの機械に存在しない**（`validate.mjs` / `anti-slop.mjs` の出どころ。手8 で要る）。
+  🟦 GitHub に public で残っているので clone で解ける（`yatami0/CC-Skills`）。
+- 🆕 **手8 の手順書を起こした**（2026-08-02）。ブランチ `step/h8-output-passes-gates`。**§2 の D1〜D8 が未決着**。
 - ★★ **Q1 の答えは「使う」**（[DR-0065](DR/DR-0065-claude-design-uses-the-registered-components.md)）。
   **明示していない 1 周目から `<div>` `<button>` `<table>` が 0 件**で、**部品を足せば足すだけ使った**（種類 10 → 17 → 18）。
   → **段取り §5 の分岐は「往復ワークフロー成立」側に決した。手9 は「部品をコードごと移送する」形で設計してよい。**
@@ -29,8 +34,10 @@
   **受け手は `.d.ts` から独自の lint 設定 `_adherence.oxlintrc.json` を自動生成していた**（ローカルには無い）。
   強制されるのは **`<button>` → `<Button>` の 1 本だけ**で、🟥 **`p-4` / `text-gray-600` は検出されない。**
   🟥 **[DR-0018](DR/DR-0018-design-sync-takes-preview-html.md) を superseded にした**——[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md) が訂正（**手6 の作業内容が書き換わった**）。
-- 🟨 **OBS は `open` 6 件**（[docs/OBS/](OBS/index.md)）。🆕 **OBS-0010**（フォント修正で手5 の観点 D をやり直すか）と **[OBS-0011](OBS/OBS-0011_規約ヘッダの言語は決定ではなく既定値だった.md)**（conventions header の言語は決定ではなく既定値。**手7 の交絡変数**）を起票。**棚卸しを初回実施し、2 件を DR へ昇格させた**（OBS-0006→DR-0056 / OBS-0007→DR-0055）。
-  🟥 **残る 4 件のうち [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) だけが他をブロックしている**（OBS-0004 の指摘 8 が学習待ち）。
+- 🟨 **OBS は 11 件で `open` 5 件**（[docs/OBS/](OBS/index.md)。`connected` 3 ／ `promoted` 2 ／ `closed` 1・2026-08-02 に実ファイルで数え直した）。
+  内訳: `open` = **OBS-0004 / 0005 / 0008 / 0009 / 0010**。🟦 **[OBS-0011](OBS/OBS-0011_規約ヘッダの言語は決定ではなく既定値だった.md) は手7 Q6 が答えを出して `closed`**（英語の規約 → 日本語の UI が 3 周とも成立）。
+  **棚卸しを初回実施し、2 件を DR へ昇格させた**（OBS-0006→DR-0056 / OBS-0007→DR-0055）。
+  🟥 **`open` 5 件のうち [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) だけが他をブロックしている**（OBS-0004 の指摘 8 が学習待ち）。
 
 ### 手5 でここまでに分かったこと（次の手が前提にすること）
 
@@ -103,8 +110,8 @@
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | [手4](手順/手4_PatternsTemplates層と一覧.md) | ✅ **done** |
 | 手5 | ★ トークン差し替え実験 | [手5](手順/手5_トークン差し替え実験.md) | ✅ **done**（2026-08-01・`main` へマージ済み `e88311a`） |
 | 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | ✅ **done**（2026-08-01・`main` へマージ済み `b7a97f3`） |
-| 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | [手7](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02）。★ **Q1 = 「使う」**。🟥 **`main` へ未マージ** |
-| 手8 | 出力は lint / validate.mjs を通るか | 未作成 | ⬜ |
+| 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | [手7](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02・`main` へマージ済み `5c36b88`）。★ **Q1 = 「使う」** |
+| 手8 | 🟥 **問いが書き換わった**——「出力は lint / validate.mjs を通るか」→ **受け手の lint と我々の lint はどこで食い違うか** | 🆕 [手8](手順/手8_出力は機械ゲートを通るか.md) | 🟨 **手順書あり・未着手**（§2 の D1〜D8 が未決着） |
 | **手8b** | 🆕 **preset 差し替え**（値では解けない「形」の衝突を、部品の作りを選び直して解けるか） | 未作成 | ⬜ 🟨 **「やらない」も結論**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)） |
 | 手9 | 移送手順（人が実行）+ PoC の docs へ DR/OBS で戻す | 未作成 | ⬜ |
 
@@ -171,6 +178,38 @@ node -e "const r=require('/tmp/lint.json');const m={};for(const f of r)for(const
 ```
 
 ## 環境の再現
+
+> 🆕 **2026-08-02: 環境が変わっている。**以下の 2 節のうち**上が現行**、下（WSL2）は手5〜手7 当時の記述。
+
+### 🆕 現行（macOS ＋ Conductor worktree・2026-08-02 実測）
+
+```bash
+cd ~/conductor/workspaces/design/<workspace 名>   # `main` は ~/conductor/repos/design が持つ
+```
+
+🟥 **`pnpm <script>` がそのままでは落ちる。**2 つ穴がある。
+
+| 穴 | 症状 | 回避 |
+| --- | --- | --- |
+| **① pnpm 11 の依存チェック** | `pnpm typecheck` 等が実行前に `pnpm install` を走らせ、`ERR_PNPM_IGNORED_BUILDS`（`esbuild` / `sharp`）で `exit 1`。🟥 **副作用でプレースホルダの `pnpm-workspace.yaml` が生える**（`allowBuilds: set this to true or false`）。**生えたら消す**——`cspell` が `esbuild` を拾って**新しい赤**になる | `./node_modules/.bin/<tool>` を直接叩く |
+| **② mise が非対話シェルで効かない** | `node -v` が **22.16.0**（`mise.toml` は 24）。`cspell` が `Unsupported NodeJS version (22.16.0); >=22.18.0 is required` で落ちる | `export PATH="$HOME/.local/share/mise/installs/node/24.18.1/bin:$PATH"` |
+
+**ゲート 6 本を直接叩く形**（2026-08-02 にこの形で全本回してベースラインと一致を確認済み）:
+
+```bash
+export PATH="$HOME/.local/share/mise/installs/node/24.18.1/bin:$PATH"
+./node_modules/.bin/tsc --noEmit
+./node_modules/.bin/eslint .
+./node_modules/.bin/next build
+./node_modules/.bin/prettier --check .
+./node_modules/.bin/cspell --no-progress --gitignore "**"
+./node_modules/.bin/storybook build && rm -rf storybook-static
+```
+
+🟨 **`pnpm approve-builds` で ① を恒久的に塞げる見込みだが、まだやっていない**——
+`pnpm-workspace.yaml` が repo に増えることになるので、**移送物が変わる**（手9 に効く）。**未決 #27。**
+
+### WSL2（手5〜手7 当時の記述・そのまま残す）
 
 ```bash
 cd ~/git/design
@@ -357,31 +396,56 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 ## 次にやること
 
-✅ **手7 は完了した**（Q1〜Q8 すべてに答えが出て、完了条件も検証済み）。
-**ブランチ `step/h7-design-agent-behavior` は作業ツリー clean。🟥 `main` へは未マージ。**
+✅ **手7 は完了し、`main` へマージ済み**（`5c36b88`・PR #1）。
+🆕 **手8 の手順書は書けた**（[手8_出力は機械ゲートを通るか.md](手順/手8_出力は機械ゲートを通るか.md)）。**次は問いを確定させる工程。**
 
-### 🟥 1. `main` へ `--no-ff` マージする（**人が実行する**）
+### 🟥 1. 手8 §2 の D1〜D8 を決着させる（**ユーザー判断**）
 
-**マージは提案までが Claude の仕事**（stateLedger の規律）。
-🟨 `main` は別 worktree が持っているので、`-C` の形で打つ。
+**「手順書を書く → 問いを確定させる → 実行する」の 2 段目。**推奨は手順書 §2.1〜§2.8 に根拠つきで書いてある。
 
-```bash
-git -C ~/conductor/repos/design merge --no-ff step/h7-design-agent-behavior
-```
+| # | 論点 | 推奨 |
+| --- | --- | --- |
+| **D1** ★ | 「出力」とは何を指すか（検査対象の定義） | **C**（`.dc.html` ＋ TSX 翻訳の両方）。🟥 **後から変えると全部やり直し** |
+| **D2** | 翻訳の方法 | **A**（機械的な 1:1 変換） |
+| **D3** | どの検体を使うか | **C**（1 周目と 3 周目の対照） |
+| **D4** | 手7 が送った 3 件を直すか | **C**（header の宛先無し参照だけ。4 周目は打たない） |
+| **D5** | `validate.mjs` の扱い | **A**（CC-Skills を clone して走らせる） |
+| **D6** | 赤が出たらどうするか | **B**（記録だけして手9 へ） |
+| **D7** | 翻訳物の置き場と射程 | **B**（`artifacts/h8/` ＋ ESLint の射程にだけ入れる） |
+| **D8** | 受け手の lint が走っているかの確かめ方 | **B**（形だけ読み「走っているか」は 🟥 未検証と明記） |
 
-### 2. 手8 の手順書を書く
+🟨 **D1〜D8 の前に H8-01（射程の赤テスト）と H8-02（受け手側の読み直し）を打つ設計にしてある**——
+**測る前と後で D1 の選択肢の形が変わりうる**ため（手7 で「手順書を書く前に受け手側を実測した」のと同じ形）。
 
-**手7 が手8 の問いを具体化した。**「出力は lint / validate.mjs を通るか」は、
-🟥 **「受け手の lint と我々の lint はどこで食い違うか」**に変わっている。
+### 2. 🟨 マージの打ち方を揃えるか（🆕 未決 #26）
+
+手5・手6 は**ローカルで `--no-ff`**、手7 は **GitHub の PR #1**。
+[CLAUDE.md](../CLAUDE.md) は `--no-ff` マージと書いており、**PR は書かれていない。**
+🟨 **どちらかに揃えるか、両方を認めて CLAUDE.md に追記するか。**
+
+### 3. 🟨 [OBS-0010](OBS/OBS-0010_フォント修正で手5の目視判定をやり直すか.md)（数分で解ける・持ち越し 3 回目）
+
+`pnpm storybook` で `★ Review/D タイポ` を開き直すだけ。
+
+### 4. 🔺 ADR 起案の時機（未決 #20）
+
+昇格候補 **4 件**（DR-0032 / DR-0033 / DR-0034 / DR-0052）。🟨 **手7 で候補が増えた可能性**——
+[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md)（禁止と代替の対）は**外から見える規約に効く**ので、次の判定で見る。
+
+### 5. 🟥 [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) の学習（他をブロックしている観点）
+
+**手に紐づかないので、いつやってもよい。**
+
+### 手7 が手8 へ渡したもの（手順書 §0・§1 に取り込み済み）
 
 | 手7 が渡すもの | 手8 で効くこと |
 | --- | --- |
 | 🟥 **`tabular-nums`（`DataGrid.columns[].cell` 経由）が 3 周とも残った** | **赤の内訳として持っていく。**語彙では塞がらない面（[DR-0060](DR/DR-0060-vocabulary-leaks-from-four-surfaces.md) の ③） |
 | 🟥 **`<style>` への生 CSS が 2 例目** | [2 回ルール](../CLAUDE.md)は成立済み。header に 1 文足すのが最小 |
-| 🟥 **header の `guidelines/docs/…` 参照に宛先が無い**（[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)） | 参照を削るか、要点を header 本文へ畳む |
-| 🟥 **成果物は JSX ではなく `.dc.html`**（`x-import` ＋ `DCLogic`） | **本 repo の ESLint はそのままでは読めない。**手8 の最初の障害はここ |
-| 🟦 **受け手も lint を持っている**（[DR-0059](DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） | 我々の lint と**どこで食い違うか**を数える |
-| 🟥 **借金が復活する**（`exactOptionalPropertyTypes: false`・DR-0014） | 手9 の移送時。手8 で先に見えるかもしれない |
+| 🟥 **header の `guidelines/docs/…` 参照に宛先が無い**（[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)） | 参照を削るか、要点を header 本文へ畳む（手8 の H8-09） |
+| 🟥 **成果物は JSX ではなく `.dc.html`**（`x-import` ＋ `DCLogic`） | **本 repo の ESLint はそのままでは読めない。**手8 の最初の障害はここ＝ **Q1** |
+| 🟦 **受け手も lint を持っている**（[DR-0059](DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） | 我々の lint と**どこで食い違うか**を数える＝ **Q2 と食い違い表** |
+| 🟥 **借金が復活する**（`exactOptionalPropertyTypes: false`・DR-0014） | 手9 の移送時。**手8 の Q5 で先に見えるかもしれない** |
 
 ### 3. 🟨 [OBS-0010](OBS/OBS-0010_フォント修正で手5の目視判定をやり直すか.md)（数分で解ける・持ち越し 2 回目）
 
@@ -425,6 +489,8 @@ git -C ~/conductor/repos/design merge --no-ff step/h7-design-agent-behavior
 | ~~23~~ | ✅ **閉じた（[DR-0049](DR/DR-0049-hit-area-reaches-44px-only-at-default-size.md)・2026-07-27）。**Playwright の `hasTouch` で実測した結果、**4 サイズ中 2 つが 44px 未達**（xs 36px / sm 40px / default 44px / lg 48px）。拡張量が全サイズ一律のため。🟥 **対処は [OBS-0008](OBS/OBS-0008_当たり判定44pxをどう扱うか.md) に積んだ** |
 | 24 | **[DR-0055](DR/DR-0055-finding-impact-splits-observation-from-inference.md) の効果を検算する。**🆕 **手6 で DR-0057・0058 の 2 本が §影響 を割った形で書けた（4・5 例目）。**§影響 を観測 / 推論に割ったが、**節を割れば混入が減るかは未検証**。🟥 **4 例目が出たら「器では解けなかった」ことになり、手順書側に工程を足す話へ移る**（棚卸しで却下ではなく保留にした案） | 毎手（DR を書くたび） |
 | 25 | **思想への指摘の偏りは「規定の細かさ」か「使い込みの量」か。**本人回答は「両方 / まだ言えない」（2026-08-01）。🆕 **材料が 1 つ出た**——手4（③ 層）・手5（① 層）・**手6（分類を初めて外へ渡した）**と **3 手連続で「初めて使った面から 1 件ずつ」**出ている。🟨 **規定が粗い ① ③ からも同じ率で出ている**ので「使い込みの量」に寄る観測。🟥 **n=3 で率は数えていない**（正規化は手9） | 次の `/obs review` |
+| 26 | 🆕 **マージの打ち方が 2 通りになった。**手5・手6 はローカルで `--no-ff`、手7 は **GitHub の PR #1**。[CLAUDE.md](../CLAUDE.md) は `--no-ff` しか書いていない。🟨 **揃えるか、両方を認めて追記するか** | 手8 の着手前（打つ前に決める） |
+| 27 | 🆕 **環境が WSL2 → macOS ＋ Conductor worktree に変わった。**「環境の再現」節に**現行の形を追記済み**（2026-08-02）。残る論点は 2 つ: ① **`pnpm approve-builds` で依存チェックの穴を恒久的に塞ぐか**（塞ぐと `pnpm-workspace.yaml` が repo に増える＝**移送物が変わる**）② 🟥 **`~/git/CC-Skills` が無い**（手8 の `validate.mjs` の出どころ。GitHub に public で残っている） | ① は手9 の移送物を決めるとき／② は手8 の H8-04 |
 
 ## セッション申し送り
 
@@ -736,3 +802,28 @@ git -C ~/conductor/repos/design merge --no-ff step/h7-design-agent-behavior
 - **台帳の現在地**: DR **58 件**（決定 23 / 発見 35）・OBS **10 件**（`open` 5・`promoted` 2）・手順書 **7 本**・story 37 本。
 - 🟥 **次セッションの最初の一手は `main` へ `--no-ff` マージすること（人が実行）。**
   ブランチ `step/h6-preview-html` が **`main` へ未マージ**、作業ツリー clean。
+
+### 2026-08-02（第 7 セッション）— 手7 を 3 周通し、Q1 に「使う」の答えを出した
+
+> 🟨 **本節は第 8 セッションで遡って書いた**（第 7 セッションの終了処理で申し送りだけが抜けていた）。
+> 出どころは [実行記録 §手7 の締め（確定版）](実行記録.md) と手7 で出た DR 7 本。**その場の所感は復元できないので書いていない。**
+
+- ★ **段取り §5 の分岐が決した。Q1 =「使う」**（[DR-0065](DR/DR-0065-claude-design-uses-the-registered-components.md)）。
+  **明示していない 1 周目から `<div>` `<button>` `<table>` が 0 件**で、**部品を足せば足すだけ使った**（種類 10 → 17 → 18）。
+  → **往復ワークフロー成立側。手9 は「部品をコードごと移送する」形で設計してよい。**
+- ★ **3 周とも「1 変数だけ動かす」で通した。**1 周目=14 部品／2 周目=**＋素材層 16**（依頼文は 1 文字も変えない）／
+  3 周目=**語彙を足しただけ**（部品も依頼文も不変）。**事前登録していた 2 周目（末尾に 1 文足す対照）は D8=B で捨てた**——
+  1 周目が 🟦 だったので「使わない／言わないと使わない」の切り分けが不要になったため。
+- ★ **禁止だけでは破られ、代替語彙を与えると守られた**（[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md)）。
+  禁止文を 1 文字も変えずに、「**部品を足す**」「**語彙を足す**」の 2 つだけで逸脱が **5 → 2 → 1** に減った。
+- 🟦 **Q2（フラグは効くか）も答えが出た。**`AppProviders` は 30 部品に入っておらず、3 周目は `README.md` すら
+  複製されていないのに、**3 周とも最外に 1 回**正しく置かれた。→ **conventions header は system prompt で効いている。**
+- 🟥 **「上げたもの」と「agent が受け取るもの」は別だった**（[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)）。
+  165 ファイル上げても、デザイン側に届くのは**ランタイム 3 ファイル ＋ header** だけ。
+  `components/**` も `guidelines/**` も 3 周とも来ていない。**header の guidelines 参照は宛先が無い。**
+- 🟥 **「対象 0 件で緑」の 13 例目は、ゲートではなく赤テスト自体で出た。**
+  cspell の赤テストを `/tmp` のファイルで打ち、`Files checked: 0` のまま緑になった。
+  **検証装置も検証しないと信用できない**という形は初めて。
+- 🟥 **手7 は本 repo をほぼ触らない手のはずだったが 2 箇所触った**（`src/index.ts` の素材層 export・`tokens.css` の語彙 3 件＋safelist）。
+  **どちらも §2 に D9 / D10 として追記してから実行している**（規律は保たれた・通算 7 度目）。
+- **台帳の現在地**: DR **65 件**（決定 24 / 発見 41）・OBS **11 件**（`open` **5**・`connected` 3・`promoted` 2・`closed` 1）・手順書 **8 本**・story 37 本。
