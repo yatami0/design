@@ -416,16 +416,16 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 | # | 残り | 誰がやるか |
 | --- | --- | --- |
-| **Q6** | 🟨 **4 周目の準備は済んだ**（[H8-10](手順/手8_出力は機械ゲートを通るか.md)・D14=A）。**変数は 1 つだけ動く**——`src/**` は 1 行も変えていないので、部品も語彙も依頼文も不変で **conventions header だけ**が変わる。**打つ前の予測 4 件も登録済み** | 🟥 **人が打つ**（下記「4 周目の打ち方」） |
+| **Q6** | 🟦 **step 1（`/design-sync`）は完了した**（2026-08-02・人が起動）。**ドライバ自身が「動いたのは aux だけ」と判定**——30 件すべて carried forward・`bundle: false` / `styling: false` / `aux: true` / 削除 0・render 30/30 clean。**header は DS 側に届いた。**🟥 **残るは step 2〜4** | 🟥 **人が claude.ai/design で打つ**（下記） |
 | ~~Q8~~ | ✅ **起票した**（[指摘 11](共通コンポーネント思想への指摘.md)）——**思想は「定義したものだけを使う」（許可リスト）で語るが、機械の網は両側とも禁止リストしか持てない。**🟥 **これだけは思想の文言を直しても解けない**（検査の形を変えないと閉じない）。🟨 **一覧表が指摘 10 を取りこぼしていたので、あわせて揃えた** | ✅ 完了 |
 
 🟨 **完了条件はほぼ埋まっている。**残るのは Q6 の実測と、実行記録へのチェック。
 
-#### 🟥 4 周目の打ち方（人が実行する）
+#### 🟥 4 周目の打ち方（残り 3 手・人が実行する）
 
 | # | やること |
 | --- | --- |
-| 1 | Claude Code で **`/design-sync`** と打つ（変わったのは `.design-sync/conventions.md` の 1 ファイルだけ。**`ds-bundle` は同一のはず**——同一でなければ**それ自体が観測結果**） |
+| ~~1~~ | ~~`/design-sync`~~ → ✅ **完了**（2026-08-02）。**予測どおり `ds-bundle` の部品側は同一バイト**で、動いたのは aux（README＝ヘッダ）だけだった |
 | 2 | claude.ai/design で**新しいデザインプロジェクト**を作り、参照 DS に **`design — UI検証`** を選ぶ（🟥 `Modernist` と取り違えない） |
 | 3 | **手7 H7-03 の依頼文をそのまま打つ**（手順書 [H8-10](手順/手8_出力は機械ゲートを通るか.md) に全文。🟥 **1 文字も変えない**） |
 | 4 | projectId を渡してもらえれば、私が `DesignSync` で持ち帰って数える |
@@ -509,6 +509,7 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 | 24 | **[DR-0055](DR/DR-0055-finding-impact-splits-observation-from-inference.md) の効果を検算する。**🆕 **手6 で DR-0057・0058 の 2 本が §影響 を割った形で書けた（4・5 例目）。**§影響 を観測 / 推論に割ったが、**節を割れば混入が減るかは未検証**。🟥 **4 例目が出たら「器では解けなかった」ことになり、手順書側に工程を足す話へ移る**（棚卸しで却下ではなく保留にした案） | 毎手（DR を書くたび） |
 | 25 | **思想への指摘の偏りは「規定の細かさ」か「使い込みの量」か。**本人回答は「両方 / まだ言えない」（2026-08-01）。🆕 **材料が 1 つ出た**——手4（③ 層）・手5（① 層）・**手6（分類を初めて外へ渡した）**と **3 手連続で「初めて使った面から 1 件ずつ」**出ている。🟨 **規定が粗い ① ③ からも同じ率で出ている**ので「使い込みの量」に寄る観測。🟥 **n=3 で率は数えていない**（正規化は手9） | 次の `/obs review` |
 | ~~26~~ | ✅ **決着（[DR-0068](DR/DR-0068-merge-through-pull-requests.md)・2026-08-02）。PR に揃える。**手ごとに `step/h<N>-<slug>` を切るのは変えず、完了したら `gh pr create --base main`。**マージは人が実行する。**CLAUDE.md §git を書き換えた。🟨 手5・手6 の `--no-ff` マージコミットはそのまま残す（履歴は書き換えない） | ✅ 完了 |
+| 29 | 🆕 🟥 **出荷している `.d.ts` が型検査を通らない（26 件）。**`React.Ref` の型引数欠落 18・未 import の型 5・総称型の型引数欠落 2。🟥 **受け手はこれから lint 規則を生成している**（[DR-0066](DR/DR-0066-neither-side-lints-the-generated-output.md) §4 の根本原因）。手6 から入っており今回の退行ではない。🟨 直すなら converter 側の `.d.ts` 生成（`lib/` のフォーク）か、我々の型注釈側 | 手9（移送物を決めるとき）／または受け手へのフィードバック |
 | 28 | 🆕 **`React.createElement` ＋ 必須 `children` は型が通らない**（手8 Q3 の本物 2 件）。生成物は `columns[].cell` の中で `createElement` を使うので、**移送するたびに出る。**🟨 選択肢は ① 部品側の `children` を optional にする ② 移送時に JSX へ書き換える ③ 赤のまま持っていく | 手9（移送手順を決めるとき） |
 | 27 | 🆕 **環境が WSL2 → macOS ＋ Conductor worktree に変わった。**「環境の再現」節に**現行の形を追記済み**（2026-08-02）。残る論点は 2 つ: ① **`pnpm approve-builds` で依存チェックの穴を恒久的に塞ぐか**（塞ぐと `pnpm-workspace.yaml` が repo に増える＝**移送物が変わる**）② 🟥 **`~/git/CC-Skills` が無い**（手8 の `validate.mjs` の出どころ。GitHub に public で残っている） | ① は手9 の移送物を決めるとき／② は手8 の H8-04 |
 
@@ -900,3 +901,26 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 - 🟦 **マージの打ち方が決まった（[DR-0068](DR/DR-0068-merge-through-pull-requests.md)）。PR に揃える。**
   `CLAUDE.md` §git を書き換え、未決 #26 を閉じた。手5・手6 の `--no-ff` 履歴はそのまま残す。
 - **台帳の現在地**: DR **68 件**（決定 25 / 発見 43）・OBS 11 件（`open` 5）・手順書 9 本・思想への指摘 **11 件**。
+
+### 2026-08-02（第 8 セッション・続 2）— `/design-sync` で 4 周目の準備を完了させた
+
+- 🟦 **H8-10 step 1 が済んだ。**ユーザーが `/design-sync` を起動し、conventions header を DS 側へ届けた。
+  **ドライバ自身が「動いたのは aux だけ」と判定**（30 件すべて carried forward・`bundle: false` / `styling: false`・削除 0）。
+  → **手順書 §2.12 の「変数は 1 つだけ動く」が機械の側からも裏付けられた。**
+- 🟥 **Conductor の worktree はフレッシュ clone と同じだった。**`.ds-sync/` `dist/types` `sb-reference` `.cache` が全部無く、
+  再同期の前に揃える必要があった。**手順を [NOTES.md](../.design-sync/NOTES.md) に書き足した**（`pnpm` を経由せず直接叩く形）。
+- ★ **skill の「header 実在検証」が H8-09 の検算になった。ドリフト 0 件。**
+  クラス 26 語・名前 40・props と union 12 組・否定の主張 3 件を全件実測。
+  🟨 **`window.Design` は grep ではなく vm で実際にロードして 129 export を列挙した**——
+  **grep は「文字列がある」しか言えない**（[DR-0066](DR/DR-0066-neither-side-lints-the-generated-output.md) の教訓を自分に適用した）。
+- 🟥 **その検証が本物の欠陥を 2 件掘り当てた。**
+  - ★ **出荷している `.d.ts` は型検査を通らない（26 件）。**`React.Ref` に型引数が無い 18 件、
+    `CSSProperties` / `ColumnDef` / `ListDetailState` / `NavItem` が未 import の 5 件、総称型に型引数が無い 2 件。
+    🟥 **`package-validate.mjs` の「all .d.ts parse cleanly」は parse であって typecheck ではない。**
+    → **[DR-0066](DR/DR-0066-neither-side-lints-the-generated-output.md) §4 の続き**——受け手の props 抽出が浅いのではなく、**元の型が成立していない。**
+    🟨 前回とバイト同一なので**今回の退行ではない**（手6 から入っていた）。**未決 #29 に立てた。**
+  - **README の自動生成部が header と矛盾していた**（生成部は `guidelines/` を「読め」と書く）。
+    → header 側に打ち消しの 1 段落を足して再ビルドした。🟥 **出どころが converter なので header で上書きするしか手が無い。**
+- **アップロード**: sentinel → 163 ファイル（3 チャンク）→ sentinel 再武装 → `_ds_sync.json` 最後。削除 0。
+  `list_files` で 165 ＋ 受け手生成 2 件を確認、孤児なし。`report_validate`: total 30 / bad 0 / thin 0 / variantsIdentical 0。
+- 🟥 **次の一手は 4 周目（人が claude.ai/design で打つ）。**予測 4 件は手順書 H8-10 に登録済み。
