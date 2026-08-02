@@ -28,6 +28,8 @@
 | [DR-0052](DR-0052-unreachable-spots-are-avoided-by-not-using-them.md) | ⭐ **差し替えが届かない箇所は「使わない」で回避する**（上書きを重ねない） | 手5 | decided ／ 🔺 **ADR 昇格候補** |
 | [DR-0055](DR-0055-finding-impact-splits-observation-from-inference.md) | DR の §影響 を「観測から直接言えること」と「推論（未検証）」に分ける（[OBS-0007](../OBS/OBS-0007_発見に推論を混ぜると後続が数え間違える.md) 昇格・3 例で 2 回ルール成立） | — | decided |
 | [DR-0056](DR-0056-preset-swap-is-its-own-step.md) | **preset 差し替えは独立した手（手8b）**。手7 の「作り直しの是非」とは別軸（[OBS-0006](../OBS/OBS-0006_preset差し替えは何の検証なのか.md) 昇格・未決 #6 を閉じた） | — | decided |
+| [DR-0058](DR-0058-app-only-font-never-reached-the-design-system.md) | ⭐ **本体だけが持っていたフォントを外し ① Tokens 層の既定へ戻す**（手6 D8）。`--font-sans` の自己参照を `layout.tsx` だけが埋めていた＝Storybook もプレビューも移送先も追従できない | 手6 | decided |
+| [DR-0061](DR-0061-field-width-vocabulary.md) | ⭐ **フィールド幅を semantic 語彙として足す**（`--container-field-*` / `w-field-*`・手7 D10=A）。素材層のラッパー化（B）は**手8 の数字が出てから** | 手7 | decided |
 
 ## 発見（finding）
 
@@ -42,7 +44,7 @@
 | [DR-0014](DR-0014-exact-optional-property-types-incompatible.md) | ⭐ `exactOptionalPropertyTypes` と shadcn は非互換 | 手1 | **手3**・手9 |
 | [DR-0015](DR-0015-findings-against-component-philosophy.md) | 共通コンポーネント思想への指摘 3 点 | 手1 | ユーザー判断 |
 | [DR-0016](DR-0016-shadcn-deps-are-caret-ranges.md) | shadcn が追加する依存は `^` レンジ | 手1 | 手5・手9 |
-| [DR-0018](DR-0018-design-sync-takes-preview-html.md) | ⭐ `/design-sync` が受け取るのは**プレビュー HTML** — story も React も渡らない | — | **手6**・手2b |
+| [DR-0018](DR-0018-design-sync-takes-preview-html.md) | ~~⭐ `/design-sync` が受け取るのは**プレビュー HTML** — story も React も渡らない~~ 🟥 **superseded → [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md)** | — | **手6**・手2b |
 | [DR-0021](DR-0021-tailwind-scans-docs-markdown.md) | ⭐ Tailwind v4 は `docs/**.md` を走査し**文章中のクラス名を本番 CSS に生成する** | 手2 | **手5**・PoC |
 | [DR-0022](DR-0022-shadcn-has-component-tokens.md) | ⭐ 思想の 3 層は**3 層とも実在する**（component token は有る）。欠けるのは spacing / typography だけ | 手2 | 手3・段取り訂正 |
 | [DR-0023](DR-0023-real-conflict-is-touch-target.md) | ⭐ tmp-admin と nova の本当の衝突は accent ではなく**タッチターゲット 44px** | 手2 | **手3**・手9 |
@@ -68,6 +70,13 @@
 | [DR-0050](DR-0050-three-surfaces-collapsed-into-two.md) | ⭐ **「面は 3 層」が 2 層になっていた** — 部品単位では見えず、中身の詰まったテンプレートで初めて出た | 手5 | **手5**・手9・PoC |
 | [DR-0053](DR-0053-viewpoints-must-be-answerable-by-eye.md) | ⭐ **観点は「誰が答えられるか」で分ける** — 目で答えられないものを比較ペアに入れると止まる。ラベルを 3 箇所間違えていた | 手5 | **手5**・PoC |
 | [DR-0054](DR-0054-mock-specimens-cannot-reproduce-stacked-states.md) | ⭐ **模型の検体は「状態の重なり」を再現しない** — フォーカス ＋ `aria-invalid` は実物で測って決着（destructive がソース順で勝つ） | 手5 | **手5**・PoC |
+| [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md) | ⭐ **`/design-sync` が上げるのはコンパイル済みの実コンポーネント** — プレビュー HTML は人間用のカード。Storybook は入力かつ基準器で、Playwright は「変換」ではなく「検証」に要る（[DR-0018](DR-0018-design-sync-takes-preview-html.md) を訂正） | 手6 | **手6**・手7・手9・PoC |
+| [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) | ⭐ **受け手が独自の機械ゲートを自動生成していた** — `_adherence.oxlintrc.json` は `.d.ts` から導出されローカルに無い。強制されるのは `<button>` → `<Button>` の 1 本だけで、**`p-4` / `text-gray-600` は検出されない** | 手7 | **手7**・手8・PoC |
+| [DR-0060](DR-0060-vocabulary-leaks-from-four-surfaces.md) | ⭐ **語彙の逸脱は 4 面から出る** — 素材層の `className` はその 1 つ。🟥 **px の直当ては起きていない**（生 px / hex / style は 2 周とも 0）。根因は「代替語彙の不在」 | 手7 | **手7**・手8・PoC |
+| [DR-0062](DR-0062-shipped-vocabulary-needs-safelist.md) | ⭐ **出荷する語彙は safelist しないと CSS に載らない** — 「対象 0 件で緑」の**逆向き**（書けたのに届かない）。`@source inline()` で塞いだ | 手7 | **手7**・手9・PoC |
+| [DR-0063](DR-0063-forbidding-without-an-alternative-fails.md) | ⭐ **禁止だけでは破られ、代替語彙を与えると守られた** — 3 周の実測。禁止文は 1 文字も変えていないのに逸脱が 5 → 2 → **1** に減った。減らし方は「部品を足す」「語彙を足す」の 2 つだけ | 手7 | **手8**・PoC |
+| [DR-0064](DR-0064-design-project-receives-runtime-only.md) | ⭐ **デザインプロジェクトに複製されるのはランタイムだけ** — `components/**` も `guidelines/**` も届かない。header は**ファイルではなく system prompt** で効いている。🟥 日本語ファイル名は 401（agent 自身の報告・3/3） | 手7 | **手9**・PoC |
+| [DR-0065](DR-0065-claude-design-uses-the-registered-components.md) | ⭐★ **Claude Design は登録した部品を「使う」** — 明示なしの 1 周目から `<div>` `<button>` `<table>` 0 件。**足せば足すだけ使う**（種類 10 → 17 → 18）。**段取り §5 の分岐は「使う」側に決した** | 手7 | **手8**・**手9**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -79,6 +88,8 @@
 > 　あわせて **[DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) の内訳が動く**（影 7 箇所が 乙 → 甲。**丙 1 件という結論は変わらない**）。
 > 🟥 **DR-0045 は [DR-0043](DR-0043-recount-of-fifteen-unchanged-spots.md) に第 5 の分類「丁（部分追従）」を足す**（17 種 60 箇所。**丙 1 件は変わらない**）。
 > 🟥 **DR-0049 は [DR-0034](DR-0034-touch-target-visual-32-hit-44.md) の「44px が成立している」を訂正する**（決定＝見た目と当たり判定を分けることは維持。成立は `default` と `lg` のみ）。
+> 🟥 **DR-0057 は [DR-0018](DR-0018-design-sync-takes-preview-html.md) を supersede する**（「story も React も渡らない」「フラグを載せる場所は無い」の 2 点が誤り。`group` と `thin` / `variantsIdentical` は維持）。**手6 の作業内容が書き換わった。**
+> 🟥 **DR-0058 は [DR-0026](DR-0026-two-css-pipelines-differ.md) の「判定は Storybook 側に固定する」の前提を 1 点訂正する**（色空間は等価だったが**フォントは等価ではなかった**）。あわせて **手5 の観点 D タイポの判定がセリフ体の上で行われていた**ことになる。
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 
@@ -120,6 +131,14 @@
 | DR-0054 | 🟥 OBS 候補 | レビュー用の検体は「**単独の見た目**」と「**状態の重なり**」で作り分ける。模型（素の div）は後者を再現しない。あわせて **shadcn のリングは 1 本しか出ない**＝エラー中の入力欄はフォーカスしても見た目が変わらない |
 | DR-0055 | 🟥 候補 | PoC も DR / OBS 台帳を持つ。**finding に推論を混ぜる問題は同型で起きる**ので、§影響 の割り方をそのまま渡せる |
 | DR-0056 | 🟥 要確認 | PoC が shadcn を採るなら、**preset の選定と差し替え可能性は同じ論点**になる |
+| DR-0057 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」は好みの問題ではない。**Claude Design 連携の入力形式そのもの**。あわせて **packages/ui を「ライブラリとしてビルドできる形」にしておく**必要がある（converter がビルド済み `dist/` を要求する） |
+| DR-0059 | 🟥 architecture.md / ui.md の材料 | **`.d.ts` の props 型が「相手側の lint 規則」に化ける。**公開 API の型は規約そのものとして扱う（型の鮮度 = 規則の正しさ）。あわせて **任意値禁止は境界の向こうでは効かない**ので、規約は散文でも書く |
+| DR-0060 | 🟥 ui.md / architecture.md の材料 | **任意値禁止を掲げるなら、禁止した用途に代替語彙を必ず用意する。**用意しない禁止は破られる。あわせて **ReactNode / 関数を受ける props は枠の外**になる |
+| DR-0061 | 🟥 ui.md の材料 | 「**ページ幅**」と「**コントロール幅**」は別の語彙。前者だけ定義すると後者が任意値で書かれる |
+| DR-0062 | 🟥 architecture.md の材料 | **消費者が書く語彙**を持つ設計システムは、Tailwind の使用検出だけでは出荷できない（safelist が要る） |
+| DR-0063 | 🟥 ui.md / ADR-0019 の材料 | **任意値禁止は「禁止と代替の対」で書く。**禁止だけの規約は破られることが実測で出た |
+| DR-0064 | 🟥 architecture.md の材料 | **日本語ファイル名を成果物のパスに使わない。**あわせて「移送先が実際に受け取るもの」を出荷物の一覧と混同しない |
+| DR-0065 | 🟥 architecture.md の材料 | **往復ワークフローは成立する。**`packages/ui` は「Claude Design へ出して戻す」前提で設計してよい |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

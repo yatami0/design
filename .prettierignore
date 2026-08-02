@@ -15,3 +15,14 @@ next-env.d.ts
 src/components/ui/
 src/hooks/
 src/lib/utils.ts
+
+# 手6: /design-sync の生成物・staging（eslint.config.mjs の ignores と同じ集合）
+.design-sync/sb-reference/
+.design-sync/.cache/
+ds-bundle/
+.ds-sync/
+
+# 手7: Claude Design が生成した成果物のスナップショット（証拠）
+# 🟥 整形すると「design agent が吐いたそのもの」でなくなり、Q1〜Q3 の数え上げの証拠性が落ちる。
+# ds-bundle/ と同じ扱い。DR-0040（層を足すたびに射程が漏れる）の 4 例目。
+artifacts/

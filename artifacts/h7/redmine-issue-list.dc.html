@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/styles.css">
+<script src="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/_ds_bundle.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</helmet>
+<x-import component-from-global-scope="Design.AppProviders" hint-size="100%,100%">
+  <x-import component-from-global-scope="Design.AppShell" brand="Redmine" nav="{{ nav }}" hint-size="100%,100%">
+
+    <x-import component-from-global-scope="Design.Section" heading="チケット一覧" gap="md" hint-size="100%,auto">
+
+      <x-import component-from-global-scope="Design.Inline" justify="between" align="center" hint-size="100%,40px">
+        <span class="text-label text-muted-foreground">{{ countLabel }}</span>
+        <x-import component-from-global-scope="Design.Button" on-click="{{ noop }}" hint-size="auto,36px">新規チケット</x-import>
+      </x-import>
+
+      <x-import component-from-global-scope="Design.Card" hint-size="100%,auto">
+        <x-import component-from-global-scope="Design.CardContent" hint-size="100%,auto">
+          <x-import component-from-global-scope="Design.Inline" gap="md" align="end" wrap="{{ true }}" hint-size="100%,auto">
+
+            <x-import component-from-global-scope="Design.Stack" gap="sm" hint-size="auto,auto">
+              <x-import component-from-global-scope="Design.Label" hint-size="auto,20px">ステータス</x-import>
+              <x-import component-from-global-scope="Design.Select" value="{{ status }}" on-value-change="{{ setStatus }}" hint-size="200px,36px">
+                <x-import component-from-global-scope="Design.SelectTrigger" class-name="w-48" hint-size="192px,36px">
+                  <x-import component-from-global-scope="Design.SelectValue" placeholder="ステータス" hint-size="auto,20px"></x-import>
+                </x-import>
+                <x-import component-from-global-scope="Design.SelectContent" hint-size="192px,auto">
+                  <x-import component-from-global-scope="Design.SelectItem" value="all" hint-size="auto,32px">すべて</x-import>
+                  <x-import component-from-global-scope="Design.SelectItem" value="新規" hint-size="auto,32px">新規</x-import>
+                  <x-import component-from-global-scope="Design.SelectItem" value="進行中" hint-size="auto,32px">進行中</x-import>
+                  <x-import component-from-global-scope="Design.SelectItem" value="解決" hint-size="auto,32px">解決</x-import>
+                  <x-import component-from-global-scope="Design.SelectItem" value="却下" hint-size="auto,32px">却下</x-import>
+                </x-import>
+              </x-import>
+            </x-import>
+
+            <x-import component-from-global-scope="Design.Stack" gap="sm" hint-size="auto,auto">
+              <x-import component-from-global-scope="Design.Label" hint-size="auto,20px">担当者</x-import>
+              <x-import component-from-global-scope="Design.Select" value="{{ assignee }}" on-value-change="{{ setAssignee }}" hint-size="200px,36px">
+                <x-import component-from-global-scope="Design.SelectTrigger" class-name="w-48" hint-size="192px,36px">
+                  <x-import component-from-global-scope="Design.SelectValue" placeholder="担当者" hint-size="auto,20px"></x-import>
+                </x-import>
+                <x-import component-from-global-scope="Design.SelectContent" hint-size="192px,auto">
+                  <x-import component-from-global-scope="Design.SelectItem" value="all" hint-size="auto,32px">すべて</x-import>
+                  <sc-for list="{{ assignees }}" as="person" hint-placeholder-count="4">
+                    <x-import component-from-global-scope="Design.SelectItem" value="{{ person }}" hint-size="auto,32px">{{ person }}</x-import>
+                  </sc-for>
+                </x-import>
+              </x-import>
+            </x-import>
+
+            <x-import component-from-global-scope="Design.Button" variant="ghost" size="sm" on-click="{{ reset }}" hint-size="auto,36px">条件をリセット</x-import>
+
+          </x-import>
+        </x-import>
+      </x-import>
+
+      <x-import component-from-global-scope="Design.DataGrid" data="{{ rows }}" columns="{{ columns }}" empty="{{ emptyState }}" on-row-select="{{ noop }}" hint-size="100%,420px"></x-import>
+
+    </x-import>
+
+  </x-import>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;forceEmpty&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;表示確認&quot;},&quot;colorPriority&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;表示確認&quot;}}">
+const ISSUES = [
+  { id: 1042, subject: 'ログイン後にダッシュボードが白画面になる', status: '進行中', priority: '急いで', assignee: '田中 悠真', updated: '2026/07/31' },
+  { id: 1041, subject: 'チケット一覧のページングが 2 ページ目で止まる', status: '新規', priority: '高', assignee: '佐藤 みなみ', updated: '2026/07/31' },
+  { id: 1038, subject: 'CSV エクスポートの文字コードを UTF-8 BOM 付きに', status: '進行中', priority: '通常', assignee: '鈴木 健太', updated: '2026/07/30' },
+  { id: 1035, subject: '通知メールの差出人名がプロジェクト名になっていない', status: '解決', priority: '通常', assignee: '田中 悠真', updated: '2026/07/29' },
+  { id: 1033, subject: 'Wiki の添付ファイルが 10MB を超えると失敗する', status: '新規', priority: '高', assignee: '高橋 あおい', updated: '2026/07/29' },
+  { id: 1030, subject: 'ガントチャートの週表示で祝日が塗られない', status: '却下', priority: '低', assignee: '鈴木 健太', updated: '2026/07/28' },
+  { id: 1028, subject: '担当者フィルタにグループを指定できるようにする', status: '進行中', priority: '通常', assignee: '佐藤 みなみ', updated: '2026/07/28' },
+  { id: 1025, subject: 'リポジトリ連携でコミットが二重に登録される', status: '解決', priority: '高', assignee: '高橋 あおい', updated: '2026/07/27' },
+  { id: 1021, subject: 'カスタムフィールドの並び順が保存されない', status: '新規', priority: '通常', assignee: '田中 悠真', updated: '2026/07/25' },
+  { id: 1018, subject: 'モバイル表示でサイドバーが本文に重なる', status: '進行中', priority: '高', assignee: '高橋 あおい', updated: '2026/07/24' },
+  { id: 1014, subject: '検索インデックスの再構築を夜間バッチに移す', status: '却下', priority: '低', assignee: '鈴木 健太', updated: '2026/07/23' },
+  { id: 1009, subject: 'チケット作成時の初期ステータスを設定可能に', status: '解決', priority: '通常', assignee: '佐藤 みなみ', updated: '2026/07/22' },
+];
+
+const TONE = { '新規': 'neutral', '進行中': 'warning', '解決': 'success', '却下': 'danger' };
+const PRIORITY_CLASS = { '急いで': 'text-destructive font-emphasis', '高': 'text-warning', '通常': '', '低': 'text-muted-foreground' };
+
+class Component extends DCLogic {
+  state = { status: 'all', assignee: 'all' };
+
+  reset = () => this.setState({ status: 'all', assignee: 'all' });
+
+  renderVals() {
+    const D = window.Design || {};
+    const h = React.createElement;
+    const forceEmpty = this.props.forceEmpty ?? false;
+    const colorPriority = this.props.colorPriority ?? true;
+    const { status, assignee } = this.state;
+
+    const rows = forceEmpty ? [] : ISSUES.filter(
+      (i) => (status === 'all' || i.status === status) && (assignee === 'all' || i.assignee === assignee)
+    );
+    const filtered = status !== 'all' || assignee !== 'all' || forceEmpty;
+
+    const columns = [
+      { accessorKey: 'id', header: 'ID',
+        cell: ({ row }) => h('span', { className: 'tabular-nums text-muted-foreground' }, '#' + row.original.id) },
+      { accessorKey: 'subject', header: '題名',
+        cell: ({ row }) => h('span', { className: 'text-emphasis' }, row.original.subject) },
+      { accessorKey: 'status', header: 'ステータス',
+        cell: ({ row }) => h(D.StatusPill, { tone: TONE[row.original.status] }, row.original.status) },
+      { accessorKey: 'priority', header: '優先度',
+        cell: ({ row }) => h('span', { className: colorPriority ? PRIORITY_CLASS[row.original.priority] : '' }, row.original.priority) },
+      { accessorKey: 'assignee', header: '担当者' },
+      { accessorKey: 'updated', header: '更新日',
+        cell: ({ row }) => h('span', { className: 'tabular-nums text-muted-foreground' }, row.original.updated) },
+    ];
+
+    const emptyState = D.EmptyState ? h(D.EmptyState, {
+      title: '該当するチケットがありません',
+      description: '絞り込みの条件を変えるか、条件をリセットしてください。',
+      action: h(D.Button, { variant: 'outline', size: 'sm', onClick: this.reset }, '条件をリセット'),
+    }) : null;
+
+    return {
+      nav: [
+        { key: 'issues', label: 'チケット', active: true },
+        { key: 'projects', label: 'プロジェクト' },
+        { key: 'settings', label: '設定' },
+      ],
+      assignees: Array.from(new Set(ISSUES.map((i) => i.assignee))),
+      rows,
+      columns,
+      emptyState,
+      status,
+      assignee,
+      setStatus: (v) => this.setState({ status: v }),
+      setAssignee: (v) => this.setState({ assignee: v }),
+      reset: this.reset,
+      noop: () => {},
+      countLabel: filtered ? rows.length + ' 件 / 全 ' + ISSUES.length + ' 件' : ISSUES.length + ' 件',
+    };
+  }
+}
+</script>
+</body>
+</html>

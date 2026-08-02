@@ -146,7 +146,7 @@ flowchart TD
   H3["手3: ② Components 層<br/>欠けている Layout / Overlay の自作テンプレ<br/>+ DataDisplay の組み合わせ部品。状態は hook へ"]
   H4["手4: ③ Patterns / Templates 層<br/>一覧＋詳細・検索＋結果・確認ダイアログ・ページ骨格<br/>+ ダミーデータで一覧を組む"]
   H5["★手5: トークン差し替え実験<br/>tmp-admin の値を流し込み、②③ を<br/>1 行も触らずに見た目が変わるか"]
-  H6["手6: プレビュー HTML を作り /design-sync で登録<br/>（group = 役割カテゴリ）<br/>→ フラグが無くても部品を選べるか"]
+  H6["手6: /design-sync で Claude Design へ同期<br/>公式 converter が Storybook を入力に<br/>実コンポーネントをバンドルして上げる<br/>→ 3 層とフラグは境界を越えるか"]
   H7["★手7: Claude Design で一覧を組ませる<br/>→ 登録部品を「使う」か「作り直す」か"]
   H8["手8: 出力は lint / validate.mjs を通るか"]
   H8B["手8b: preset 差し替え<br/>値では解けない『形』の衝突を<br/>部品の作りを選び直して解けるか"]
@@ -158,8 +158,8 @@ flowchart TD
 
   H5 -- "緑" --> OK5["「変えない層」が成立<br/>= OBS-0003 案B の実証"]
   H5 -- "赤" --> NG5["触った箇所が設計の穴<br/>= そこを直してから先へ"]
-  H7 -- "使う" --> OK7["往復ワークフロー成立<br/>= コードごと移送する"]
-  H7 -- "作り直す" --> NG7["Claude Design は案出し専用に格下げ<br/>= 部品は手で組んで供給する"]
+  H7 == "✅ 使う（実測・2026-08-02）" ==> OK7["往復ワークフロー成立<br/>= コードごと移送する"]
+  H7 -. "作り直す（起きなかった）" .-> NG7["Claude Design は案出し専用に格下げ<br/>= 部品は手で組んで供給する"]
 ```
 
 🟨 **手8b は「やらない」を選べる手**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)）。
@@ -180,7 +180,9 @@ flowchart TD
 | 手3 | [手3_Components層と製品層の分離.md](手順/手3_Components層と製品層の分離.md) | ✅ done |
 | 手4 | [手4_PatternsTemplates層と一覧.md](手順/手4_PatternsTemplates層と一覧.md) | ✅ done |
 | 手5 | [手5_トークン差し替え実験.md](手順/手5_トークン差し替え実験.md) | ✅ done |
-| 手6〜手8・**手8b**・手9 | 未作成 | ⬜ |
+| 手6 | [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md) | ✅ done |
+| 手7 | [手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02）。★ **Q1 = 「使う」** |
+| 手8・**手8b**・手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 
@@ -202,21 +204,27 @@ flowchart TD
 - **手0〜手5 は Claude Design の成否と無関係に価値が残る**（PoC 側で未着手の配線・部品層をここで先に踏むため）。手6 以降が失敗しても投資は無駄にならない。
 - 実測は**手5 後・手7 後・手8 後**で区切る（PoC の「gate を 3 回に割る」作法に倣う。波及範囲が桁で違うものを 1 回にまとめると赤の原因が切り分けられない）。
 
-### カタログは 2 つある（用途が違う）
+### カタログは 2 つではなく、片方がもう片方の入力だった
 
-[DR-0018](DR/DR-0018-design-sync-takes-preview-html.md) により、**1 つで両方は賄えない**ことが確定した。
+> 🟥 **2026-08-01 に書き換えた。**[DR-0018](DR/DR-0018-design-sync-takes-preview-html.md) を根拠に
+> 「開発カタログ（Storybook）と受け渡しプレビュー（HTML）は別物で 1 つでは賄えない」と整理していたが、
+> **[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md) が覆した。**
 
-| | 用途 | 形 | いつ |
+**`/design-sync` の公式 converter は Storybook を入力に取る。**
+
+| | 役割 | 形 | いつ |
 |---|---|---|---|
-| **開発カタログ** | 部品を作りながら目視／**手5 の判定装置**（どこが変わらなかったかを一望する） | **Storybook 10.5**（[DR-0017](DR/DR-0017-storybook-as-catalog.md)） | **手2b** |
-| **受け渡しプレビュー** | Claude Design へ渡す | `<!-- @dsCard group="…" -->` 付きの **HTML**。バリアントを並べる | 手6 |
+| **Storybook** | ① 部品を作りながら目視 ② **手5 の判定装置** ③ 🆕 **手6 の入力かつ「正解合わせの基準器」** | **Storybook 10.5**（[DR-0017](DR/DR-0017-storybook-as-catalog.md)） | **手2b** |
+| **Claude Design 側の成果物** | design agent が**実コンポーネントを描画する**ための一式 | `_ds_bundle.js` / `tokens/` / `.d.ts` / `.prompt.md` / `<Name>.html`（**人間用のカード**） | 手6（**converter が生成する。自前で作らない**） |
 
-**どちらも階層は役割 9 カテゴリで揃える**（Storybook は `title: 'Action/Button'`、プレビューは `group="Action"`）。
-こうすると [部品カタログ.md](部品カタログ.md) の表・Storybook・Claude Design のペインが**同じ構造**になる。
+**階層は役割 9 カテゴリで揃う**（Storybook は `title: '② 製品層・自作/Layout/Stack'`、向こうは `components/<group>/<Name>/`）。
+[部品カタログ.md](部品カタログ.md) の表・Storybook・Claude Design のペインが**同じ構造**になる。
 
-- 手6 の観測点は**書き換わった**。当初の「役割カテゴリとフラグは渡るか」は、**役割カテゴリ = 渡る（`group`）／フラグ = 渡らない**が先に判明した（DR-0018）。
-  → 実際の問いは **「フラグが渡らないとき、Claude Design はどこまで正しく部品を選べるか」**。
-  思想の「AI が辞書引きできるようにする」の受け手は、**Claude Code 側（skill / rules）になる可能性が高い**。
+- 🟦 **手2b の投資が、想定と違う形で効いた。**「開発カタログ」として入れたものが**連携の入力形式そのもの**だった。
+- 🟦 **フラグの受け手は Claude Code 側ではなかった。**`<Name>.prompt.md` と conventions header
+  （**design agent の system prompt に inline される**）という、仕様に書かれた経路が 2 つある。→ 未決 #10。
+- 🟥 **代わりに新しい障害が出た**——converter は**ビルド済み `dist/` を要求する**が、本 repo は Next.js アプリで `dist/` を持たない。
+  → 手6 の Q1。**PoC の `packages/ui` にも同じ要求が返る。**
 
 ### 仕組み化はまだしない（2 回ルール）
 
