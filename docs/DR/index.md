@@ -30,6 +30,7 @@
 | [DR-0056](DR-0056-preset-swap-is-its-own-step.md) | **preset 差し替えは独立した手（手8b）**。手7 の「作り直しの是非」とは別軸（[OBS-0006](../OBS/OBS-0006_preset差し替えは何の検証なのか.md) 昇格・未決 #6 を閉じた） | — | decided |
 | [DR-0058](DR-0058-app-only-font-never-reached-the-design-system.md) | ⭐ **本体だけが持っていたフォントを外し ① Tokens 層の既定へ戻す**（手6 D8）。`--font-sans` の自己参照を `layout.tsx` だけが埋めていた＝Storybook もプレビューも移送先も追従できない | 手6 | decided |
 | [DR-0061](DR-0061-field-width-vocabulary.md) | ⭐ **フィールド幅を semantic 語彙として足す**（`--container-field-*` / `w-field-*`・手7 D10=A）。素材層のラッパー化（B）は**手8 の数字が出てから** | 手7 | decided |
+| [DR-0068](DR-0068-merge-through-pull-requests.md) | 手の完了は **GitHub の PR** でマージする（ローカルの `--no-ff` は使わない）。CLAUDE.md §git を書き換えた | — | decided |
 
 ## 発見（finding）
 
@@ -74,13 +75,22 @@
 | [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) | ⭐ **受け手が独自の機械ゲートを自動生成していた** — `_adherence.oxlintrc.json` は `.d.ts` から導出されローカルに無い。強制されるのは `<button>` → `<Button>` の 1 本だけで、**`p-4` / `text-gray-600` は検出されない** | 手7 | **手7**・手8・PoC |
 | [DR-0060](DR-0060-vocabulary-leaks-from-four-surfaces.md) | ⭐ **語彙の逸脱は 4 面から出る** — 素材層の `className` はその 1 つ。🟥 **px の直当ては起きていない**（生 px / hex / style は 2 周とも 0）。根因は「代替語彙の不在」 | 手7 | **手7**・手8・PoC |
 | [DR-0062](DR-0062-shipped-vocabulary-needs-safelist.md) | ⭐ **出荷する語彙は safelist しないと CSS に載らない** — 「対象 0 件で緑」の**逆向き**（書けたのに届かない）。`@source inline()` で塞いだ | 手7 | **手7**・手9・PoC |
-| [DR-0063](DR-0063-forbidding-without-an-alternative-fails.md) | ⭐ **禁止だけでは破られ、代替語彙を与えると守られた** — 3 周の実測。禁止文は 1 文字も変えていないのに逸脱が 5 → 2 → **1** に減った。減らし方は「部品を足す」「語彙を足す」の 2 つだけ | 手7 | **手8**・PoC |
+| [DR-0063](DR-0063-forbidding-without-an-alternative-fails.md) | ⭐ **禁止だけでは破られ、代替語彙を与えると守られた** — 3 周の実測。禁止文は 1 文字も変えていないのに逸脱が 5 → 2 → **1** に減った。減らし方は「部品を足す」「語彙を足す」の 2 つだけ | 手7 | **手8**・PoC ／ 🔺 **ADR 昇格候補**（🟨 導出される規則が候補・下記） |
 | [DR-0064](DR-0064-design-project-receives-runtime-only.md) | ⭐ **デザインプロジェクトに複製されるのはランタイムだけ** — `components/**` も `guidelines/**` も届かない。header は**ファイルではなく system prompt** で効いている。🟥 日本語ファイル名は 401（agent 自身の報告・3/3） | 手7 | **手9**・PoC |
 | [DR-0065](DR-0065-claude-design-uses-the-registered-components.md) | ⭐★ **Claude Design は登録した部品を「使う」** — 明示なしの 1 周目から `<div>` `<button>` `<table>` 0 件。**足せば足すだけ使う**（種類 10 → 17 → 18）。**段取り §5 の分岐は「使う」側に決した** | 手7 | **手8**・**手9**・PoC |
-| [DR-0066](DR-0066-neither-side-lints-the-generated-output.md) | ⭐★ **生成物は境界のどちら側でも検査されていない** — 我々は 6 本中 **0 本**。受け手は `no-restricted-syntax` が oxlint に無く**設定ごと parse 不能**。56 セレクタが走ったと仮定しても**当たる 5 件は全部偽陽性**（`.d.ts` からの props 抽出が継承分を落としている）。「食い違い」ではなく「**どちらも見ていない**」 | 手8 | **手9**・PoC |
+| [DR-0066](DR-0066-neither-side-lints-the-generated-output.md) | ⭐★ **生成物は境界のどちら側でも検査されていない** — 我々は 6 本中 **0 本**。受け手は `no-restricted-syntax` が oxlint に無く**設定ごと parse 不能**。56 セレクタが走ったと仮定しても**当たる 5 件は全部偽陽性**（`.d.ts` からの props 抽出が継承分を落としている）。「食い違い」ではなく「**どちらも見ていない**」 | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 同上） |
 | [DR-0067](DR-0067-inherited-asset-was-not-inheritable.md) | ⭐ **「引き継ぐ」と書いた資産が引き継げなかった** — CC-Skills の GitHub は `Initial commit` の README 1 枚。`validate.mjs` / `anti-slop.mjs` は**存在しない**。本 repo は「🟦 流用できる」と判定しただけで**中身を一度も写していなかった** | 手8 | **段取り §7 の訂正**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
+
+> 🆕 **2026-08-02 の判定で候補が 4 → 6 件になった。**ただし**性質が 2 種類に割れた。**
+>
+> | 種別 | 候補 | 起案でやること |
+> | --- | --- | --- |
+> | **decision がそのまま候補** | DR-0032 / DR-0033 / DR-0034 / DR-0052 | **決定文がすでにあるので、MADR の形へ移すだけ** |
+> | 🟨 **finding から規則を導く必要がある** | **DR-0063**（禁止と代替の対）／ **DR-0066**（規約と検査の射程はセット） | 🟥 **起案の前に「決定」を 1 本書く工程が要る。**finding は「こうだった」であって「こうする」ではない |
+>
+> 🟥 **この 2 種類を混ぜて起案すると、後者は根拠だけあって決定文が無い ADR になる。**
 
 > 🟥 **DR-0030 は [DR-0023](DR-0023-real-conflict-is-touch-target.md) の発見 2 を訂正する**（発見 1・3 は維持）。
 > 🟨 **DR-0029 は [DR-0022](DR-0022-shadcn-has-component-tokens.md) の射程を拡張する**（「唯一の接続点」→「接続方式」）。
@@ -92,6 +102,8 @@
 > 🟥 **DR-0049 は [DR-0034](DR-0034-touch-target-visual-32-hit-44.md) の「44px が成立している」を訂正する**（決定＝見た目と当たり判定を分けることは維持。成立は `default` と `lg` のみ）。
 > 🟥 **DR-0057 は [DR-0018](DR-0018-design-sync-takes-preview-html.md) を supersede する**（「story も React も渡らない」「フラグを載せる場所は無い」の 2 点が誤り。`group` と `thin` / `variantsIdentical` は維持）。**手6 の作業内容が書き換わった。**
 > 🟥 **DR-0058 は [DR-0026](DR-0026-two-css-pipelines-differ.md) の「判定は Storybook 側に固定する」の前提を 1 点訂正する**（色空間は等価だったが**フォントは等価ではなかった**）。あわせて **手5 の観点 D タイポの判定がセリフ体の上で行われていた**ことになる。
+> 🟥 **DR-0066 は [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) を 2 点訂正する**（① 受け手の lint は「飾り」ではなく**設定ごと parse 不能** ② §影響 3 の「型の質が規則の質を決める」は原因の取り違えで、**型は正しく抽出が浅かった**）。**観測部は維持。**
+> 🟨 **手8 H8-09 は [DR-0064](DR-0064-design-project-receives-runtime-only.md) §3 の数を更新する**（宛先の無い参照は **1 件ではなく 4 件**だった。4 件とも削って書き換え済み・効き目は未測定）。
 
 ## PoC へ戻す候補（手9 でまとめて起票）
 
