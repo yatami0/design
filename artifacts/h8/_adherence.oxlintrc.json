@@ -1,0 +1,313 @@
+{
+  "plugins": ["react", "import"],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": [
+          {
+            "element": "button",
+            "message": "Use <Button> from the design system instead of <button>."
+          },
+          {
+            "element": "input",
+            "message": "Use <Checkbox> from the design system instead of <input>."
+          },
+          {
+            "element": "dialog",
+            "message": "Use <Dialog> from the design system instead of <dialog>."
+          },
+          {
+            "element": "input",
+            "message": "Use <Input> from the design system instead of <input>."
+          },
+          {
+            "element": "select",
+            "message": "Use <Select> from the design system instead of <select>."
+          },
+          {
+            "element": "table",
+            "message": "Use <Table> from the design system instead of <table>."
+          }
+        ]
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/action/Button/**",
+              "components/communication/Badge/**",
+              "components/communication/Empty/**",
+              "components/communication/Skeleton/**",
+              "components/datadisplay/DataGrid/**",
+              "components/datadisplay/StatusPill/**",
+              "components/datadisplay/Table/**",
+              "components/display/Label/**",
+              "components/display/Separator/**",
+              "components/layout/Box/**",
+              "components/layout/Card/**",
+              "components/layout/Container/**",
+              "components/layout/Grid/**",
+              "components/layout/Inline/**",
+              "components/layout/Section/**",
+              "components/layout/Spacer/**",
+              "components/layout/Stack/**",
+              "components/navigation/Pagination/**",
+              "components/navigation/Sidebar/**",
+              "components/overlay/Dialog/**",
+              "components/overlay/DropdownMenu/**",
+              "components/overlay/Popover/**",
+              "components/overlay/Sheet/**",
+              "components/overlay/Tooltip/**",
+              "components/patterns/EmptyState/**",
+              "components/patterns/ListDetail/**",
+              "components/selection/Checkbox/**",
+              "components/selection/Select/**",
+              "components/templates/AppShell/**",
+              "components/textinput/Input/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AppShell'] > JSXAttribute > JSXIdentifier[name!=/^(?:brand|nav|children|key|ref|className|style|children)$/]",
+        "message": "<AppShell> doesn't accept that prop. Declared props: brand, nav, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|variant|asChild|key|ref|className|style|children)$/]",
+        "message": "<Badge> doesn't accept that prop. Declared props: ref, className, id, style, children, variant, asChild."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:link|default|outline|secondary|ghost|destructive)$/]",
+        "message": "<Badge> variant must be one of 'link' | 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Box'] > JSXAttribute > JSXIdentifier[name!=/^(?:inset|ref|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Box> doesn't accept that prop. Declared props: inset, ref, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Box'] > JSXAttribute[name.name='inset'] > Literal[value!=/^(?:none|xs|sm|md|lg)$/]",
+        "message": "<Box> inset must be one of 'none' | 'xs' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|variant|size|asChild|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: ref, className, id, style, children, variant, size, asChild."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:link|default|outline|secondary|ghost|destructive)$/]",
+        "message": "<Button> variant must be one of 'link' | 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:default|xs|sm|lg|icon|icon-xs|icon-sm|icon-lg)$/]",
+        "message": "<Button> size must be one of 'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|size|key|ref|className|style|children)$/]",
+        "message": "<Card> doesn't accept that prop. Declared props: ref, className, id, style, children, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:default|sm)$/]",
+        "message": "<Card> size must be one of 'default' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Checkbox'] > JSXAttribute > JSXIdentifier[name!=/^(?:checked|defaultChecked|required|style|className|id|children|asChild|ref|key|ref|className|style|children)$/]",
+        "message": "<Checkbox> doesn't accept that prop. Declared props: checked, defaultChecked, required, style, className, id, children, asChild, ref."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Container'] > JSXAttribute > JSXIdentifier[name!=/^(?:width|gutter|ref|id|children|key|ref|className|style|children)$/]",
+        "message": "<Container> doesn't accept that prop. Declared props: width, gutter, ref, id, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Container'] > JSXAttribute[name.name='width'] > Literal[value!=/^(?:content|wide|full)$/]",
+        "message": "<Container> width must be one of 'content' | 'wide' | 'full'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DataGrid'] > JSXAttribute > JSXIdentifier[name!=/^(?:data|columns|onRowSelect|empty|key|ref|className|style|children)$/]",
+        "message": "<DataGrid> doesn't accept that prop. Declared props: data, columns, onRowSelect, empty."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Dialog'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|open|defaultOpen|modal|key|ref|className|style|children)$/]",
+        "message": "<Dialog> doesn't accept that prop. Declared props: children, open, defaultOpen, modal."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DropdownMenu'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|dir|open|defaultOpen|modal|key|ref|className|style|children)$/]",
+        "message": "<DropdownMenu> doesn't accept that prop. Declared props: children, dir, open, defaultOpen, modal."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DropdownMenu'] > JSXAttribute[name.name='dir'] > Literal[value!=/^(?:ltr|rtl)$/]",
+        "message": "<DropdownMenu> dir must be one of 'ltr' | 'rtl'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Empty'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Empty> doesn't accept that prop. Declared props: ref, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='EmptyState'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|description|action|key|ref|className|style|children)$/]",
+        "message": "<EmptyState> doesn't accept that prop. Declared props: title, description, action."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Grid'] > JSXAttribute > JSXIdentifier[name!=/^(?:columns|gap|inset|ref|id|children|key|ref|className|style|children)$/]",
+        "message": "<Grid> doesn't accept that prop. Declared props: columns, gap, inset, ref, id, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Grid'] > JSXAttribute[name.name='gap'] > Literal[value!=/^(?:none|sm|md|lg)$/]",
+        "message": "<Grid> gap must be one of 'none' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Grid'] > JSXAttribute[name.name='inset'] > Literal[value!=/^(?:none|xs|sm|md|lg)$/]",
+        "message": "<Grid> inset must be one of 'none' | 'xs' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Inline'] > JSXAttribute > JSXIdentifier[name!=/^(?:gap|inset|align|justify|wrap|ref|id|children|key|ref|className|style|children)$/]",
+        "message": "<Inline> doesn't accept that prop. Declared props: gap, inset, align, justify, wrap, ref, id, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Inline'] > JSXAttribute[name.name='gap'] > Literal[value!=/^(?:none|sm|md)$/]",
+        "message": "<Inline> gap must be one of 'none' | 'sm' | 'md'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Inline'] > JSXAttribute[name.name='inset'] > Literal[value!=/^(?:none|xs|sm|md|lg)$/]",
+        "message": "<Inline> inset must be one of 'none' | 'xs' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Inline'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:center|start|end|stretch)$/]",
+        "message": "<Inline> align must be one of 'center' | 'start' | 'end' | 'stretch'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Inline'] > JSXAttribute[name.name='justify'] > Literal[value!=/^(?:center|start|end|between)$/]",
+        "message": "<Inline> justify must be one of 'center' | 'start' | 'end' | 'between'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: ref, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Label'] > JSXAttribute > JSXIdentifier[name!=/^(?:style|className|id|children|asChild|ref|key|ref|className|style|children)$/]",
+        "message": "<Label> doesn't accept that prop. Declared props: style, className, id, children, asChild, ref."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListDetail'] > JSXAttribute > JSXIdentifier[name!=/^(?:state|list|title|detail|key|ref|className|style|children)$/]",
+        "message": "<ListDetail> doesn't accept that prop. Declared props: state, list, title, detail."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Pagination'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Pagination> doesn't accept that prop. Declared props: ref, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Popover'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|open|defaultOpen|modal|key|ref|className|style|children)$/]",
+        "message": "<Popover> doesn't accept that prop. Declared props: children, open, defaultOpen, modal."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Section'] > JSXAttribute > JSXIdentifier[name!=/^(?:heading|gap|ref|id|children|key|ref|className|style|children)$/]",
+        "message": "<Section> doesn't accept that prop. Declared props: heading, gap, ref, id, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Section'] > JSXAttribute[name.name='gap'] > Literal[value!=/^(?:none|sm|md|lg)$/]",
+        "message": "<Section> gap must be one of 'none' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Select'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|open|defaultOpen|dir|name|autoComplete|disabled|required|form|value|defaultValue|key|ref|className|style|children)$/]",
+        "message": "<Select> doesn't accept that prop. Declared props: children, open, defaultOpen, dir, name, autoComplete, disabled, required, form, value, defaultValue."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Select'] > JSXAttribute[name.name='dir'] > Literal[value!=/^(?:ltr|rtl)$/]",
+        "message": "<Select> dir must be one of 'ltr' | 'rtl'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Separator'] > JSXAttribute > JSXIdentifier[name!=/^(?:orientation|decorative|style|className|id|children|asChild|ref|key|ref|className|style|children)$/]",
+        "message": "<Separator> doesn't accept that prop. Declared props: orientation, decorative, style, className, id, children, asChild, ref."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Separator'] > JSXAttribute[name.name='orientation'] > Literal[value!=/^(?:horizontal|vertical)$/]",
+        "message": "<Separator> orientation must be one of 'horizontal' | 'vertical'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sheet'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|open|defaultOpen|modal|key|ref|className|style|children)$/]",
+        "message": "<Sheet> doesn't accept that prop. Declared props: children, open, defaultOpen, modal."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sidebar'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|side|variant|collapsible|key|ref|className|style|children)$/]",
+        "message": "<Sidebar> doesn't accept that prop. Declared props: ref, className, id, style, children, side, variant, collapsible."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sidebar'] > JSXAttribute[name.name='side'] > Literal[value!=/^(?:left|right)$/]",
+        "message": "<Sidebar> side must be one of 'left' | 'right'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sidebar'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:sidebar|floating|inset)$/]",
+        "message": "<Sidebar> variant must be one of 'sidebar' | 'floating' | 'inset'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sidebar'] > JSXAttribute[name.name='collapsible'] > Literal[value!=/^(?:none|icon|offcanvas)$/]",
+        "message": "<Sidebar> collapsible must be one of 'none' | 'icon' | 'offcanvas'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Skeleton'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Skeleton> doesn't accept that prop. Declared props: ref, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Spacer'] > JSXAttribute > JSXIdentifier[name!=/^(?:size|ref|id|key|ref|className|style|children)$/]",
+        "message": "<Spacer> doesn't accept that prop. Declared props: size, ref, id."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Spacer'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Spacer> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stack'] > JSXAttribute > JSXIdentifier[name!=/^(?:gap|inset|align|ref|id|children|key|ref|className|style|children)$/]",
+        "message": "<Stack> doesn't accept that prop. Declared props: gap, inset, align, ref, id, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stack'] > JSXAttribute[name.name='gap'] > Literal[value!=/^(?:none|sm|md|lg)$/]",
+        "message": "<Stack> gap must be one of 'none' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stack'] > JSXAttribute[name.name='inset'] > Literal[value!=/^(?:none|xs|sm|md|lg)$/]",
+        "message": "<Stack> inset must be one of 'none' | 'xs' | 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Stack'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:center|start|end|stretch)$/]",
+        "message": "<Stack> align must be one of 'center' | 'start' | 'end' | 'stretch'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusPill'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|children|key|ref|className|style|children)$/]",
+        "message": "<StatusPill> doesn't accept that prop. Declared props: tone, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusPill'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:success|warning|danger|neutral)$/]",
+        "message": "<StatusPill> tone must be one of 'success' | 'warning' | 'danger' | 'neutral'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Table'] > JSXAttribute > JSXIdentifier[name!=/^(?:ref|className|id|style|children|key|ref|className|style|children)$/]",
+        "message": "<Table> doesn't accept that prop. Declared props: ref, className, id, style, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tooltip'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|open|defaultOpen|delayDuration|disableHoverableContent|key|ref|className|style|children)$/]",
+        "message": "<Tooltip> doesn't accept that prop. Declared props: children, open, defaultOpen, delayDuration, disableHoverableContent."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/index.js"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
+}

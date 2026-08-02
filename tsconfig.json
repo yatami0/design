@@ -50,6 +50,11 @@
     // lint も projectService が型情報を取れず Parsing error で落ちる（検査されずにエラーだけ出る）。
     ".storybook/**/*.ts",
     ".storybook/**/*.tsx"
+    // 手8 D13: Claude Design 生成物の TSX 翻訳（`artifacts/h8/**`）を一時的にここへ足して
+    // Q3・Q5 を測り、測り終えて外した。**検体は製品ではない**ので、翻訳由来の赤で
+    // ベースラインを恒久的に汚さない（外した根拠と再現手順は実行記録 §手8）。
+    //   再現: この配列に "artifacts/h8/**/*.tsx" を足し、eslint.config.mjs の
+    //         ignores から 'artifacts/**' を外す。
   ],
   "exclude": ["node_modules"]
 }
