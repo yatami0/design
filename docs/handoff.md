@@ -3,7 +3,7 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-02（**★ 手8 を進行させた。答えは「食い違い」ではなく「どちらも見ていない」——[DR-0066](DR/DR-0066-neither-side-lints-the-generated-output.md)**）
+最終更新: 2026-08-02（**🟥 4・5 周目で骨格が壊れ、conventions header をロールバックした——[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)。次は 6 周目（対照）**）
 
 ---
 
@@ -924,3 +924,40 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 - **アップロード**: sentinel → 163 ファイル（3 チャンク）→ sentinel 再武装 → `_ds_sync.json` 最後。削除 0。
   `list_files` で 165 ＋ 受け手生成 2 件を確認、孤児なし。`report_validate`: total 30 / bad 0 / thin 0 / variantsIdentical 0。
 - 🟥 **次の一手は 4 周目（人が claude.ai/design で打つ）。**予測 4 件は手順書 H8-10 に登録済み。
+
+### 2026-08-02（第 8 セッション・続 3）— 🟥 4・5 周目が壊れ、ヘッダをロールバックした
+
+- 🟥 **conventions header に禁止 3・語彙 0 を 842 バイト足したら、禁止した箇所以外が壊れた**（[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。
+  - 🟦 **禁止した 2 件は効いた**——`<style>` の生 CSS が消え、`tabular-nums` が 2 → 0 に
+  - 🟥 **同時に骨格が消えた**——`Container`（最大幅・余白）／`Section`（縦の間隔）／`DataGrid`（製品層の表）が 5 周目で **0**。
+    表は `Table` / `TableRow` / `TableCell` で**素材層から手組み**（17 箇所）。
+    🟥 **[DR-0065](DR/DR-0065-claude-design-uses-the-registered-components.md)（Q1 =「使う」）が崩れ始めた**
+  - 🟥 **劣化は単調**（1→2→3 は改善、4→5 は悪化）。**ヘッダしか動いていない**
+- ★ **「崩れて見える」の実体はランタイムの変換規則だった。**`support.js` を読むと
+  `class → className` の変換は **`kind === "dom"` のときだけ**。部品には `class-name=` が要る。
+  🟥 **`class=` と書くと props に `class` のまま渡り、React が黙って捨てる**（＝ `w-field-md` が当たらない）。
+  🟨 `onValueChange` / `onClick` は `encodeCamelAttrs` があるので**問題なし**（最初の見立ては訂正した）。
+- 🟥 **ロールバックした**（ユーザー判断）。`git show 5c36b88:.design-sync/conventions.md` で手7 の状態へ（差分 0 行）。
+  ドライバ → DS へ再アップロードし、**remote の README が手7 の内容に戻ったことを `get_file` で確認済み。**
+- 🟥 **ロールバックの途中で罠を踏んだ。**古いアンカーのせいでドライバが **`upload.any: false`**（アップロード不要）と誤判定した。
+  remote には前の版が載ったままだった。→ **アンカーを取り直したら `aux: true` になった。**
+  **§7 step 6「`finalize_plan` の直前にサイドカーを取り直せ」はこの形を防ぐためにある。**
+- ★ **この手の一番の教訓: 予測表だけ見れば 4 周目は「成功」だった。**
+  予測は「禁止した箇所が直るか」しか見ておらず、その 2 点は的中した。
+  🟥 **壊れたのは予測していない場所で、2 周ともユーザーの目視でしか見つからなかった**
+  ——[DR-0066](DR/DR-0066-neither-side-lints-the-generated-output.md)（どちらも見ていない）の実害が初めて画面に出た。
+- 🟥 **Q6 は「効いた／効かない」では答えられない形になった。**確定には **6 周目（ロールバック後の対照）**が要る。
+- **台帳の現在地**: DR **69 件**（決定 25 / 発見 44）・検体 5 本（`artifacts/h7` 3・`artifacts/h8` 2）。
+
+### 🟥 次の一手 — 6 周目（対照・人が実行）
+
+**ヘッダは手7 の状態に戻して DS へ反映済み。**同じ依頼文で 1 周打つだけ。
+
+| 見るもの | 戻れば | 戻らなければ |
+| --- | --- | --- |
+| `Container` / `Section` / `DataGrid` が復活するか | 🟦 **[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) の因果が確定**（ヘッダ編集が原因） | 🟥 **原因はヘッダではない。**別の変数（受け手側の変化）を探す |
+| `<style>` と `tabular-nums` が戻るか | 予想どおり（禁止を外したので戻るはず） | — |
+| `class=` が `class-name=` に戻るか | ヘッダ由来だった | DSL の綴りは元から不安定 |
+
+🟨 **戻ったら、次に足すのは 1 つだけ**——`class-name=`（DSL の綴り）。
+**禁止ではなく「書き方」として足す**（[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md) ＋ [DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。

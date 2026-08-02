@@ -119,7 +119,7 @@
 | 9 | 🆕 🟨 **`tokens/` は空のままが正常** | converter の `tokens/` は別パッケージ用。本 repo の値は `_ds_bundle.css` に焼き込まれる |
 | 10 | 🆕 🟨 **`x-omelette.tokens` にパレット色が載る** | `src/app/tokens.css` が semantic 色を**パレット色への参照**で定義しているため（`--color-success: var(--color-emerald-600)` ほか）。**conventions header の「パレット色を書くな」と字面が食い違う**——手7 の観測対象 |
 | 11 | 🆕 🟥 **出荷している `.d.ts` は型検査を通らない（26 件）** | `package-validate.mjs` の「all .d.ts parse cleanly」は **parse であって typecheck ではない。**実測: `tsc --strict --noEmit` を `ds-bundle/components/**/*.d.ts` にかけると **26 エラー**——`React.Ref`（型引数なし）**18 件**／`Cannot find name`: `CSSProperties` ×2・`ColumnDef`・`ListDetailState`・`NavItem`／`ComponentType<DataGridProps>`・`<ListDetailProps>`（総称型に型引数なし）2 件。🟥 **受け手はこの `.d.ts` から lint 規則を生成する**（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)）ので、**抽出が浅い原因の半分はここ**。再現: `docs/実行記録.md §手8 H8-10` |
-| 12 | 🆕 🟨 **README の自動生成部と conventions header が矛盾しうる** | 生成部（`## Where things are`）は `guidelines/` を「読め」と書くが、**デザイン側には届かない**（[DR-0064](../docs/DR/DR-0064-design-project-receives-runtime-only.md)）。→ header 側に**打ち消しの 1 段落**を置いてある。**header を書き換えるときに消さないこと** |
+| 12 | 🟨 **README の自動生成部と conventions header は矛盾している**（未解決） | 生成部（`## Where things are`）は `guidelines/` と `<Name>.prompt.md` を「読め」と書くが、**デザイン側には届かない**（[DR-0064](../docs/DR/DR-0064-design-project-receives-runtime-only.md)）。🟥 **header 側に打ち消しを置いたら別の場所が壊れたのでロールバックした**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。**矛盾は残したまま。次に触るときは 1 変数で測る** |
 | 13 | 🆕 🟦 **`[TOKENS_MISSING]` が 9 → 1 に減った** | 前回は `--radix-*` 9 件。今回は「1 missing, below threshold」で **tag そのものが出ない。**原因未特定（sb CSS の採取結果が変わった可能性）。**増えたら見る** |
 | 14 | 🆕 🟦 **`[REFERENCE_STALE?]` と `AppShell` の `[SPOT_CHECK]` は今回出なかった** | どちらも 3 回連続で出ていたもの。**参照 Storybook を同じセッションで建て直したため**と思われる。次回また出たら「建て直しのタイミング」が原因と確定できる |
 
@@ -134,4 +134,7 @@
 | アップロード | 🟦 `bundle: false` / `styling: false` / **`aux: true`**・`deletePaths: []` |
 | render check | 🟦 **30/30 clean**（最終レポート用に `--render-sample 0` で全件回した） |
 | 🟥 **conventions header の実在検証** | **ドリフト 0 件。**クラス 26 語・部品/Provider/hook 40 名・props と union 値・否定の主張（`Container` に `inset` が無い等）を**全件実測**。`window.Design` は vm で実際にロードして 129 export を列挙した（grep ではなく） |
+| 15 | 🆕 🟥 **conventions header を触ったら、必ず「触っていない箇所」も数える** | 手8 で禁止 3・語彙 0 を 842 バイト足したら、**禁止した箇所は直り `Container` / `Section` / `DataGrid` が消えた**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。🟥 **ロールバック済み。**header は手7 の 6,832 バイトが最後に「効いていた」状態 |
+| 16 | 🆕 🟥 **`x-import` に `class=` を書くと黙って落ちる** | ランタイム（`support.js` の `collectProps`）は `class → className` を **`kind === "dom"` のときだけ**行う。部品には **`class-name=`** が必要。🟥 **どこにも書かれていない**（header の例はすべて JSX の `className=`）。**足すなら禁止ではなく「書き方」として 1 変数で** |
+| 17 | 🆕 🟥 **アンカーは `finalize_plan` の直前に取り直す** | ロールバック時、古い `remote-sync.json` のせいでドライバが **`upload.any: false`**（＝アップロード不要）と誤判定した。remote には前の版が載ったままだった。**`auxSha` を突き合わせれば分かる** |
 
