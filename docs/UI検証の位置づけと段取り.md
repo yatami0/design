@@ -92,7 +92,7 @@ flowchart TD
 
   G1["PoC: no-arbitrary-value (error)"] -. "🟦 既に立っている" .-> T1
   G2["PoC: theme.css = 語彙の正本"] -. "🟦 既に立っている" .-> T1
-  G3["CC-Skills: validate.mjs"] -. "🟦 流用できる" .-> T1
+  G3["CC-Skills: validate.mjs<br/>🟥 実物が存在しなかった（DR-0067）"] -. "🟥 引き継げない" .-> T1
   G4["PoC: ui.md"] -. "「page.tsx は薄く」程度" .-> SC
 ```
 
@@ -182,7 +182,7 @@ flowchart TD
 | 手5 | [手5_トークン差し替え実験.md](手順/手5_トークン差し替え実験.md) | ✅ done |
 | 手6 | [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md) | ✅ done |
 | 手7 | [手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02）。★ **Q1 = 「使う」** |
-| 手8 | 🆕 [手8_出力は機械ゲートを通るか.md](手順/手8_出力は機械ゲートを通るか.md) | 🟨 **手順書あり・未着手**（§2 の D1〜D8 が未決着） |
+| 手8 | 🆕 [手8_出力は機械ゲートを通るか.md](手順/手8_出力は機械ゲートを通るか.md) | 🟨 **進行中**（2026-08-02）。★ **Q1〜Q5・Q7 に答えが出た**——「食い違い」ではなく「**どちらも見ていない**」（[DR-0066](DR/DR-0066-neither-side-lints-the-generated-output.md)） |
 | **手8b**・手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
@@ -258,7 +258,7 @@ CC-Skills の `web-design-mock` / `distill` は**単一ファイル HTML 出力�
 | 確定した原則 | 3 層の不透明な面（navy chrome / gray canvas / white card）／brand-via-chrome／accent は状態のみ・塗り CTA なし | 🟨 **shadcn 既定（primary の塗り CTA）と真逆**。衝突の解き方自体が手2 の検証項目 |
 | レイアウト決定 | サイドバー 2 セクション・選択状態 neutral・thead 白・ページャ 3 案（未決） | 🟦 ③ Patterns/Templates 層にほぼそのまま持ち込める |
 | 20+ の HTML モック（`current_phase: detail-design` で停止） | 詳細設計フェーズ | 🟨 **見た目の正解として参照。コードは引き継がない**（HTML → React は別作業） |
-| `validate.mjs` / `anti-slop.mjs` | 依存ゼロの Node スクリプト | 🟦 design repo でも効かせる（lint と二重の網）→ 手8 |
+| ~~`validate.mjs` / `anti-slop.mjs`~~ | 🟥 **実物が存在しない**（[DR-0067](DR/DR-0067-inherited-asset-was-not-inheritable.md)・2026-08-02） | 🟥 ~~design repo でも効かせる（lint と二重の網）→ 手8~~ → **実行不能。**CC-Skills の GitHub は `Initial commit` の README 1 枚で、**一度も push されていない。**本 repo は「🟦 流用できる」と判定しただけで**中身を写していなかった** |
 | `web-design-mock` / `distill` skill | 単一ファイル HTML 出力が前提 | 🟨 今回は使わない。React/shadcn 版の仕組み化は 1 周してから判断（上記「2 回ルール」） |
 
 **引き継げないのは語彙。** shadcn は `background`/`foreground`/`primary`/`destructive` …、CC-Skills は Apple 系（`--space-7`/`--shadow-1`/`--color-accent`）。
