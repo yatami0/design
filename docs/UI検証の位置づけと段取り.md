@@ -158,8 +158,8 @@ flowchart TD
 
   H5 -- "緑" --> OK5["「変えない層」が成立<br/>= OBS-0003 案B の実証"]
   H5 -- "赤" --> NG5["触った箇所が設計の穴<br/>= そこを直してから先へ"]
-  H7 -- "使う" --> OK7["往復ワークフロー成立<br/>= コードごと移送する"]
-  H7 -- "作り直す" --> NG7["Claude Design は案出し専用に格下げ<br/>= 部品は手で組んで供給する"]
+  H7 == "✅ 使う（実測・2026-08-02）" ==> OK7["往復ワークフロー成立<br/>= コードごと移送する"]
+  H7 -. "作り直す（起きなかった）" .-> NG7["Claude Design は案出し専用に格下げ<br/>= 部品は手で組んで供給する"]
 ```
 
 🟨 **手8b は「やらない」を選べる手**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)）。
@@ -181,7 +181,7 @@ flowchart TD
 | 手4 | [手4_PatternsTemplates層と一覧.md](手順/手4_PatternsTemplates層と一覧.md) | ✅ done |
 | 手5 | [手5_トークン差し替え実験.md](手順/手5_トークン差し替え実験.md) | ✅ done |
 | 手6 | [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md) | ✅ done |
-| 手7 | [手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md) | 🟨 **planned**（§2 D1〜D7 が未決） |
+| 手7 | [手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02）。★ **Q1 = 「使う」** |
 | 手8・**手8b**・手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。

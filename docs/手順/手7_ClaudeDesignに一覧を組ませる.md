@@ -2,10 +2,10 @@
 type: procedure
 step: 手7
 title: 'Claude Design にチケット一覧を組ませる — 登録した部品を「使う」か「作り直す」か'
-status: in-progress # planned | in-progress | done | blocked
+status: done # planned | in-progress | done | blocked
 date: 2026-08-01
 updated_at: 2026-08-02
-next_action: "🟥 人が `/design-sync` を打ち直す（素材層 16 件を足して 14 → 30 部品）→ 同じ依頼文でもう 1 周。★ 予測: Card の手組みが消えるか（語彙表は 1 文字も変えていない）"
+next_action: '完了（2026-08-02）。Q1〜Q8 すべてに答えが出た。Q1 は 🟦「使う」——段取り §5 の分岐は往復ワークフロー成立側。次は ① `main` へ `--no-ff` マージの提案 ② 手8 の手順書。🟥 手8 へ送った 3 件は実行記録 §手7 の締め'
 ---
 
 # 手7 — Claude Design にチケット一覧を組ませる

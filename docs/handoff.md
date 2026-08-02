@@ -3,7 +3,7 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-01（**手6 を `main` へマージ済み `b7a97f3`。手7 の手順書を起草した**——★ `§2 D1` が未決）
+最終更新: 2026-08-02（**★ 手7 完了。Q1 = 「使う」——段取り §5 の分岐は往復ワークフロー成立側に決した**）
 
 ---
 
@@ -13,17 +13,18 @@
   ✅ **手6 のマージも済んだ**——`b7a97f3`（`step/h6-preview-html` を `--no-ff`・2026-08-01）。
   🟨 **`main` は別 worktree（`~/conductor/repos/design`）が持っている**ので、作業側から `git switch main` は落ちる。
   マージは `git -C ~/conductor/repos/design merge --no-ff <branch>` の形で打つ。
-- 🆕 **手7 に着手した。**ブランチ `step/h7-design-agent-behavior`（`b7a97f3` から分岐）。
-  **[手順書](手順/手7_ClaudeDesignに一覧を組ませる.md)は `status: in-progress`。**
-  🟦 **§2 の D1〜D9 は全件決着**／🟦 **H7-01〜H7-07（再同期）まで完了。**
-  🟥 **次は「同じ依頼文でもう 1 周打つ」だけ**——人が claude.ai/design で実行する。
-- ★★ **手7 の 1 周目が通った。[Q1 は 🟦「使う」](実行記録.md)。**——**明示していないのに 9/14 部品を使い、`<div>` も `<button>` も `<table>` も 0 件。**
-  🟦 **Q2 も効いた**（未決 #10 の後半に答え）——**カードにも `.d.ts` にも `.prompt.md` にも無い `AppProviders` が、conventions header の散文だけで最外に 1 回だけ正しく置かれた。**
-  🟨 **Q3 は半分**——禁止語彙 0 件だが、header が「complete vocabulary」と書いた表の**外の語が 4 つ**（`rounded-md` / `border` / `tabular-nums` / `font-emphasis`）。**全部実在しトークン参照**（架空のクラスはゼロ）。
-  🟥 **Q4 に実害が出た**——**`Card` を渡していないので `Box` + 3 クラスでカード面を手組みした。**Q3 の逸脱 4 語のうち 3 語がここに集中。
-  🟥 **成果物は JSX ではなく `.dc.html`**（`x-import` ＋ `DCLogic`）。**手8 の前提が動く。**
+- ✅ **手7 が完了した**（2026-08-02）。ブランチ `step/h7-design-agent-behavior`。🟥 **`main` へ未マージ**。
+- ★★ **Q1 の答えは「使う」**（[DR-0065](DR/DR-0065-claude-design-uses-the-registered-components.md)）。
+  **明示していない 1 周目から `<div>` `<button>` `<table>` が 0 件**で、**部品を足せば足すだけ使った**（種類 10 → 17 → 18）。
+  → **段取り §5 の分岐は「往復ワークフロー成立」側に決した。手9 は「部品をコードごと移送する」形で設計してよい。**
+- 🟦 **Q2 も効いた**（未決 #10 の後半に答え）——**`AppProviders`** は 30 部品に入っておらず、
+  3 周目は `README.md` すらデザイン側に複製されていないのに、**3 周とも最外に 1 回**正しく置かれた。
+- 🟨 **Q3 は半分だが、動かし方が分かった**——禁止文を 1 文字も変えずに、
+  「**部品を足す**」「**語彙を足す**」の 2 つだけで逸脱が **5 → 2 → 1** に減った（[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md)）。
+- 🟥 **[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)**: デザイン側に届くのは**ランタイム 3 ファイル ＋ system prompt の header だけ。**
+  `components/**` も `guidelines/**` も 3 周とも来ていない。
 - ★ **手5 は Q1〜Q8 すべてに答えが出て、完了条件 10 件も検証済み**（[実行記録 §手5 の締め](実行記録.md)）。
-- **決定 24 件・発見 40 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜**0064**）。
+- **決定 24 件・発見 41 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜**0065**）。
   🆕 **[DR-0059](DR/DR-0059-receiver-generates-its-own-adherence-lint.md)（手7 の着手前実測）**——
   **受け手は `.d.ts` から独自の lint 設定 `_adherence.oxlintrc.json` を自動生成していた**（ローカルには無い）。
   強制されるのは **`<button>` → `<Button>` の 1 本だけ**で、🟥 **`p-4` / `text-gray-600` は検出されない。**
@@ -102,7 +103,7 @@
 | 手4 | ③ Patterns / Templates 層 + ダミーデータで一覧を組む | [手4](手順/手4_PatternsTemplates層と一覧.md) | ✅ **done** |
 | 手5 | ★ トークン差し替え実験 | [手5](手順/手5_トークン差し替え実験.md) | ✅ **done**（2026-08-01・`main` へマージ済み `e88311a`） |
 | 手6 | **`/design-sync` で Claude Design へ同期**（公式 converter。Storybook が入力） → 3 層とフラグは境界を越えるか | [手6](手順/手6_ClaudeDesignへの同期.md) | ✅ **done**（2026-08-01・`main` へマージ済み `b7a97f3`） |
-| 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | [手7](手順/手7_ClaudeDesignに一覧を組ませる.md) | 🟨 **planned**（🟥 §2 D1〜D7 が未決） |
+| 手7 | ★ Claude Design で一覧を組ませる → 使うか作り直すか | [手7](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02）。★ **Q1 = 「使う」**。🟥 **`main` へ未マージ** |
 | 手8 | 出力は lint / validate.mjs を通るか | 未作成 | ⬜ |
 | **手8b** | 🆕 **preset 差し替え**（値では解けない「形」の衝突を、部品の作りを選び直して解けるか） | 未作成 | ⬜ 🟨 **「やらない」も結論**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)） |
 | 手9 | 移送手順（人が実行）+ PoC の docs へ DR/OBS で戻す | 未作成 | ⬜ |
@@ -356,86 +357,44 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 ## 次にやること
 
-✅ **手6 は完了し `main` へマージ済み**（`b7a97f3`）。
-🆕 **手7 の手順書は起草済み**（[手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md)）。
+✅ **手7 は完了した**（Q1〜Q8 すべてに答えが出て、完了条件も検証済み）。
+**ブランチ `step/h7-design-agent-behavior` は作業ツリー clean。🟥 `main` へは未マージ。**
 
-### ✅ 1. 再同期は完了した（2026-08-02）
+### 🟥 1. `main` へ `--no-ff` マージする（**人が実行する**）
 
-🟦 **`design — UI検証` は 30 部品になった。**採点 **30/30 全件 `match`**（`close` 0 / `mismatch` 0 / `bad` 0 / `thin` 0）。
-conventions header は**ドリフト無し**（書き換えていない）。詳細は [実行記録 §H7-07](実行記録.md)。
+**マージは提案までが Claude の仕事**（stateLedger の規律）。
+🟨 `main` は別 worktree が持っているので、`-C` の形で打つ。
 
-### ✅ 2. 2 周目まで完了した。手7 の Q1〜Q8 に答えが出ている（[実行記録](実行記録.md)）
+```bash
+git -C ~/conductor/repos/design merge --no-ff step/h7-design-agent-behavior
+```
 
-🟦 **Q1 は「使う」**（明示なしで素の要素 0・部品を足せば 10 → 17 種類）。🟦 **Q2 も効いた**（未決 #10 の後半に答え）。
-🟥 **Q3 は半分**——2 周目で `w-48` が出た。→ **手7 D10 = A（語彙を足す）**で対処済み（[DR-0061](DR/DR-0061-field-width-vocabulary.md)）。
+### 2. 手8 の手順書を書く
 
-### ✅ 3. 再同期は完了した（2026-08-02・語彙の追加分）
+**手7 が手8 の問いを具体化した。**「出力は lint / validate.mjs を通るか」は、
+🟥 **「受け手の lint と我々の lint はどこで食い違うか」**に変わっている。
 
-🟦 `changed 0` / `added 0` / **`upload.styling: true` / `bundle: false`**——部品のコードは 1 行も動いていない。
-🟦 **`w-field-sm/md/lg` と `max-w-field-*` が出荷ビルドに実在することを確認済み**（[DR-0062](DR/DR-0062-shipped-vocabulary-needs-safelist.md) の穴が塞がった）。
-
-### ✅ 4. 3 周目まで完了した — ★ 手7 の Q1〜Q8 に全部答えが出ている
-
-🟦 **予測 1 が的中: `w-48` → `w-field-md`。数値の段は 0 件に戻った。**
-**禁止文は 3 周とも 1 文字も変えていない。**逸脱を減らしたのは「部品を足す」と「語彙を足す」の 2 つだけ（[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md)）。
-
-🟥 **3 周とも消えなかったのは 2 面**——`DataGrid.columns[].cell` の任意 JSX（`tabular-nums`）と `<style>` への生 CSS（**2 例目**）。
-
-🆕 🟥 **[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)**: デザイン側に届くのは**ランタイム 3 ファイル ＋ system prompt の header だけ。**
-`components/**` も `guidelines/**` も 3 周とも来ていない。**header の guidelines 参照は宛先が無い。**
-
-### 🟥 5. 手7 を締める（次の一手）
-
-★ **今度は「語彙だけを変えた 1 変数の実験」。**部品構成も依頼文も変えない。
-
-| | 2 周目 | **3 周目** |
-| --- | --- | --- |
-| 部品 | 30 | 🟦 **30（変えない）** |
-| 依頼文 | 明示なし | 🟦 **同一（変えない）** |
-| 語彙 | 幅の族なし | 🟥 **`w-field-sm/md/lg` を足した** |
-
-**予測**: `SelectTrigger` の `class-name` が `w-48` → `w-field-md` になる。
-🟥 **ならなければ「語彙を足しても使わない」**＝ 手8 の前に header の書き方を疑う番になる。
-
-### （旧）同じ依頼文でもう 1 周打つ（**人が実行する**）
-
-★ **変数は「DS の中身」1 つだけ。**[H7-03 の依頼文](手順/手7_ClaudeDesignに一覧を組ませる.md)を**1 文字も変えずに**新しいデザインで打つ。
-
-**打つ前に書いた予測**（[§2.9](手順/手7_ClaudeDesignに一覧を組ませる.md)）: ★ `Box` + `bg-card rounded-md border` の手組みが消えて `Card` が使われる／チップが `Badge`・`Select` に変わる／カード 14 → 30 ／素の `<span>` 8 個は減らない。
-
-### 3. 手7 の残り（H7-06 の再実行 → 締め）
-
-手6 で**渡す側は全部揃った**ので、手7 は純粋に受け手の挙動を測る手。
-
-| 前提 | 手7 で効くこと |
+| 手7 が渡すもの | 手8 で効くこと |
 | --- | --- |
-| 🟦 実コンポーネント 14 件が `window.Design.*` で描画される | **「使う」を選べる状態は成立している** |
-| 🟦 conventions header が system prompt に inline される | **フラグ 5 種を散文で渡した。効くかがここで分かる**（未決 #10 の後半） |
-| 🆕 🟥 **受け手の機械ゲートは `<button>` しか見ない**（[DR-0059](DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） | **`<div className="flex">` での迂回は検出されない** → 判定は**我々が数える** |
-| 🆕 🟥 **`p-4` / `text-gray-600` は受け手の lint を素通りする** | 禁止語彙は**散文だけの担保**。破れば手8 のスコープが変わる |
-| 🟥 層と役割が `group` 1 本に潰れている（[指摘 9](共通コンポーネント思想への指摘.md)） | `layout` と `patterns` が兄弟に見える。**選択を誤ったらこれが原因候補** |
-| 🟥 素材層 16 件は渡していない | 「足りない」と言われたら D5 の判断 |
-| 🆕 🟥 **デザインシステムが 2 件ある**（`Modernist` / `design — UI検証`） | **取り違えると全部が無意味。**H7-01 で固定する |
+| 🟥 **`tabular-nums`（`DataGrid.columns[].cell` 経由）が 3 周とも残った** | **赤の内訳として持っていく。**語彙では塞がらない面（[DR-0060](DR/DR-0060-vocabulary-leaks-from-four-surfaces.md) の ③） |
+| 🟥 **`<style>` への生 CSS が 2 例目** | [2 回ルール](../CLAUDE.md)は成立済み。header に 1 文足すのが最小 |
+| 🟥 **header の `guidelines/docs/…` 参照に宛先が無い**（[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)） | 参照を削るか、要点を header 本文へ畳む |
+| 🟥 **成果物は JSX ではなく `.dc.html`**（`x-import` ＋ `DCLogic`） | **本 repo の ESLint はそのままでは読めない。**手8 の最初の障害はここ |
+| 🟦 **受け手も lint を持っている**（[DR-0059](DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） | 我々の lint と**どこで食い違うか**を数える |
+| 🟥 **借金が復活する**（`exactOptionalPropertyTypes: false`・DR-0014） | 手9 の移送時。手8 で先に見えるかもしれない |
 
-### 3. 🟨 [OBS-0010](OBS/OBS-0010_フォント修正で手5の目視判定をやり直すか.md)（数分で解ける）
+### 3. 🟨 [OBS-0010](OBS/OBS-0010_フォント修正で手5の目視判定をやり直すか.md)（数分で解ける・持ち越し 2 回目）
 
-**手5 の観点 D タイポは、セリフ体の上で判定していた**（[DR-0058](DR/DR-0058-app-only-font-never-reached-the-design-system.md)）。
-`pnpm storybook` で `★ Review/D タイポ` を開き直すだけ。**揺れるのは 6 観点中 D だけ**（他は書体に依存しない）。
+`pnpm storybook` で `★ Review/D タイポ` を開き直すだけ。
 
 ### 4. 🔺 ADR 起案の時機（未決 #20）
 
-昇格候補 **4 件**: [DR-0032](DR/DR-0032-layout-primitives-take-props-not-classname.md) / [DR-0033](DR/DR-0033-step5-criteria-differ-per-layer.md) / [DR-0034](DR/DR-0034-touch-target-visual-32-hit-44.md) / [DR-0052](DR/DR-0052-unreachable-spots-are-avoided-by-not-using-them.md)。
-**起案はまだしていない**（判定と起案を分ける規律）。🟨 **4 件溜まったので起案の時機かもしれない。**
+昇格候補 **4 件**（DR-0032 / DR-0033 / DR-0034 / DR-0052）。🟨 **手7 でさらに候補が増えた可能性**——
+[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md)（禁止と代替の対）は**外から見える規約に効く**ので、次の判定で見る。
 
 ### 5. 🟥 [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) の学習（他をブロックしている観点）
 
-不透明度と状態面の**概念**が分かると、[思想への指摘 8](共通コンポーネント思想への指摘.md)（合成をトークンの内側でやるか外側でやるか）が判断できるようになる。
 **手に紐づかないので、いつやってもよい。**
-
-### 手5 の残り観測（持ち越し）
-
-- 🟨 **未決 #21 — `Box` への逃げ回数。**手3・手4・手5 とも **0 回**
-- ~~未決 #23~~ ✅ **閉じた**（[DR-0049](DR/DR-0049-hit-area-reaches-44px-only-at-default-size.md)）。対処は [OBS-0008](OBS/OBS-0008_当たり判定44pxをどう扱うか.md) へ積んだ
 
 ## 未決・保留
 
