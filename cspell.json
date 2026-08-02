@@ -47,6 +47,7 @@
     "nums",
     "oklab",
     "oklch",
+    "oneline",
     "orval",
     "oxlint",
     "oxlintrc",
@@ -73,7 +74,9 @@
     "vega",
     "vitest",
     "wcag",
+    "worklist",
     "worktree",
+    "yatami",
     "yiping",
     "zenn"
   ]

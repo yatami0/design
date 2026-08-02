@@ -98,6 +98,13 @@ export default defineConfig(
       '**/.design-sync/.cache/**', // 生成された preview wrapper・compare の作業状態
       '**/ds-bundle/**', // converter の出力（アップロードされる成果物）
       '**/.ds-sync/**', // skill から写した converter スクリプト＋その依存
+      // 手8 D7=B の帰結: Claude Design の生成物（`artifacts/h7/**` の `.dc.html` 原本と、
+      // `artifacts/h8/**` の TSX 機械翻訳）は**検体であって製品ではない**。
+      // 🟥 測るときだけ射程に入れる。恒久的に入れると、翻訳由来の赤（TS4114 の
+      //    `override` 4 件など）がベースラインに居座り「新しい赤」が見えなくなる。
+      //   再現手順: この行を外し、`tsconfig.json` の include に
+      //             "artifacts/h8/**/*.tsx" を足す（実測は実行記録 §手8）。
+      'artifacts/**',
     ],
   },
 

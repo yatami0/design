@@ -35,7 +35,8 @@ PoC（`~/git/PoC`）の **UI 開発ワークフローが往復するか**を実�
 
 ## git
 
-- `main` が安定点。手ごとに `step/h<N>-<slug>` を切り、完了したら `main` へ `--no-ff` マージ
+- `main` が安定点。手ごとに `step/h<N>-<slug>` を切り、完了したら **`gh pr create --base main` で PR を出す**（[DR-0068](docs/DR/DR-0068-merge-through-pull-requests.md)）。**マージは人が実行する**——Claude は提案まで
+  - 🟥 ローカルの `git merge --no-ff` は使わない（手5・手6 の履歴には残っているが、以後は PR に揃える）
 - コミットは `<type>(H<N>): 日本語要約 [手N]`（type: `feat` / `fix` / `docs` / `chore` / `build` / `procedure` / `refactor` / `test`）
 - 手に属さない作業（文書整備・証跡整理）は `main` に直接コミットしてよい
 
