@@ -80,7 +80,7 @@
 | [DR-0065](DR-0065-claude-design-uses-the-registered-components.md) | ⭐★ **Claude Design は登録した部品を「使う」** — 明示なしの 1 周目から `<div>` `<button>` `<table>` 0 件。**足せば足すだけ使う**（種類 10 → 17 → 18）。**段取り §5 の分岐は「使う」側に決した** | 手7 | **手8**・**手9**・PoC |
 | [DR-0066](DR-0066-neither-side-lints-the-generated-output.md) | ⭐★ **生成物は境界のどちら側でも検査されていない** — 我々は 6 本中 **0 本**。受け手は `no-restricted-syntax` が oxlint に無く**設定ごと parse 不能**。56 セレクタが走ったと仮定しても**当たる 5 件は全部偽陽性**（`.d.ts` からの props 抽出が継承分を落としている）。「食い違い」ではなく「**どちらも見ていない**」 | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 同上） |
 | [DR-0067](DR-0067-inherited-asset-was-not-inheritable.md) | ⭐ **「引き継ぐ」と書いた資産が引き継げなかった** — CC-Skills の GitHub は `Initial commit` の README 1 枚。`validate.mjs` / `anti-slop.mjs` は**存在しない**。本 repo は「🟦 流用できる」と判定しただけで**中身を一度も写していなかった** | 手8 | **段取り §7 の訂正**・PoC |
-| [DR-0069](DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) | ⭐★ **規約ヘッダに禁止を足したら、禁止した箇所以外が壊れた** — 禁止 3・語彙 0 を 842 バイト足したら、`<style>` と `tabular-nums` は消えた一方で **`Container` / `Section` / `DataGrid` が消え、表を素材層で手組みし始めた**。🟥 **予測表だけ見れば「成功」だった**——壊れたのは予測していない場所で、2 周ともユーザーの目視でしか見つからなかった。**ロールバック済み・対照（6 周目）は未実施** | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 finding） |
+| [DR-0069](DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) | ⭐★ **規約ヘッダに禁止を足したら、禁止した箇所以外が壊れた** — 禁止 3・語彙 0 を 842 バイト足したら、`<style>` と `tabular-nums` は消えた一方で **`Container` / `Section` / `DataGrid` が消え、表を素材層で手組みし始めた**。🟥 **予測表だけ見れば「成功」だった**——壊れたのは予測していない場所で、2 周ともユーザーの目視でしか見つからなかった。🟦 **戻したら 6 周目で全部戻り、因果が確定した**（`class=` もヘッダ由来だった） | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 finding） |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 

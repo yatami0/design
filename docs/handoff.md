@@ -3,7 +3,7 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-02（**🟥 4・5 周目で骨格が壊れ、conventions header をロールバックした——[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)。次は 6 周目（対照）**）
+最終更新: 2026-08-02（**★ 6 周目（対照）で全部戻り、[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) の因果が確定。Q6 に答えが出た**）
 
 ---
 
@@ -416,7 +416,7 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 | # | 残り | 誰がやるか |
 | --- | --- | --- |
-| **Q6** | 🟦 **step 1（`/design-sync`）は完了した**（2026-08-02・人が起動）。**ドライバ自身が「動いたのは aux だけ」と判定**——30 件すべて carried forward・`bundle: false` / `styling: false` / `aux: true` / 削除 0・render 30/30 clean。**header は DS 側に届いた。**🟥 **残るは step 2〜4** | 🟥 **人が claude.ai/design で打つ**（下記） |
+| ~~Q6~~ | ✅ **答えが出た**（6 周目の対照で確定）。**conventions header は効く。ただし「効く」と「壊す」が同時に起きる**——禁止した 2 件は消え、禁止していない骨格 3 部品と DSL の綴りが壊れ、**戻すと両方戻った**（[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)） | ✅ 完了 |
 | ~~Q8~~ | ✅ **起票した**（[指摘 11](共通コンポーネント思想への指摘.md)）——**思想は「定義したものだけを使う」（許可リスト）で語るが、機械の網は両側とも禁止リストしか持てない。**🟥 **これだけは思想の文言を直しても解けない**（検査の形を変えないと閉じない）。🟨 **一覧表が指摘 10 を取りこぼしていたので、あわせて揃えた** | ✅ 完了 |
 
 🟨 **完了条件はほぼ埋まっている。**残るのは Q6 の実測と、実行記録へのチェック。
@@ -961,3 +961,28 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 🟨 **戻ったら、次に足すのは 1 つだけ**——`class-name=`（DSL の綴り）。
 **禁止ではなく「書き方」として足す**（[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md) ＋ [DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。
+
+### 2026-08-02（第 8 セッション・続 4）— ★ 6 周目で全部戻り、Q6 が確定した
+
+- ★ **対照が成立した。**ヘッダを戻しただけで **3 周目と完全に同じ形**に復帰
+  （`Container` / `Section` / `DataGrid` / `Label` / `class-name` すべて）。
+  🟥 **`class=` もヘッダ由来だった**——[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) 起票時の「n=1 なので断定できない」は解消。
+- ★ **Q6 の答え: conventions header は効く。ただし「効く」と「壊す」が同時に起きる。**
+- 🟨 **6 周目に残る逸脱は 4 面のうち ③ だけ**（[DR-0060](DR/DR-0060-vocabulary-leaks-from-four-surfaces.md)）。
+  **語彙表の外は 3 件で、全部 `DataGrid.columns[].cell` から出ている**（`tabular-nums` 2 / `font-emphasis` 1）。
+  ①（素材層）は**正しい語彙を正しく使えており**、残るのは「**props ではなく `className` 経由である**」という形だけ。
+  ②（`Box`）は 🟦 **0**（`Card` が使われた）。
+
+### 🔺 手7 D10 案B（素材層を製品層ラッパーで包む）の判断材料が揃った
+
+手7 D10 は **A（語彙を足す）のみ**を採り、**B を「手8 の数字が出てから」として保留**していた。数字が出た。
+
+| B を採ると | |
+| --- | --- |
+| 🟦 面 ① が消える | `Select` が `width="md"` を props で受ければ `class-name` は不要になる |
+| ★🟦 **[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) の事故も同時に消える** | **props なら `class` / `class-name` の綴り事故が起きえない。**[DR-0032](DR/DR-0032-layout-primitives-take-props-not-classname.md)（枠は props で閉じる）が**境界の向こうでもう一段の意味**を持った |
+| 🟥 面 ③ は残る | `columns[].cell` は ReactNode を返す関数（[DR-0060](DR/DR-0060-vocabulary-leaks-from-four-surfaces.md) §影響 4）。**ラッパーでは塞がらない**——塞ぐなら `columns` に列オプションを足す＝**手4 の成果物の API 変更** |
+| 🟥 面 ④ は残る | 規約の話。🟥 **ただし禁止を足すのは代償がある**（DR-0069） |
+
+🟨 **2 回ルールの材料**: ① 手7 2 周目の `w-48`（素材層の className に任意値）② 手8 4・5 周目の `class=`（同じ経路が綴り事故で黙って落ちた）。
+**形は違うが根は同じ「素材層は `className` でしか幅を渡せない」。**🔺 **成立と見るかはユーザー判断。**
