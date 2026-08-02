@@ -74,6 +74,8 @@
 | [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) | ⭐ **受け手が独自の機械ゲートを自動生成していた** — `_adherence.oxlintrc.json` は `.d.ts` から導出されローカルに無い。強制されるのは `<button>` → `<Button>` の 1 本だけで、**`p-4` / `text-gray-600` は検出されない** | 手7 | **手7**・手8・PoC |
 | [DR-0060](DR-0060-vocabulary-leaks-from-four-surfaces.md) | ⭐ **語彙の逸脱は 4 面から出る** — 素材層の `className` はその 1 つ。🟥 **px の直当ては起きていない**（生 px / hex / style は 2 周とも 0）。根因は「代替語彙の不在」 | 手7 | **手7**・手8・PoC |
 | [DR-0062](DR-0062-shipped-vocabulary-needs-safelist.md) | ⭐ **出荷する語彙は safelist しないと CSS に載らない** — 「対象 0 件で緑」の**逆向き**（書けたのに届かない）。`@source inline()` で塞いだ | 手7 | **手7**・手9・PoC |
+| [DR-0063](DR-0063-forbidding-without-an-alternative-fails.md) | ⭐ **禁止だけでは破られ、代替語彙を与えると守られた** — 3 周の実測。禁止文は 1 文字も変えていないのに逸脱が 5 → 2 → **1** に減った。減らし方は「部品を足す」「語彙を足す」の 2 つだけ | 手7 | **手8**・PoC |
+| [DR-0064](DR-0064-design-project-receives-runtime-only.md) | ⭐ **デザインプロジェクトに複製されるのはランタイムだけ** — `components/**` も `guidelines/**` も届かない。header は**ファイルではなく system prompt** で効いている。🟥 日本語ファイル名は 401（agent 自身の報告・3/3） | 手7 | **手9**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -133,6 +135,8 @@
 | DR-0060 | 🟥 ui.md / architecture.md の材料 | **任意値禁止を掲げるなら、禁止した用途に代替語彙を必ず用意する。**用意しない禁止は破られる。あわせて **ReactNode / 関数を受ける props は枠の外**になる |
 | DR-0061 | 🟥 ui.md の材料 | 「**ページ幅**」と「**コントロール幅**」は別の語彙。前者だけ定義すると後者が任意値で書かれる |
 | DR-0062 | 🟥 architecture.md の材料 | **消費者が書く語彙**を持つ設計システムは、Tailwind の使用検出だけでは出荷できない（safelist が要る） |
+| DR-0063 | 🟥 ui.md / ADR-0019 の材料 | **任意値禁止は「禁止と代替の対」で書く。**禁止だけの規約は破られることが実測で出た |
+| DR-0064 | 🟥 architecture.md の材料 | **日本語ファイル名を成果物のパスに使わない。**あわせて「移送先が実際に受け取るもの」を出荷物の一覧と混同しない |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

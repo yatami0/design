@@ -23,7 +23,7 @@
   🟥 **Q4 に実害が出た**——**`Card` を渡していないので `Box` + 3 クラスでカード面を手組みした。**Q3 の逸脱 4 語のうち 3 語がここに集中。
   🟥 **成果物は JSX ではなく `.dc.html`**（`x-import` ＋ `DCLogic`）。**手8 の前提が動く。**
 - ★ **手5 は Q1〜Q8 すべてに答えが出て、完了条件 10 件も検証済み**（[実行記録 §手5 の締め](実行記録.md)）。
-- **決定 24 件・発見 38 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜**0062**）。
+- **決定 24 件・発見 40 件を [docs/DR/](DR/index.md) に切り出し済み**（DR-0001〜**0064**）。
   🆕 **[DR-0059](DR/DR-0059-receiver-generates-its-own-adherence-lint.md)（手7 の着手前実測）**——
   **受け手は `.d.ts` から独自の lint 設定 `_adherence.oxlintrc.json` を自動生成していた**（ローカルには無い）。
   強制されるのは **`<button>` → `<Button>` の 1 本だけ**で、🟥 **`p-4` / `text-gray-600` は検出されない。**
@@ -374,7 +374,17 @@ conventions header は**ドリフト無し**（書き換えていない）。詳
 🟦 `changed 0` / `added 0` / **`upload.styling: true` / `bundle: false`**——部品のコードは 1 行も動いていない。
 🟦 **`w-field-sm/md/lg` と `max-w-field-*` が出荷ビルドに実在することを確認済み**（[DR-0062](DR/DR-0062-shipped-vocabulary-needs-safelist.md) の穴が塞がった）。
 
-### 🟥 4. 同じ依頼文で 3 周目を打つ（**人が実行する**）
+### ✅ 4. 3 周目まで完了した — ★ 手7 の Q1〜Q8 に全部答えが出ている
+
+🟦 **予測 1 が的中: `w-48` → `w-field-md`。数値の段は 0 件に戻った。**
+**禁止文は 3 周とも 1 文字も変えていない。**逸脱を減らしたのは「部品を足す」と「語彙を足す」の 2 つだけ（[DR-0063](DR/DR-0063-forbidding-without-an-alternative-fails.md)）。
+
+🟥 **3 周とも消えなかったのは 2 面**——`DataGrid.columns[].cell` の任意 JSX（`tabular-nums`）と `<style>` への生 CSS（**2 例目**）。
+
+🆕 🟥 **[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md)**: デザイン側に届くのは**ランタイム 3 ファイル ＋ system prompt の header だけ。**
+`components/**` も `guidelines/**` も 3 周とも来ていない。**header の guidelines 参照は宛先が無い。**
+
+### 🟥 5. 手7 を締める（次の一手）
 
 ★ **今度は「語彙だけを変えた 1 変数の実験」。**部品構成も依頼文も変えない。
 
