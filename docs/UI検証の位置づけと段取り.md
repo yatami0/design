@@ -148,7 +148,7 @@ flowchart TD
   H5["★手5: トークン差し替え実験<br/>tmp-admin の値を流し込み、②③ を<br/>1 行も触らずに見た目が変わるか"]
   H6["手6: /design-sync で Claude Design へ同期<br/>公式 converter が Storybook を入力に<br/>実コンポーネントをバンドルして上げる<br/>→ 3 層とフラグは境界を越えるか"]
   H7["★手7: Claude Design で一覧を組ませる<br/>→ 登録部品を「使う」か「作り直す」か"]
-  H8["手8: 出力は lint / validate.mjs を通るか"]
+  H8["手8: 受け手の lint と我々の lint は<br/>どこで食い違うか<br/>（元: 出力は lint / validate.mjs を通るか。<br/>DR-0059 で問いが具体化した）"]
   H8B["手8b: preset 差し替え<br/>値では解けない『形』の衝突を<br/>部品の作りを選び直して解けるか"]
   H9["手9: 移送手順を決める（人が実行）<br/>+ PoC の docs へ DR/OBS で戻す"]
 
@@ -182,7 +182,8 @@ flowchart TD
 | 手5 | [手5_トークン差し替え実験.md](手順/手5_トークン差し替え実験.md) | ✅ done |
 | 手6 | [手6_ClaudeDesignへの同期.md](手順/手6_ClaudeDesignへの同期.md) | ✅ done |
 | 手7 | [手7_ClaudeDesignに一覧を組ませる.md](手順/手7_ClaudeDesignに一覧を組ませる.md) | ✅ **done**（2026-08-02）。★ **Q1 = 「使う」** |
-| 手8・**手8b**・手9 | 未作成 | ⬜ |
+| 手8 | 🆕 [手8_出力は機械ゲートを通るか.md](手順/手8_出力は機械ゲートを通るか.md) | 🟨 **手順書あり・未着手**（§2 の D1〜D8 が未決着） |
+| **手8b**・手9 | 未作成 | ⬜ |
 
 > 進捗と次の一手の正本は [handoff.md](handoff.md)。本表は索引。
 
