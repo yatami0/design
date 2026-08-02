@@ -70,8 +70,8 @@ your own markup:
   `Empty`, `Pagination`, `Dialog`, `DropdownMenu`, `Popover`, `Sheet`, `Tooltip`. These are the
   unmodified upstream primitives, exposed so that a screen never has to hand-build a surface, a form
   control, or an overlay. They accept `className`; the composed tier's prop-only rule does not apply to
-  them. Compound ones ship their parts (`CardHeader`, `DialogContent`, `SelectItem`, `TableRow`, …) —
-  read `<Name>.prompt.md` for the exact shape.
+  them. Compound ones ship their parts (`CardHeader`, `DialogContent`, `SelectItem`, `TableRow`, …);
+  follow the same naming as upstream shadcn/ui.
 
 This system also classifies components by facet. Two facets change how you use a component:
 
@@ -92,9 +92,20 @@ active item with `active: true`. `AppShell` is the page skeleton and is where a 
 
 Read `styles.css` and everything it `@import`s (`_ds_bundle.css`) before styling — that closure is the
 only CSS a rendered design receives, and it holds every token above as a `--spacing-*` / `--text-*` /
-`--container-*` custom property. Per component, read `<Name>.prompt.md` (usage + real examples pulled
-from this repo's own stories) and `<Name>.d.ts` (the exact prop contract).
-`guidelines/docs/共通コンポーネント思想.md` is the source for the role/facet classification above.
+`--container-*` custom property.
+
+Those two files, plus `_ds_bundle.js`, are **the only files a design project receives**. Component
+sources, `<Name>.d.ts`, `<Name>.prompt.md` and the `guidelines/` docs stay on the design-system side and
+are **not** readable from a design — do not go looking for them. Everything you need to obey is either in
+this document or in that CSS closure. The tier and facet vocabulary above is this system's own
+classification; treat this document as its source.
+
+Two more rules that follow from that:
+
+- **Do not add raw CSS.** No `<style>` blocks beyond the document reset, and no inline `style` for
+  anything a token can express. If a rule feels necessary, the vocabulary is missing — say so instead.
+- **Use only class names listed above.** A class can exist in the CSS closure and still be outside this
+  vocabulary (`tabular-nums` is the known case). Existing is not permission.
 
 ## One idiomatic build
 
