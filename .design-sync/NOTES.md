@@ -29,8 +29,8 @@
 | --- | --- | --- |
 | 1 | Overlay **5 件**で `[GRID_OVERFLOW]` が出る | 🟨 **外れ（過大）。出たのは `Dialog` と `Tooltip` の 2 件だけ。**`DropdownMenu` / `Popover` / `Sheet` は**閉じた状態の story しか無い**ので flag されない。**「Overlay だから」ではなく「開いた状態の story があるか」で決まる** |
 | 2 | カードは 14 → 30 になる | 🟦 **的中**（`componentCount: 30` / `window.Design` 129 export のうち部品 30） |
-| 3 | ★ `Box` + `bg-card rounded-md border` の手組みが消え `Card` が使われる | ⬜ **未判定。**これは design agent 側の観測——**同じ依頼文でもう 1 周打ってから数える** |
-| 4 | `_adherence.oxlintrc.json` の規則が 16 部品ぶん増える | ⬜ **未確認**（アップロード後にリモートを読み直す） |
+| 3 | ★ `Box` + `bg-card rounded-md border` の手組みが消え `Card` が使われる | 🟦 **的中**（2 周目で `Card` + `CardContent` に置き換わった）。🟥 **代わりに `w-48` が 2 件出た**——素材層は `className` を受けるため |
+| 4 | `_adherence.oxlintrc.json` の規則が 16 部品ぶん増える | ⬜ **未読**（コンテキスト節約のため再取得していない）。`_ds_manifest.json` は 30 部品・30 カードに更新済み |
 | 5 | `buildCmd` に `pnpm build:types` を入れたことで risk #1 が塞がる | 🟥 **外れ。`buildCmd` は converter が実行しない**（下記）。**risk #1 は塞がっていない**——手で回すしかない |
 
 - **`① Tokens` の story は部品ではないので `titleMap: null` で除外した。**
