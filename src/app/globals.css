@@ -27,6 +27,13 @@
  * クラス名を実際に生成してしまう（実測。→ DR-0021）。手5 は生成 CSS の差分で
  * 「どこが変わらなかったか」を読む手なので、観測が文章の編集で動かないよう走査から外す。 */
 @source not '../../docs';
+/* 手7 D10: **出荷する語彙は safelist が要る。**
+ * Tailwind は「この repo が使ったクラス」しか出さないが、`w-field-*` は
+ * **移送先の design agent が書く語彙**であって本 repo の部品は使わない。
+ * → 宣言しただけでは `_ds_bundle.css` に載らず、agent が書いても何も効かない
+ *   （「対象 0 件で緑」と同型の、**書けたのに届かない**穴）。
+ * 🟦 `@source inline()` で明示的に生成させる。赤テストは実行記録 §H7-08。 */
+@source inline('{w,max-w}-field-{sm,md,lg}');
 /* ---break---
  */
 @custom-variant dark (&:is(.dark *));

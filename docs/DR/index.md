@@ -29,6 +29,7 @@
 | [DR-0055](DR-0055-finding-impact-splits-observation-from-inference.md) | DR の §影響 を「観測から直接言えること」と「推論（未検証）」に分ける（[OBS-0007](../OBS/OBS-0007_発見に推論を混ぜると後続が数え間違える.md) 昇格・3 例で 2 回ルール成立） | — | decided |
 | [DR-0056](DR-0056-preset-swap-is-its-own-step.md) | **preset 差し替えは独立した手（手8b）**。手7 の「作り直しの是非」とは別軸（[OBS-0006](../OBS/OBS-0006_preset差し替えは何の検証なのか.md) 昇格・未決 #6 を閉じた） | — | decided |
 | [DR-0058](DR-0058-app-only-font-never-reached-the-design-system.md) | ⭐ **本体だけが持っていたフォントを外し ① Tokens 層の既定へ戻す**（手6 D8）。`--font-sans` の自己参照を `layout.tsx` だけが埋めていた＝Storybook もプレビューも移送先も追従できない | 手6 | decided |
+| [DR-0061](DR-0061-field-width-vocabulary.md) | ⭐ **フィールド幅を semantic 語彙として足す**（`--container-field-*` / `w-field-*`・手7 D10=A）。素材層のラッパー化（B）は**手8 の数字が出てから** | 手7 | decided |
 
 ## 発見（finding）
 
@@ -71,6 +72,8 @@
 | [DR-0054](DR-0054-mock-specimens-cannot-reproduce-stacked-states.md) | ⭐ **模型の検体は「状態の重なり」を再現しない** — フォーカス ＋ `aria-invalid` は実物で測って決着（destructive がソース順で勝つ） | 手5 | **手5**・PoC |
 | [DR-0057](DR-0057-design-sync-uploads-compiled-code-not-just-html.md) | ⭐ **`/design-sync` が上げるのはコンパイル済みの実コンポーネント** — プレビュー HTML は人間用のカード。Storybook は入力かつ基準器で、Playwright は「変換」ではなく「検証」に要る（[DR-0018](DR-0018-design-sync-takes-preview-html.md) を訂正） | 手6 | **手6**・手7・手9・PoC |
 | [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) | ⭐ **受け手が独自の機械ゲートを自動生成していた** — `_adherence.oxlintrc.json` は `.d.ts` から導出されローカルに無い。強制されるのは `<button>` → `<Button>` の 1 本だけで、**`p-4` / `text-gray-600` は検出されない** | 手7 | **手7**・手8・PoC |
+| [DR-0060](DR-0060-vocabulary-leaks-from-four-surfaces.md) | ⭐ **語彙の逸脱は 4 面から出る** — 素材層の `className` はその 1 つ。🟥 **px の直当ては起きていない**（生 px / hex / style は 2 周とも 0）。根因は「代替語彙の不在」 | 手7 | **手7**・手8・PoC |
+| [DR-0062](DR-0062-shipped-vocabulary-needs-safelist.md) | ⭐ **出荷する語彙は safelist しないと CSS に載らない** — 「対象 0 件で緑」の**逆向き**（書けたのに届かない）。`@source inline()` で塞いだ | 手7 | **手7**・手9・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -127,6 +130,9 @@
 | DR-0056 | 🟥 要確認 | PoC が shadcn を採るなら、**preset の選定と差し替え可能性は同じ論点**になる |
 | DR-0057 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」は好みの問題ではない。**Claude Design 連携の入力形式そのもの**。あわせて **packages/ui を「ライブラリとしてビルドできる形」にしておく**必要がある（converter がビルド済み `dist/` を要求する） |
 | DR-0059 | 🟥 architecture.md / ui.md の材料 | **`.d.ts` の props 型が「相手側の lint 規則」に化ける。**公開 API の型は規約そのものとして扱う（型の鮮度 = 規則の正しさ）。あわせて **任意値禁止は境界の向こうでは効かない**ので、規約は散文でも書く |
+| DR-0060 | 🟥 ui.md / architecture.md の材料 | **任意値禁止を掲げるなら、禁止した用途に代替語彙を必ず用意する。**用意しない禁止は破られる。あわせて **ReactNode / 関数を受ける props は枠の外**になる |
+| DR-0061 | 🟥 ui.md の材料 | 「**ページ幅**」と「**コントロール幅**」は別の語彙。前者だけ定義すると後者が任意値で書かれる |
+| DR-0062 | 🟥 architecture.md の材料 | **消費者が書く語彙**を持つ設計システムは、Tailwind の使用検出だけでは出荷できない（safelist が要る） |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |

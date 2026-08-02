@@ -51,6 +51,22 @@
   --container-wide: var(--container-7xl); /* 80rem 一覧・データ表 */
   --spacing-gutter: calc(var(--spacing) * 6); /* 24px 画面端の余白 */
 
+  /* ── フィールド幅（手7 D10 / Q3 の答え）───────────────────────
+     🟥 実測で分かった穴。上の 2 つは**ページ幅**で、
+        「コントロール 1 個分の横幅」を表す語が DS 全体に無かった。
+     → Claude Design の design agent は幅を決める手段が `className` しか無く、
+        `w-48` を書いた（実行記録 §H7-06b）。**禁止だけして代替を与えていない語彙は破られる。**
+     🟨 `--container-*` 名前空間に置くのは Tailwind v4 の都合——
+        この名前空間だけが `w-*` と `max-w-*` の両方を生む（`--container-content` と同じ理由）。
+     🟦 値は書かず既定への参照で表す（DR-0005 決定3）。 */
+  --container-field-sm: calc(var(--spacing) * 32); /* 128px 短い選択肢・数値 */
+  --container-field-md: calc(
+    var(--spacing) * 48
+  ); /* 192px 既定。🟦 agent が w-48 で求めた幅そのもの */
+  --container-field-lg: calc(
+    var(--spacing) * 80
+  ); /* 320px 検索ボックス・長い選択肢 */
+
   /* ── 意味色と状態 tint（手4 D3 / 未決 #13）─────────────────────
      shadcn は destructive しか持たず、ステータス表示（チケット一覧の中核）が組めない。
      tmp-admin §4.5 は「状態 = tint pill + 色ドット」と規定している。

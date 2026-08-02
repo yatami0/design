@@ -37,12 +37,23 @@ For your own layout glue, use ONLY these semantic utility classes. They are the 
 | vertical gap | `gap-stack-sm` `gap-stack-md` `gap-stack-lg` |
 | horizontal gap | `gap-inline-sm` `gap-inline-md` |
 | type | `text-body` `text-heading` `text-label` `text-emphasis` `text-table` |
-| max width | `max-w-content` `max-w-wide` |
+| page width | `max-w-content` `max-w-wide` |
+| **control width** | `w-field-sm` `w-field-md` `w-field-lg` (also `max-w-field-*`) |
 
 **Never write numeric-step utilities (`p-4`, `gap-7`, `w-99`, `h-8`) and never write Tailwind palette
 colours (`text-gray-600`, `bg-slate-100`).** Both are rejected by this system's lint. Use the names above
 for spacing and type, and the semantic colour classes the components already carry (`bg-primary`,
 `text-muted-foreground`, `bg-destructive`, `bg-sidebar`) for colour.
+
+**Sizing a form control — use the control-width family, never a numeric one.** `Select`, `Input`, and the
+other base-tier controls fill their container by default; when one needs a fixed width, put a
+`w-field-*` class on it. `w-field-md` is the default choice for a filter or a form field.
+
+```jsx
+<SelectTrigger className="w-field-md">   {/* not className="w-48" */}
+  <SelectValue placeholder="ステータス" />
+</SelectTrigger>
+```
 
 ## How components are organised, and what each one is
 
