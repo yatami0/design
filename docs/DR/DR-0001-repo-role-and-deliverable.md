@@ -2,10 +2,10 @@
 id: DR-0001
 type: decision
 title: '本 repo の役割はワークフロー検証・成果物は「決定 + 移送可能なコード」'
-status: decided
+status: superseded
 date: 2026-07-26
 step: '-'
-related: [DR-0002, DR-0004]
+related: [DR-0002, DR-0004, DR-0078]
 poc_feedback: null
 ---
 

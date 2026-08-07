@@ -7,9 +7,9 @@
 
 | ID | タイトル | 手 | 状態 |
 |---|---|---|---|
-| [DR-0001](DR-0001-repo-role-and-deliverable.md) | 本 repo の役割はワークフロー検証・成果物は「決定 + 移送可能なコード」 | — | decided |
-| [DR-0002](DR-0002-verify-three-layers-not-screens.md) | 検証対象は画面ではなく 3 層（Tokens / Components / Patterns・Templates） | — | decided |
-| [DR-0003](DR-0003-foundation-mirrors-poc.md) | 土台は PoC と同一版・同一 lint の単体 Next.js アプリ | 手0 | decided |
+| [DR-0001](DR-0001-repo-role-and-deliverable.md) | 🟥 **superseded → [DR-0078](DR-0078-repo-becomes-a-ui-factory-for-a-core-design-system.md)** ~~本 repo の役割はワークフロー検証・成果物は「決定 + 移送可能なコード」~~ | — | superseded |
+| [DR-0002](DR-0002-verify-three-layers-not-screens.md) | 🟥 **superseded → [DR-0078](DR-0078-repo-becomes-a-ui-factory-for-a-core-design-system.md)** ~~検証対象は画面ではなく 3 層（Tokens / Components / Patterns・Templates）~~（3 層が資産の主であることは DR-0078 が引き継ぐ） | — | superseded |
+| [DR-0003](DR-0003-foundation-mirrors-poc.md) | 🟥 **superseded → [DR-0080](DR-0080-strict-pins-stay-for-reproducibility.md)** ~~土台は PoC と同一版・同一 lint の単体 Next.js アプリ~~（ピンと lint は残る・理由が変わる） | 手0 | superseded |
 | [DR-0004](DR-0004-document-system-and-git.md) | 証跡は 4 層に分ける（段取り / 手順書 / 実行記録 / DR）+ git 運用 | — | decided |
 | [DR-0005](DR-0005-token-ownership-and-two-stage.md) | トークン語彙の正本は design 側・値は tmp-admin・投入は 2 段階 | — | decided |
 | [DR-0006](DR-0006-shadcn-base-radix-preset-nova.md) | shadcn は base=radix / preset=nova | 手1 | decided |
@@ -35,6 +35,11 @@
 | [DR-0077](DR-0077-abolish-the-two-occurrence-rule.md) | 🆕 ⭐ **2 回ルールを廃止する** — 「同じ需要が 2 回証明されるまで作らない」を判断の条件にしない（ユーザー判断 2026-08-07）。**回数は記録する観測量としては数え続ける**が、「1 回目だから」は今後**理由にならない**。🟥 **この規律が判断を止めていた箇所は 6 件**（OBS-0013・未決 #14・指摘 11・指摘 3・AllVariants・予防的ラッパー）。★ **規律自身が例外を必要とした実例が 1 件**（DR-0076 が「2 回ルールを前倒しした」と明記）。🟥 **推論: 床（ばらつき）を測らずに済ませる代用品として働いていた可能性** → 手8f Q1 が実測する | — | decided |
 | [DR-0072](DR-0072-no-passthrough-of-dependency-types.md) | ⭐ **依存パッケージの型は公開 API に素通ししない**——Omit で選別し自層の名前で出し直す（`ColumnDef` → `DataGridColumn`）。素通しはコード所有モデル（shadcn 型）でだけ成立する。🔺 **ADR 昇格候補** | 手8c | decided |
 | [DR-0076](DR-0076-capture-the-run-not-just-the-output.md) | 🆕 ⭐ **生成の周は「成果物」と「過程」の両方を持ち帰り、数え上げを予測の照合で終えない** — 予測を登録した時点で数え方が予測のコピーになり、**予測の外は「0 件」ですらなく欄が無い**（「対象 0 件で緑」の測定版）。判断を動かした観測が **3 回とも装置の外**から来た。① ツールトレースを人が `artifacts/h<N>/` へ ② 成果物を 1 回通しで読む ③ 予測表に「予測していない箇所」の行。🟥 **手段は 1 例の証拠——効かなければ ① を捨てる** | 手8e | **8 周目**・手9・PoC |
+
+| [DR-0078](DR-0078-repo-becomes-a-ui-factory-for-a-core-design-system.md) | 🆕 ⭐ **repo の役割は「UI 工場」— 目的は自分用コアデザインシステム（スーパーセット）、Redmine 5 画面は題材**（ユーザー判断 2026-08-07）。レイアウトもコアに含める。PoC への移送は廃止。**PoC 前提の現役 DR は 22 件だが、決定の本体まで崩れるのは 0001〜0003 の 3 件だけ** | 工程0 | decided |
+| [DR-0079](DR-0079-ship-via-git-dependency-and-claude-design.md) | 🆕 **出荷口は git 依存 ＋ Claude Design の 2 経路**。`/design-sync` は検証装置から**工場の出荷経路**へ（未決 #2 の答え）。npm publish は使い回し先が 1 つ出てから | 工程0 | decided |
+| [DR-0080](DR-0080-strict-pins-stay-for-reproducibility.md) | 🆕 **厳密ピンは残す — 理由を「PoC と同一版」から「工場の再現性・観測の 1 変数化」へ書き換える**。lint 構成も工場自身の規約として引き取る。DR-0014 の借金は返済期限を失ったが残る | 工程0 | decided |
+| [DR-0081](DR-0081-poc-feedback-redirected-to-factory-conventions.md) | 🆕 **`poc_feedback` は「工場の規約へ戻す候補」に読み替える**。フィールド名と既存 77 件（非 null 64 件）は書き換えず、規約起草時の材料リストとして読む。規約文書の起草はまだしない | 工程0 | decided |
 
 ## 発見（finding）
 
@@ -114,7 +119,10 @@
 > 🟥 **DR-0066 は [DR-0059](DR-0059-receiver-generates-its-own-adherence-lint.md) を 2 点訂正する**（① 受け手の lint は「飾り」ではなく**設定ごと parse 不能** ② §影響 3 の「型の質が規則の質を決める」は原因の取り違えで、**型は正しく抽出が浅かった**）。**観測部は維持。**
 > 🟨 **手8 H8-09 は [DR-0064](DR-0064-design-project-receives-runtime-only.md) §3 の数を更新する**（宛先の無い参照は **1 件ではなく 4 件**だった。4 件とも削って書き換え済み・効き目は未測定）。
 
-## PoC へ戻す候補（手9 でまとめて起票）
+## 工場の規約へ戻す候補（旧: PoC へ戻す候補）
+
+> 🆕 **2026-08-07（工程0）: 宛先を PoC から「工場の規約」へ読み替えた**（[DR-0081](DR-0081-poc-feedback-redirected-to-factory-conventions.md)）。
+> 表の中身は書き換えない——「ui.md / architecture.md の材料」等の行き先表記は、**本 repo 自身が持つことになる規約文書**（未起草）の材料として読む。
 
 | DR | 行き先 | 内容 |
 |---|---|---|

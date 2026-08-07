@@ -27,7 +27,7 @@ export default {
       commitType: 'docs', // 本 repo の type 語彙に `dr` は無い（CLAUDE.md §git）
       extraSteps: [
         '`related` には実在する DR の id だけを書く。無ければ空配列。',
-        '`poc_feedback` は PoC へ戻す候補なら行き先を書く（例: OBS 候補 / ADR-0019 の材料）。無ければ null。',
+        '`poc_feedback` は**工場の規約へ戻す候補**なら行き先を書く（DR-0081 で読み替え。フィールド名は旧のまま）。無ければ null。',
         '**ADR 昇格判定**: 一度決めると戻しにくい／外から見える構造・規約に影響するなら、`docs/DR/index.md` に昇格候補として印を付け、本文フォローアップにもマークする。**その場で起案しない**（判定と起案を分ける）。起案は `/adr`。',
       ],
     },
@@ -69,7 +69,7 @@ export default {
 
   // コミットの形（CLAUDE.md §git が正本）
   commitFormat:
-    '<type>(H<N>): 日本語要約 [手N] — 手に属さない作業は scope と [手N] を省く',
+    '<type>(P<N>): 日本語要約 [工程N] — 旧・手は <type>(H<N>) [手N]。工程に属さない作業は scope と [工程N] を省く',
   commitTypes: [
     'feat',
     'fix',
@@ -86,15 +86,15 @@ export default {
     commitType: 'docs',
     extraSteps: [
       '「機械ゲートのベースライン」の件数と内訳も実態に合わせる（新しい赤を見つけるための基準なので、古いと役に立たない）。',
-      '手が完了していたら「手N の成果（次の手が前提にすること）」を追記し、「次にやること」を次の手に差し替える。',
-      '手ごとに `step/h<N>-<slug>` を切っている。手が完了したら `main` へ `--no-ff` マージすることを人に提案する（実行はしない）。',
+      '工程が完了していたら「工程N の成果（次の工程が前提にすること）」を追記し、「次にやること」を次の工程に差し替える。',
+      '工程ごとに `step/p<N>-<slug>`（旧・手は `step/h<N>-<slug>`）を切っている。完了したら `gh pr create --base main` で PR を出すことを人に提案する（マージは人・DR-0068）。',
       '`docs/共通コンポーネント思想.md` はユーザーの持ち物。気づきは DR か OBS に書く。',
     ],
   },
 
   commitExtraSteps: [
-    '`main` が安定点。手ごとに `step/h<N>-<slug>` を切り、完了したら `main` へ `--no-ff` マージ。',
-    '手に属さない作業（文書整備・証跡整理）は `main` に直接コミットしてよい。',
+    '`main` が安定点。工程ごとに `step/p<N>-<slug>`（旧・手は `step/h<N>-<slug>`）を切り、完了したら `gh pr create --base main` で PR（マージは人・DR-0068）。',
+    '工程に属さない作業（文書整備・証跡整理）は `main` に直接コミットしてよい。',
     '`docs/共通コンポーネント思想.md` は**ユーザーの持ち物**。書き換えず、指摘は DR に書く（CLAUDE.md）。',
     '機械ゲートは `pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell`。赤がベースラインなので、`docs/handoff.md` の表と件数を比べて「新しい赤」だけを見る。',
   ],
@@ -135,14 +135,14 @@ export default {
     step: {
       level: 'required',
       kind: 'pattern',
-      // 手0〜手9（枝番 a-z 可）／`-` は手に属さない
-      pattern: '^(手[0-9][a-z]?|-)$',
-      example: '手0 / 手2 / 手2b / -',
+      // 工程0〜工程8（工場の段取り）／手0〜手9（旧・検証期の文書）／`-` はどちらにも属さない
+      pattern: '^(工程[0-9]|手[0-9][a-z]?|-)$',
+      example: '工程0 / 手2b / -',
       hint: '補足は本文に書く',
     },
     status: { level: 'required', kind: 'statusOf', of: 'type' },
     related: { level: 'optional', kind: 'idArray' },
-    // PoC へ戻す候補なら行き先を書く。無ければ null
+    // 工場の規約へ戻す候補なら行き先を書く（旧: PoC へ戻す候補。DR-0081 で読み替え）。無ければ null
     poc_feedback: { level: 'optional', kind: 'string' },
     // OBS で使う。DR 側には無くてよい（optional なので欠けても警告しない）
     updated: { level: 'optional', kind: 'string' },
