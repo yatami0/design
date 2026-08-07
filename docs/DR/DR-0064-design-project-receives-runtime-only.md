@@ -2,14 +2,21 @@
 id: DR-0064
 type: finding
 title: 'デザインプロジェクトに複製されるのはランタイムだけ — guidelines も README も届かない。あわせて日本語ファイル名は 401 になる'
-status: observed
+status: superseded
 date: 2026-08-02
 step: 手7
-related: [DR-0057, DR-0059, DR-0060]
+related: [DR-0057, DR-0059, DR-0060, DR-0075]
 poc_feedback: '🟥 architecture.md の材料。**日本語ファイル名を成果物のパスに使わない。**あわせて「移送先が実際に受け取るもの」を出荷物の一覧と混同しない'
 ---
 
 # DR-0064: デザインプロジェクトに複製されるのはランタイムだけ
+
+> 🟥 **superseded — [DR-0075](DR-0075-design-side-reads-the-design-system-directly.md)（2026-08-07・手8e）が覆した。**
+> **§発見 1（複製は 6 ファイル）と §4（401）はそのまま生きている。**覆ったのは
+> **§影響「観測から直接言えること」1・2**——「届くのはランタイム 3 ファイル ＋ header だけ」
+> 「guidelines は agent に届いていない」は**観測ではなく推論**だった。
+> 7 周目のツールトレースで、agent が**デザインシステムプロジェクトを直接 list / read し
+> `<Name>.prompt.md` を 3 本読んでいる**ことが分かった。**本文は書き換えない**（[_template.md](_template.md) の規律）。
 
 > 🟨 **手8 H8-09（2026-08-02）が §3 の数を更新した。**
 > 「header の guidelines 参照は宛先が無い」は正しいが、**宛先の無い参照は 1 件ではなく 4 件だった**——

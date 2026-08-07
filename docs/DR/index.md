@@ -33,6 +33,7 @@
 | [DR-0068](DR-0068-merge-through-pull-requests.md) | 手の完了は **GitHub の PR** でマージする（ローカルの `--no-ff` は使わない）。CLAUDE.md §git を書き換えた | — | decided |
 | [DR-0070](DR-0070-product-layer-boundary-rule.md) | ⭐ **素材層と製品層の境界は「見た目の管轄権」＋ 3 段の判定手順で決める**（① 2 回以上出たか ② トークン語彙の有限集合で表せるか ③ 誰の責務か）。6 周の逸脱が全件分類できた。🔺 **ADR 昇格候補** | 手8c | decided |
 | [DR-0072](DR-0072-no-passthrough-of-dependency-types.md) | ⭐ **依存パッケージの型は公開 API に素通ししない**——Omit で選別し自層の名前で出し直す（`ColumnDef` → `DataGridColumn`）。素通しはコード所有モデル（shadcn 型）でだけ成立する。🔺 **ADR 昇格候補** | 手8c | decided |
+| [DR-0076](DR-0076-capture-the-run-not-just-the-output.md) | 🆕 ⭐ **生成の周は「成果物」と「過程」の両方を持ち帰り、数え上げを予測の照合で終えない** — 予測を登録した時点で数え方が予測のコピーになり、**予測の外は「0 件」ですらなく欄が無い**（「対象 0 件で緑」の測定版）。判断を動かした観測が **3 回とも装置の外**から来た。① ツールトレースを人が `artifacts/h<N>/` へ ② 成果物を 1 回通しで読む ③ 予測表に「予測していない箇所」の行。🟥 **手段は 1 例の証拠——効かなければ ① を捨てる** | 手8e | **8 周目**・手9・PoC |
 
 ## 発見（finding）
 
@@ -78,7 +79,7 @@
 | [DR-0060](DR-0060-vocabulary-leaks-from-four-surfaces.md) | ⭐ **語彙の逸脱は 4 面から出る** — 素材層の `className` はその 1 つ。🟥 **px の直当ては起きていない**（生 px / hex / style は 2 周とも 0）。根因は「代替語彙の不在」 | 手7 | **手7**・手8・PoC |
 | [DR-0062](DR-0062-shipped-vocabulary-needs-safelist.md) | ⭐ **出荷する語彙は safelist しないと CSS に載らない** — 「対象 0 件で緑」の**逆向き**（書けたのに届かない）。`@source inline()` で塞いだ | 手7 | **手7**・手9・PoC |
 | [DR-0063](DR-0063-forbidding-without-an-alternative-fails.md) | ⭐ **禁止だけでは破られ、代替語彙を与えると守られた** — 3 周の実測。禁止文は 1 文字も変えていないのに逸脱が 5 → 2 → **1** に減った。減らし方は「部品を足す」「語彙を足す」の 2 つだけ | 手7 | **手8**・PoC ／ 🔺 **ADR 昇格候補**（🟨 導出される規則が候補・下記） |
-| [DR-0064](DR-0064-design-project-receives-runtime-only.md) | ⭐ **デザインプロジェクトに複製されるのはランタイムだけ** — `components/**` も `guidelines/**` も届かない。header は**ファイルではなく system prompt** で効いている。🟥 日本語ファイル名は 401（agent 自身の報告・3/3） | 手7 | **手9**・PoC |
+| [DR-0064](DR-0064-design-project-receives-runtime-only.md) | 🟥 **superseded → [DR-0075](DR-0075-design-side-reads-the-design-system-directly.md)** ⭐ **デザインプロジェクトに複製されるのはランタイムだけ** — `components/**` も `guidelines/**` も**複製されない**（ここは生きている）。🟥 **「だから届かない」は誤りだった。**header は**ファイルではなく system prompt** で効いている。🟥 日本語ファイル名は 401（agent 自身の報告・3/3） | 手7 | **手9**・PoC |
 | [DR-0065](DR-0065-claude-design-uses-the-registered-components.md) | ⭐★ **Claude Design は登録した部品を「使う」** — 明示なしの 1 周目から `<div>` `<button>` `<table>` 0 件。**足せば足すだけ使う**（種類 10 → 17 → 18）。**段取り §5 の分岐は「使う」側に決した** | 手7 | **手8**・**手9**・PoC |
 | [DR-0066](DR-0066-neither-side-lints-the-generated-output.md) | ⭐★ **生成物は境界のどちら側でも検査されていない** — 我々は 6 本中 **0 本**。受け手は `no-restricted-syntax` が oxlint に無く**設定ごと parse 不能**。56 セレクタが走ったと仮定しても**当たる 5 件は全部偽陽性**（`.d.ts` からの props 抽出が継承分を落としている）。「食い違い」ではなく「**どちらも見ていない**」 | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 同上） |
 | [DR-0067](DR-0067-inherited-asset-was-not-inheritable.md) | ⭐ **「引き継ぐ」と書いた資産が引き継げなかった** — CC-Skills の GitHub は `Initial commit` の README 1 枚。`validate.mjs` / `anti-slop.mjs` は**存在しない**。本 repo は「🟦 流用できる」と判定しただけで**中身を一度も写していなかった** | 手8 | **段取り §7 の訂正**・PoC |
@@ -86,6 +87,7 @@
 | [DR-0071](DR-0071-closed-product-layer-is-viable.md) | ⭐ **className を閉じた製品層は成立する**（Polaris・React Spectrum が 7 年以上運用）——ただし**閉じた 2 本とも部品の外に出口を対で持つ**（トークン props の Box／UNSAFE_ 接頭辞＋許可リスト）。逃げ道を開けた側の管理コストも実測あり（Primer は sx を v38 で完全廃止）。**S2 の style macro は許可リストを型で機械化**＝指摘 11 の実装例が実在する | 手8c | DR-0032 の外部裏取り・**手9**・PoC |
 | [DR-0074](DR-0074-we-wrote-the-same-deviations-ourselves.md) | 🆕 ⭐ **規約から外れていたのは受け手だけではない**——`SelectTrigger` を閉じた瞬間に `tsc` が我々の story の **`className="w-48"`**（r1 の逸脱と同一）を型エラーで出した。一覧の書式クラス（`font-mono` / `tabular-nums`）も画面と story 3 本にあった。🟥 **`w-48` は lint・typecheck・storybook・手7 の棚卸しの 4 つを通り抜けていた**。🟥 **推論: story は `.prompt.md` の実例源なので、禁止した書き方を実例として渡していた可能性**（7 周目に grep で検証） | 手8d | **7 周目**・PoC |
 | [DR-0073](DR-0073-context-replay-not-payload-burned-the-limit.md) | 🆕 **使用制限を焼いたのはコンテキストの再読** — 97 往復 × 平均 278k で入力 **49.2M**。同区間のツール実行結果は**全部で 36,586 文字**（比で 4,700 倍）。セッションを跨ぐ再開で初期コストが 28k → **190k**、長コンテキストのモデルでは **auto-compact が 353k まで発火しない**。subagent は 5 本中 2 本が完走しても**通知不着**（5.1M が捨てられた） | — | **OBS-0012**・PoC |
+| [DR-0075](DR-0075-design-side-reads-the-design-system-directly.md) | 🆕 ⭐★ **デザイン側は複製に頼らずデザインシステムを直接読む** — 7 周目のツールトレースで、agent が**デザインシステムの projectId を直接 list し `AppShell` / `DataGrid` / `Select` の `.prompt.md` を読んで**いた（**手8d で動かした 3 部品ちょうど**）。複製は今も 6 ファイルのままなので、**「複製されない」と「読めない」は別**。🟥 **DR-0064 の §影響 1・2 は観測ではなく推論だった**（[OBS-0007](../OBS/OBS-0007_発見に推論を混ぜると後続が数え間違える.md) の形の 2 例目）。🟦 あわせて **story → `.prompt.md` → agent の経路が閉じ**、DR-0074 の推論が確定した | 手8e | **手9**・**8 周目**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -167,6 +169,8 @@
 | DR-0072 | 🟥 architecture.md の材料 | **公開 API に依存の型を素通ししない。**`.d.ts` が相手側の lint 規則に化ける（DR-0059）以上、型の口の選別は規約の一部 |
 | DR-0074 | 🟥 ui.md の材料 | **規約の検査対象に自分のコードを含める。**「規約を書いた側」と「守る側」を分けて数えていると、自分の違反が最後まで赤にならない（`w-48` は 4 つの検査を通り抜けた）。**型で閉じると自分の棚卸しも同時に起きる** |
 | DR-0073 | 🟥 OBS 候補（運用） | **長い調査セッションのコストは「何を取ったか」ではなく「何往復したか × 溜まった文脈」で決まる。**subagent の結果は通知に全文が乗るので、本体に入れる前に落とす経路を用意する。**投げた subagent が届くとは限らないが、不着でも消費は発生する** |
+| DR-0076 | 🟥 architecture.md の材料 | **生成 AI を測るときは、出力だけでなく実行の過程も証跡に含める。**出力だけの証跡は「**いつからそうだったか**」に永久に答えられない。あわせて **予測を登録したら、予測していない箇所を数える行を様式に置く** |
+| DR-0075 | 🟥 architecture.md の材料 | **「複製されない」と「読めない」は別。**移送先が何を受け取るかは、複製されたファイルの一覧だけでは決まらない。あわせて **`<Name>.prompt.md` は生成 AI への実効的な伝達経路**であり、その実例は **story のソースそのもの**（story の逸脱はそのまま渡る） |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
