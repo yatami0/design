@@ -27,8 +27,13 @@ import {
 } from '@/components/Selection/Select';
 import { Calendar } from '@/components/ui/calendar';
 
-/** 期間の語彙（有限集合）。`custom` が逃げ道。 */
+/**
+ * 期間の語彙（有限集合）。`custom` が逃げ道。
+ * 🟨 `all`（絞らない）は最初の利用者（チケット一覧・P3-07）が要求して 1 語増えた——
+ *    一覧は「期間で絞らない」が既定で、EVM / 稼働表では「全期間」として意味を持つ（Q2 の実測）。
+ */
 export const PERIOD_PRESETS = [
+  'all',
   'thisWeek',
   'thisMonth',
   'thisQuarter',
@@ -47,6 +52,7 @@ export interface PeriodRange {
 }
 
 const PRESET_LABEL: Record<PeriodPreset, string> = {
+  all: '全期間',
   thisWeek: '今週',
   thisMonth: '今月',
   thisQuarter: '今四半期',

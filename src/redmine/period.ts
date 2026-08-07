@@ -23,9 +23,9 @@ import type {
   PeriodRange,
 } from '@/components/Selection/PeriodSelect';
 
-/** プリセット → 実際の日付範囲。`custom` は範囲が部品の外から来るので対象外。 */
+/** プリセット → 実際の日付範囲。`all`（絞らない）と `custom`（範囲は外から来る）は対象外。 */
 export function resolvePeriod(
-  preset: Exclude<PeriodPreset, 'custom'>,
+  preset: Exclude<PeriodPreset, 'all' | 'custom'>,
   today: Date,
 ): PeriodRange {
   switch (preset) {
@@ -49,12 +49,13 @@ export function toUpdatedOnParam(range: PeriodRange): string {
   return `><${format(range.from, 'yyyy-MM-dd')}|${format(range.to, 'yyyy-MM-dd')}`;
 }
 
-/** 画面の状態（プリセット ＋ custom の範囲）から `updated_on` を組む。未選択は undefined。 */
+/** 画面の状態（プリセット ＋ custom の範囲）から `updated_on` を組む。絞らないときは undefined。 */
 export function periodToQuery(
   preset: PeriodPreset,
   customRange: PeriodRange | undefined,
   today: Date,
 ): string | undefined {
+  if (preset === 'all') return undefined;
   if (preset === 'custom') {
     return customRange === undefined
       ? undefined
