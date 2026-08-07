@@ -42,6 +42,9 @@ export default defineConfig({
         //    → 塞ぐ前に測った差分は 実行記録 §工程2（K4）。
         'src/mocks/**',
         'src/redmine/**',
+        // 🆕 工程3 D6: 手書きフィクスチャの宣言が工程1 から出荷面に漏れていた
+        // （dist/lib/fixtures/issues.d.ts・DR-0085 の入口 ②）。中身は story 専用なので塞ぐ。
+        'src/lib/fixtures/**',
       ],
       entryRoot: 'src',
     }),
@@ -65,6 +68,9 @@ export default defineConfig({
         /^@tanstack\/react-table($|\/)/,
         /^class-variance-authority($|\/)/,
         /^clsx($|\/)/,
+        // 🆕 工程3 P3-02 で dependencies に入った 2 件（PeriodSelect の Calendar 経由）
+        /^date-fns($|\/)/,
+        /^react-day-picker($|\/)/,
         /^lucide-react($|\/)/,
         /^radix-ui($|\/)/,
         /^shadcn($|\/)/,

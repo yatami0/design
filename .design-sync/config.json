@@ -7,7 +7,6 @@
   "globalName": "Design",
   "entry": "src/index.ts",
   "buildCmd": "pnpm i --frozen-lockfile && pnpm build",
-
   "componentSrcMap": {
     "Badge": "src/components/Communication/Badge.tsx",
     "Empty": "src/components/Communication/Empty.tsx",
@@ -25,7 +24,6 @@
     "Checkbox": "src/components/Selection/Checkbox.tsx",
     "Select": "src/components/Selection/Select.tsx",
     "Input": "src/components/TextInput/Input.tsx",
-
     "Button": "src/components/Action/Button.tsx",
     "Link": "src/components/Navigation/Link.tsx",
     "Sidebar": "src/components/Navigation/Sidebar.tsx",
@@ -40,11 +38,15 @@
     "Stack": "src/components/Layout/Stack.tsx",
     "EmptyState": "src/patterns/EmptyState.tsx",
     "ListDetail": "src/patterns/ListDetail.tsx",
-    "AppShell": "src/templates/AppShell.tsx"
+    "AppShell": "src/templates/AppShell.tsx",
+    "Tabs": "src/components/Navigation/Tabs.tsx",
+    "Breadcrumb": "src/components/Navigation/Breadcrumb.tsx",
+    "PeriodSelect": "src/components/Selection/PeriodSelect.tsx",
+    "FilterBar": "src/patterns/FilterBar.tsx",
+    "PageHeader": "src/patterns/PageHeader.tsx",
+    "FilterField": "src/patterns/FilterBar.tsx"
   },
-
   "readmeHeader": ".design-sync/conventions.md",
-
   "guidelinesGlob": [
     "docs/共通コンポーネント思想.md",
     "docs/デザイントークン設計.md",
@@ -53,21 +55,27 @@
     "docs/部品カタログ.md",
     "docs/状態とProviderの置き場.md"
   ],
-
   "overrides": {
     "Dialog": {
       "cardMode": "single",
       "primaryStory": "Default",
       "skip": ["②-素材層-overlay-dialog--open"]
     },
-    "Tooltip": { "cardMode": "single", "primaryStory": "AlwaysOpen" },
-    "Sidebar": { "cardMode": "single", "primaryStory": "Default" },
-    "AppShell": { "cardMode": "single", "primaryStory": "Default" }
+    "Tooltip": {
+      "cardMode": "single",
+      "primaryStory": "AlwaysOpen"
+    },
+    "Sidebar": {
+      "cardMode": "single",
+      "primaryStory": "Default"
+    },
+    "AppShell": {
+      "cardMode": "single",
+      "primaryStory": "Default"
+    }
   },
-
   "titleMap": {
     "Tokens": null,
-
     "A状態面": null,
     "B角丸": null,
     "C影": null,
