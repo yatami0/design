@@ -26,6 +26,8 @@ export { Spacer } from '@/components/Layout/Spacer';
 export { Stack } from '@/components/Layout/Stack';
 export { DataGrid } from '@/components/DataDisplay/DataGrid';
 export { StatusPill } from '@/components/DataDisplay/StatusPill';
+// 手8d H8D-06: 面④b（`a { color: var(--primary) }` が 4/6 周）を部品に引き取る
+export { Link } from '@/components/Navigation/Link';
 
 // ── ③ Patterns ─────────────────────────────────────────────────
 export { EmptyState } from '@/patterns/EmptyState';
@@ -79,7 +81,13 @@ export type { InlineProps } from '@/components/Layout/Inline';
 export type { SectionProps } from '@/components/Layout/Section';
 export type { SpacerProps } from '@/components/Layout/Spacer';
 export type { StackProps } from '@/components/Layout/Stack';
-export type { DataGridProps } from '@/components/DataDisplay/DataGrid';
+// 🟥 手8d H8D-05: `ColumnDef` の素通しをやめ、自層の型で出し直した（DR-0072）
+export type {
+  DataGridProps,
+  DataGridColumn,
+  DataGridColumnKind,
+} from '@/components/DataDisplay/DataGrid';
+export type { LinkProps, LinkTone } from '@/components/Navigation/Link';
 export type {
   StatusPillProps,
   StatusTone,

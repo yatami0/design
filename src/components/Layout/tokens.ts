@@ -63,6 +63,22 @@ export const WIDTH = {
 } as const;
 export type Width = keyof typeof WIDTH;
 
+/**
+ * フィールド幅（コントロール 1 個分の横幅）。tokens.css の --container-field-* に対応。
+ *
+ * 🟥 手8d H8D-04（設計 §3.1）。**語彙はあったのに prop が無かった**——
+ *    6 周とも `SelectTrigger` に `className="w-48"` / `"w-field-md"` が書かれた
+ *    （DR-0061 で語彙を足しても、載せる口が className しか無ければ className が使われる）。
+ * 🟨 置き場をここにしたのは、union を 1 箇所に集めるため（WIDTH / INSET と同じ棚）。
+ *    設計 §3.1 の本文と同じ判断（コード例は Select.tsx 内での定義を書いていた）。
+ */
+export const FIELD_WIDTH = {
+  sm: 'w-field-sm',
+  md: 'w-field-md',
+  lg: 'w-field-lg',
+} as const;
+export type FieldWidth = keyof typeof FIELD_WIDTH;
+
 /** 交差軸の揃え。値ではなく配置の指定。 */
 export const ALIGN = {
   start: 'items-start',

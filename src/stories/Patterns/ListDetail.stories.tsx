@@ -4,7 +4,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { Button } from '@/components/Action/Button';
-import { DataGrid } from '@/components/DataDisplay/DataGrid';
+import {
+  DataGrid,
+  type DataGridColumn,
+} from '@/components/DataDisplay/DataGrid';
 import {
   StatusPill,
   type StatusTone,
@@ -14,7 +17,6 @@ import { EmptyState } from '@/patterns/EmptyState';
 import { ListDetail } from '@/patterns/ListDetail';
 import { useListDetail } from '@/patterns/useListDetail';
 import { issues, type Issue, type IssueStatus } from '@/lib/fixtures/issues';
-import type { ColumnDef } from '@tanstack/react-table';
 
 const meta = {
   title: '③ Patterns/ListDetail',
@@ -39,23 +41,24 @@ const STATUS_TONE: Record<IssueStatus, StatusTone> = {
   closed: 'neutral',
 };
 
-const columns: ColumnDef<Issue, never>[] = [
+const columns: DataGridColumn<Issue>[] = [
+  { key: 'id', header: 'ID', accessor: (row) => row.id, kind: 'numeric' },
   {
-    accessorKey: 'id',
-    header: 'ID',
-    cell: (ctx) => <span className="font-mono">{ctx.row.original.id}</span>,
+    key: 'subject',
+    header: '件名',
+    accessor: (row) => row.subject,
+    emphasis: true,
   },
-  { accessorKey: 'subject', header: '件名' },
   {
-    accessorKey: 'status',
+    key: 'status',
     header: 'ステータス',
-    cell: (ctx) => (
-      <StatusPill tone={STATUS_TONE[ctx.row.original.status]}>
-        {STATUS_LABEL[ctx.row.original.status]}
+    accessor: (row) => (
+      <StatusPill tone={STATUS_TONE[row.status]}>
+        {STATUS_LABEL[row.status]}
       </StatusPill>
     ),
   },
-  { accessorKey: 'assignee', header: '担当者' },
+  { key: 'assignee', header: '担当者', accessor: (row) => row.assignee },
 ];
 
 /**

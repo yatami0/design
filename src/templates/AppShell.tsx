@@ -26,6 +26,19 @@ export interface NavItem {
   active?: boolean;
 }
 
+/**
+ * ページ骨格。**画面はここから始める。**
+ *
+ * 🟦 **document reset（html / body の margin・padding）は配布 CSS の `@layer base` が保証する。**
+ *    `AppShell` の外に `<style>` で reset を書く必要は無い。
+ *
+ * 手8d H8D-07（設計 §3.3・器は A ＝ 配布 CSS の base レイヤ）。
+ * 🟥 **props も CSS も増えていない。増えたのは「保証の名乗り」だけ。**
+ *    生成物は 5/6 周で `<style>` に `html,body{margin:0;padding:0}` を書いていたが、
+ *    H8D-01 の赤テストで **Tailwind Preflight が `*` に `margin:0` を当てた状態で
+ *    配布 CSS に載っている**ことを確認した（`*,:after,:before,::backdrop{…margin:0…}`）。
+ *    → **欠けていたのは reset ではなく「保証されているという宣言」**だった。
+ */
 export interface AppShellProps {
   /** サイドバーの見出し（プロダクト名など）。 */
   brand: React.ReactNode;
