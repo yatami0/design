@@ -27,6 +27,7 @@
     "Input": "src/components/TextInput/Input.tsx",
 
     "Button": "src/components/Action/Button.tsx",
+    "Link": "src/components/Navigation/Link.tsx",
     "Sidebar": "src/components/Navigation/Sidebar.tsx",
     "DataGrid": "src/components/DataDisplay/DataGrid.tsx",
     "StatusPill": "src/components/DataDisplay/StatusPill.tsx",

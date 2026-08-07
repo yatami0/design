@@ -77,6 +77,7 @@
   `.ds-sync/` `dist/types` `.design-sync/sb-reference` `.design-sync/.cache` は**全部 gitignore なので存在しない。**
   再同期の前に**この順で**揃える（`node` は上記の mise パスを通してから）:
   ```bash
+  pnpm i --frozen-lockfile; rm -f pnpm-workspace.yaml   # 🆕 手8e: worktree には node_modules も無い。生える yaml は消す
   cp -r "<skill-base-dir>"/{package-build.mjs,package-validate.mjs,resync.mjs,lib,storybook,non-storybook} .ds-sync/
   echo '{"name":"ds-sync-deps","private":true}' > .ds-sync/package.json
   (cd .ds-sync && npm i esbuild ts-morph @types/react playwright && npx playwright install chromium)
@@ -104,7 +105,7 @@
 
 ## 🟥 Re-sync risks（次の実行が見張るもの）
 
-> 最終更新: 2026-08-02（**手8 の再同期。conventions header だけを変えた aux-only 同期**）
+> 最終更新: 2026-08-07（**手8e の再同期。製品層 4 件の実装＋`Link` 新設で 31 部品**。下の「手8e の再同期」節が最新の実測）
 
 | # | 見張るもの | なぜ |
 | --- | --- | --- |
@@ -112,9 +113,9 @@
 | 2 | 🟥 **`src/index.ts` の export 漏れ** | export していない hook / 型は design agent から使えないのに、Storybook では story 内で呼べてしまうので気づけない（手6 で `useListDetail` を 1 件検出） |
 | 3 | 🟨 **フォント実体は同梱していない** | いまは system stack。Geist 等を DS のフォントにするなら ① Tokens 層に置き `cfg.extraFonts` で同梱する |
 | 4 | 🟨 **`_ds_bundle.css` は参照 Storybook 由来**（`[CSS_FROM_STORYBOOK]`） | Storybook のビルド設定が変わると CSS の中身も変わる。**DS ソースを触ったら参照を建て直す** |
-| 5 | 🟦 **grade は 30/30 全件 `match`** | `close` ゼロ・`mismatch` ゼロ。`bad` 0 / `thin` 0 / `variantsIdentical` 0。story cap には当たっていない（最大 4 story） |
+| 5 | 🟦 **grade は 31/31 全件 `match`**（🆕 手8e で更新） | `close` ゼロ・`mismatch` ゼロ。`bad` 0 / `thin` 0 / `variantsIdentical` 0。story cap には当たっていない（最大 4 story） |
 | 6 | 🟨 **`.d.ts` の props に React の継承分が混ざる** | Layout 部品は `className` を受けない設計なので conventions header 側で打ち消してある |
-| 7 | 🆕 🟥 **素材層 16 件は `export *` で出している** | 上流（shadcn）の API が変わると export 面がまるごと動く。**`window.Design` は 129 export（うち部品 30）**。`.d.ts` から受け手の lint 規則が生成されるので、**型が動くと相手の規則も動く**（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） |
+| 7 | 🆕 🟥 **素材層 16 件は `export *` で出している** | 上流（shadcn）の API が変わると export 面がまるごと動く。**`window.Design` は 130 export（うち部品 31。🆕 手8e で `Link` が 1 件増えた）**。`.d.ts` から受け手の lint 規則が生成されるので、**型が動くと相手の規則も動く**（[DR-0059](../docs/DR/DR-0059-receiver-generates-its-own-adherence-lint.md)） |
 | 8 | 🆕 🟨 **`Dialog.Open` の skip は「storybook 側が描けない」ことに依存** | story 側が直れば skip は不要になる。**skip を惰性で残さない** |
 | 9 | 🆕 🟨 **`tokens/` は空のままが正常** | converter の `tokens/` は別パッケージ用。本 repo の値は `_ds_bundle.css` に焼き込まれる |
 | 10 | 🆕 🟨 **`x-omelette.tokens` にパレット色が載る** | `src/app/tokens.css` が semantic 色を**パレット色への参照**で定義しているため（`--color-success: var(--color-emerald-600)` ほか）。**conventions header の「パレット色を書くな」と字面が食い違う**——手7 の観測対象 |
@@ -137,4 +138,52 @@
 | 15 | 🆕 🟥 **conventions header を触ったら、必ず「触っていない箇所」も数える** | 手8 で禁止 3・語彙 0 を 842 バイト足したら、**禁止した箇所は直り `Container` / `Section` / `DataGrid` が消えた**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。🟥 **ロールバック済み。**header は手7 の 6,832 バイトが最後に「効いていた」状態 |
 | 16 | 🆕 🟥 **`x-import` に `class=` を書くと黙って落ちる** | ランタイム（`support.js` の `collectProps`）は `class → className` を **`kind === "dom"` のときだけ**行う。部品には **`class-name=`** が必要。🟥 **どこにも書かれていない**（header の例はすべて JSX の `className=`）。**足すなら禁止ではなく「書き方」として 1 変数で** |
 | 17 | 🆕 🟥 **アンカーは `finalize_plan` の直前に取り直す** | ロールバック時、古い `remote-sync.json` のせいでドライバが **`upload.any: false`**（＝アップロード不要）と誤判定した。remote には前の版が載ったままだった。**`auxSha` を突き合わせれば分かる** |
+
+## 🆕 手8e の再同期（2026-08-07）— 製品層 4 件の実装を渡した
+
+**同期範囲は 30 → 31 部品**（`Link` 新設）。`cfg.componentSrcMap` に `Link` を 1 行足した以外、config は無変更。
+
+| 観測 | 結果 |
+| --- | --- |
+| ドライバの判定 | 🟦 `ok: true` / `anchor: ok` / `learningsUnmerged: []` / `canary: null` |
+| 検証の内訳 | **`unchanged` 26（verified-by-upload）／`changed` 4（`AppShell` `DataGrid` `ListDetail` `Select`）／`added` 1（`Link`）／`removed` 0** |
+| 採点 | 🟦 **13 story すべて `match`**（`close` 0・`mismatch` 0・factual failure 0）。**シートは 5 件とも全 story を画像判定**した（sibling-trusted は使っていない） |
+| render check | 🟦 **31/31 clean**（`bad` 0 / `thin` 0 / `variantsIdentical` 0 / `gridOverflow` 0）。**bundle と styling が動いたので full tier** |
+| アップロード | `bundle: true` / `styling: true` / `aux: true`・**`deletePaths: []`**（削除は無い）。169 ファイル＋ `_ds_sync.json` |
+| 🟥 **conventions header の実在検証** | **ドリフト 0 件。**手8d が動かした 6 箇所（`width="md"` の実例・`DataGridColumn` + `kind`/`emphasis`・document reset の宣言・`font-emphasis`・`StatusPill` が状態色を持つ・Composed に `Link`）を**全件実測して裏が取れた**。`window.Design` は vm で 130 export を列挙 |
+| 出なかった警告 | `[GRID_OVERFLOW]` 0・`[SPOT_CHECK]` 0・`[REFERENCE_STALE?]` 0（**参照 Storybook を同じセッションで建て直したため**——risk #14 の読みが 2 回連続で当たった） |
+| `[TOKENS_MISSING]` | 前回と同じく「1 missing, below threshold」で **tag が出ない**（risk #13 は据え置き） |
+
+### ★ 手8d が登録した赤テストの打ち直し（代理検体 → 本物）
+
+🟦 **器 A は本物でも成立した。**出荷している `ds-bundle/_ds_bundle.css` の **`@layer base` 先頭**に
+`*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}` が実在する。
+→ **conventions header の「document reset は配布 CSS が保証する」は嘘ではない。**`AppProviders` へ倒す必要は無かった。
+
+🟦 **面④b の原因も同じファイルで確認した**——`a{color:inherit;text-decoration:inherit}`。
+**同じ `<style>` の 2 行が正反対の原因**という手8c の読みが、代理ではなく**移送物そのもの**で裏づいた。
+
+🟨 **検索するときの注意**: Preflight の綴りは `*,:after,:before,::backdrop`（**コロン 1 つ・`:after` が先**）。
+`::after,::before` で grep すると**実在するのに「無い」と読める**。手8e で一度この読み違いをした。
+
+### 🟥 `.d.ts` の解決不能は解けていない（risk #11 の更新）
+
+`tsc --strict --noEmit` を `ds-bundle/components/**/*.d.ts`（31 ファイル）にかけると **27 エラー**（前回 26）。
+
+| 内訳 | 前回 | 今回 |
+| --- | --- | --- |
+| `Generic type 'Ref' requires 1 type argument` | 18 | **20**（部品が 1 件増えたぶん） |
+| `Cannot find name 'CSSProperties'` | 2 | 2 |
+| `Cannot find name 'ColumnDef'` | 1 | **0**（🟦 [DR-0072](../docs/DR/DR-0072-no-passthrough-of-dependency-types.md) が効いた） |
+| `Cannot find name 'DataGridColumn'` | – | **1**（🟥 **名前が替わっただけ**） |
+| `NavItem` / `ListDetailState` | 各 1 | 各 1 |
+| 総称型に型引数なし（`DataGridProps` / `ListDetailProps`） | 2 | 2 |
+
+★ **依存の型を公開 API から消す目的（DR-0072）は達成された**が、**`.d.ts` の抽出が自層の型も出さない**ので
+**受け手の lint 規則から見た解像度は変わっていない。**次に効かせたいなら converter の型抽出側の問題。
+
+🆕 🟥 **`SelectTrigger` の `width` は `.d.ts` に載らない。**converter は**部品 1 件につき `.d.ts` 1 枚**しか出さず、
+`Select.d.ts` に入るのは根（`SelectProps`）だけ。**複合部品のパーツ（`SelectTrigger` / `CardHeader` 等）の props はどこにも出ない。**
+→ 手8d で `width` prop を作って `className` を閉じたのに、**受け手の `_adherence.oxlintrc.json` はそれを知りようがない。**
+`Select.prompt.md` には実例として載っている（が、[DR-0064](../docs/DR/DR-0064-design-project-receives-runtime-only.md) によりデザイン側には届かない）。
 
