@@ -1,0 +1,7 @@
+# 工程3 D12=B（未決 #27 ① の決着・実行記録 §工程3 P3-02）:
+# esbuild / msw の postinstall は「走らせない」を明示する。
+# 8 手＋工程0〜2 はスクリプト未実行のままゲート全緑（esbuild の実体は optional dep・msw の worker は commit 済み）。
+# 未宣言のままだと pnpm 11 がハードエラーで exit 1 し、shadcn add が部品を書く前に中断する。
+allowBuilds:
+  esbuild: false
+  msw: false
