@@ -9,10 +9,12 @@
 //
 // 🟥 **値は流し込まない。**形だけ tmp-admin に合わせ、色も余白も shadcn 既定のまま（手5 で差し替える）。
 import { useMemo } from 'react';
-import type { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/Action/Button';
-import { DataGrid } from '@/components/DataDisplay/DataGrid';
+import {
+  DataGrid,
+  type DataGridColumn,
+} from '@/components/DataDisplay/DataGrid';
 import {
   StatusPill,
   type StatusTone,
@@ -40,7 +42,7 @@ const STATUS_TONE: Record<IssueStatus, StatusTone> = {
   closed: 'neutral',
 };
 
-/** 日時は桁を比べるので tabular-nums で出す（tmp-admin §4.4）。 */
+/** 表示用の整形だけ。🟦 **書式（等幅）は列の `kind` が持つ**（手8d H8D-05）。 */
 function formatUpdatedAt(iso: string): string {
   return iso.slice(0, 16).replace('T', ' ');
 }
@@ -48,33 +50,34 @@ function formatUpdatedAt(iso: string): string {
 export default function Home() {
   const detail = useListDetail<Issue>();
 
-  const columns = useMemo<ColumnDef<Issue, never>[]>(
+  // 🟥 手8d H8D-05 で書き換えた。**書式クラスが 1 つも無い**のがこの手の成果——
+  //    以前はここに `font-mono` / `font-mono tabular-nums` を書いていた（面③と同じ形）。
+  //    等幅は `kind: 'numeric'`、強調は `emphasis` が部品側で引き取る。
+  const columns = useMemo<DataGridColumn<Issue>[]>(
     () => [
+      // 機械的識別子は等幅（tmp-admin §4.4「密データは等幅で」）
+      { key: 'id', header: 'ID', accessor: (row) => row.id, kind: 'numeric' },
       {
-        accessorKey: 'id',
-        header: 'ID',
-        // 機械的識別子は等幅（tmp-admin §4.4「密データは等幅で」）
-        cell: (ctx) => <span className="font-mono">{ctx.row.original.id}</span>,
+        key: 'subject',
+        header: '件名',
+        accessor: (row) => row.subject,
+        emphasis: true,
       },
-      { accessorKey: 'subject', header: '件名' },
       {
-        accessorKey: 'status',
+        key: 'status',
         header: 'ステータス',
-        cell: (ctx) => (
-          <StatusPill tone={STATUS_TONE[ctx.row.original.status]}>
-            {STATUS_LABEL[ctx.row.original.status]}
+        accessor: (row) => (
+          <StatusPill tone={STATUS_TONE[row.status]}>
+            {STATUS_LABEL[row.status]}
           </StatusPill>
         ),
       },
-      { accessorKey: 'assignee', header: '担当者' },
+      { key: 'assignee', header: '担当者', accessor: (row) => row.assignee },
       {
-        accessorKey: 'updatedAt',
+        key: 'updatedAt',
         header: '更新',
-        cell: (ctx) => (
-          <span className="font-mono tabular-nums">
-            {formatUpdatedAt(ctx.row.original.updatedAt)}
-          </span>
-        ),
+        accessor: (row) => formatUpdatedAt(row.updatedAt),
+        kind: 'numeric',
       },
     ],
     [],

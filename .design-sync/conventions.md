@@ -36,21 +36,24 @@ For your own layout glue, use ONLY these semantic utility classes. They are the 
 | padding (inside a surface) | `p-inset-xs` `p-inset-sm` `p-inset-md` `p-inset-lg` |
 | vertical gap | `gap-stack-sm` `gap-stack-md` `gap-stack-lg` |
 | horizontal gap | `gap-inline-sm` `gap-inline-md` |
-| type | `text-body` `text-heading` `text-label` `text-emphasis` `text-table` |
+| type | `text-body` `text-heading` `text-label` `text-emphasis` `text-table` · weight: `font-emphasis` |
 | page width | `max-w-content` `max-w-wide` |
 | **control width** | `w-field-sm` `w-field-md` `w-field-lg` (also `max-w-field-*`) |
 
 **Never write numeric-step utilities (`p-4`, `gap-7`, `w-99`, `h-8`) and never write Tailwind palette
 colours (`text-gray-600`, `bg-slate-100`).** Both are rejected by this system's lint. Use the names above
 for spacing and type, and the semantic colour classes the components already carry (`bg-primary`,
-`text-muted-foreground`, `bg-destructive`, `bg-sidebar`) for colour.
+`text-muted-foreground`, `bg-destructive`, `bg-sidebar`) for colour. The status colours
+(`--color-success`, `--color-warning` and their fills) are owned by `StatusPill` — reach for that
+component when you need them, rather than for the custom properties.
 
-**Sizing a form control — use the control-width family, never a numeric one.** `Select`, `Input`, and the
-other base-tier controls fill their container by default; when one needs a fixed width, put a
-`w-field-*` class on it. `w-field-md` is the default choice for a filter or a form field.
+**Sizing a form control — `SelectTrigger` takes a `width` prop; the other controls take a control-width
+class.** `Select`, `Input`, and the other base-tier controls fill their container by default. When one needs
+a fixed width: `SelectTrigger` has `width`: `sm | md | lg` (it does not accept `className`), and the other
+controls take a `w-field-*` class. `md` is the default choice for a filter or a form field.
 
 ```jsx
-<SelectTrigger className="w-field-md">   {/* not className="w-48" */}
+<SelectTrigger width="md">
   <SelectValue placeholder="ステータス" />
 </SelectTrigger>
 ```
@@ -64,13 +67,16 @@ Components are grouped by **role**, which is the folder name under `components/`
 This system ships two tiers. Both are real, shipped components — reach for either rather than writing
 your own markup:
 
-- **Composed** — `AppShell`, `ListDetail`, `EmptyState`, `DataGrid`, `StatusPill`, `Button`, and the
-  layout primitives. These carry this system's own decisions and follow the prop rules above.
+- **Composed** — `AppShell`, `ListDetail`, `EmptyState`, `DataGrid`, `StatusPill`, `Button`, `Link`, and
+  the layout primitives. These carry this system's own decisions and follow the prop rules above.
+  `Link` is the component for anchors: `href`, `tone`: `primary | muted`, `external`: boolean (it sets
+  `target` and `rel` itself).
 - **Base** — `Card`, `Table`, `Badge`, `Label`, `Separator`, `Input`, `Checkbox`, `Select`, `Skeleton`,
   `Empty`, `Pagination`, `Dialog`, `DropdownMenu`, `Popover`, `Sheet`, `Tooltip`. These are the
   unmodified upstream primitives, exposed so that a screen never has to hand-build a surface, a form
   control, or an overlay. They accept `className`; the composed tier's prop-only rule does not apply to
-  them. Compound ones ship their parts (`CardHeader`, `DialogContent`, `SelectItem`, `TableRow`, …) —
+  them — with one exception: `SelectTrigger` is sized through its `width` prop and takes no `className`.
+  Compound ones ship their parts (`CardHeader`, `DialogContent`, `SelectItem`, `TableRow`, …) —
   read `<Name>.prompt.md` for the exact shape.
 
 This system also classifies components by facet. Two facets change how you use a component:
@@ -83,10 +89,16 @@ This system also classifies components by facet. Two facets change how you use a
 
 `StatusPill` is the only status indicator — `tone` is exactly `success | warning | danger | neutral`
 (there is no "info" or "progress"); use it instead of colouring a `Button` or inventing a badge.
-`DataGrid` takes `data` + `columns` (TanStack `ColumnDef[]`), optional `onRowSelect` and `empty`.
+`DataGrid` takes `data` + `columns` (`DataGridColumn[]`), optional `onRowSelect` and `empty`. A column is
+`{ key, header, accessor: (row) => ReactNode }` plus two declarative formatting options: `kind`:
+`text | numeric` (numeric columns — ids, counts, timestamps — get the dense figure treatment) and
+`emphasis`: boolean (the column carrying the row's subject). The grid applies the table typography to
+cells and headers itself, so an `accessor` returns content, not formatting.
 `EmptyState` takes `title`, `description` and at most one `action`.
 `AppShell` takes `brand` and `nav` (`{ key, label, active? }[]`) — it has no "current" prop; mark the
 active item with `active: true`. `AppShell` is the page skeleton and is where a screen should start.
+The document reset (`html` / `body` margin and padding) is already guaranteed by the stylesheet this
+system ships, so a page never needs to supply its own.
 
 ## Where the truth lives
 

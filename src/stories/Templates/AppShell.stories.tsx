@@ -4,10 +4,12 @@
 // tmp-admin §4.1 の chrome / キャンバス / 白カードが**実際に成立しているか**は、
 // 中身が詰まった画面でしか判定できない。
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import type { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/Action/Button';
-import { DataGrid } from '@/components/DataDisplay/DataGrid';
+import {
+  DataGrid,
+  type DataGridColumn,
+} from '@/components/DataDisplay/DataGrid';
 import {
   StatusPill,
   type StatusTone,
@@ -58,31 +60,29 @@ const STATUS_TONE: Record<IssueStatus, StatusTone> = {
   closed: 'neutral',
 };
 
-const columns: ColumnDef<Issue, never>[] = [
+const columns: DataGridColumn<Issue>[] = [
+  { key: 'id', header: 'ID', accessor: (row) => row.id, kind: 'numeric' },
   {
-    accessorKey: 'id',
-    header: 'ID',
-    cell: (ctx) => <span className="font-mono">{ctx.row.original.id}</span>,
+    key: 'subject',
+    header: '件名',
+    accessor: (row) => row.subject,
+    emphasis: true,
   },
-  { accessorKey: 'subject', header: '件名' },
   {
-    accessorKey: 'status',
+    key: 'status',
     header: 'ステータス',
-    cell: (ctx) => (
-      <StatusPill tone={STATUS_TONE[ctx.row.original.status]}>
-        {STATUS_LABEL[ctx.row.original.status]}
+    accessor: (row) => (
+      <StatusPill tone={STATUS_TONE[row.status]}>
+        {STATUS_LABEL[row.status]}
       </StatusPill>
     ),
   },
-  { accessorKey: 'assignee', header: '担当者' },
+  { key: 'assignee', header: '担当者', accessor: (row) => row.assignee },
   {
-    accessorKey: 'updatedAt',
+    key: 'updatedAt',
     header: '更新',
-    cell: (ctx) => (
-      <span className="font-mono tabular-nums">
-        {ctx.row.original.updatedAt.slice(0, 16).replace('T', ' ')}
-      </span>
-    ),
+    accessor: (row) => row.updatedAt.slice(0, 16).replace('T', ' '),
+    kind: 'numeric',
   },
 ];
 
