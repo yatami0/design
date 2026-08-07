@@ -92,7 +92,6 @@ export default defineConfig(
     //    検査対象に残すため——「層を足すたびに射程が漏れる」（DR-0040）の 3 例目を作らない。
     ignores: [
       '**/dist/**',
-      '**/.next/**',
       '**/storybook-static/**',
       '**/.design-sync/sb-reference/**', // 参照 Storybook（基準器・再生成される）
       '**/.design-sync/.cache/**', // 生成された preview wrapper・compare の作業状態
@@ -159,8 +158,7 @@ export default defineConfig(
     name: 'repo/product-layer-frame',
     files: [
       'src/components/**/*.{ts,tsx}',
-      'src/app/**/*.{ts,tsx}',
-      // 手4 D8: ③ 層も同じ枠に入れる。H4-01 の赤テストで射程外だと分かった
+      // 工程1: src/app（Next の画面）は削除した。画面はカタログ（src/stories）が持つ
       'src/patterns/**/*.{ts,tsx}',
       'src/templates/**/*.{ts,tsx}',
     ],
@@ -175,7 +173,6 @@ export default defineConfig(
   {
     name: 'repo/import-through-product-layer',
     files: [
-      'src/app/**/*.{ts,tsx}',
       'src/stories/**/*.{ts,tsx}',
       // 手4 D8: ③ 層は ② の上にあるので、素材層を直接触ってよい理由が無い
       'src/patterns/**/*.{ts,tsx}',

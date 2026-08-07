@@ -1,5 +1,5 @@
 // 手3 H3-04 — 製品層の自作部品。格子。columns は値ではなく段組みの定義。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Grid } from '@/components/Layout/Grid';
 

@@ -1,5 +1,5 @@
 // 手3 H3-04 — 製品層の自作部品。横並び。gap は --spacing-inline-* だけを取る。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Inline } from '@/components/Layout/Inline';
 

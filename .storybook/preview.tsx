@@ -1,9 +1,9 @@
 // .storybook/preview.tsx
 // Tailwind は globals.css を読むだけで通る（公式 recipe）。
 // この 1 行が「Storybook と本体が同じトークンを見ているか」（手2b Q1）の配線点。
-import '../src/app/globals.css';
+import '../src/styles/globals.css';
 
-import type { Preview } from '@storybook/nextjs-vite';
+import type { Preview } from '@storybook/react-vite';
 
 const preview: Preview = {
   parameters: {

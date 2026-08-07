@@ -1,7 +1,7 @@
 // 手5 案1 — 棚の穴を塞ぐ（1/2）。
 // ③ Patterns 層で唯一 story が無かった部品。手4 で作ったが棚に並べていなかったため、
 // **③ 層の追従を目視できない状態**だった（→ Storybookの設計と目視観点.md §3）。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '@/components/Action/Button';
 import {

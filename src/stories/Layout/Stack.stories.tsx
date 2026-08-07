@@ -1,5 +1,5 @@
 // 手3 H3-04 — 製品層の自作部品。縦積み。gap は --spacing-stack-* だけを取る。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Stack } from '@/components/Layout/Stack';
 

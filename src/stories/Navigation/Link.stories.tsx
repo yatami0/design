@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Link } from '@/components/Navigation/Link';
 import { Stack } from '@/components/Layout/Stack';

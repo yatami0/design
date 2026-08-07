@@ -1,5 +1,5 @@
 // 手3 H3-04 — 製品層の自作部品。🟨 唯一 className を受ける逃げ道。使用箇所数が枠の健全性の指標になる。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Box } from '@/components/Layout/Box';
 
