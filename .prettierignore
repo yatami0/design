@@ -20,6 +20,13 @@ src/lib/utils.ts
 ds-bundle/
 .ds-sync/
 
+# 工程2: MSW の worker スクリプト（`msw init` の生成物・361 行）
+# ⚠ ファイル冒頭に「Please do NOT modify this file」と書かれている vendor コード。
+# 整形すると msw の版と結びついた原本でなくなる（src/components/ui/ と同じ扱い）。
+# 🟥 除外する前に赤の件数を測った（prettier 1 件・cspell 4 件・eslint warning 1 件）——
+#    DR-0040（層を足すたびに射程が漏れる）の再演。内訳は 実行記録 §工程2。
+public/mockServiceWorker.js
+
 # 手7: Claude Design が生成した成果物のスナップショット（証拠）
 # 🟥 整形すると「design agent が吐いたそのもの」でなくなり、Q1〜Q3 の数え上げの証拠性が落ちる。
 # ds-bundle/ と同じ扱い。DR-0040（層を足すたびに射程が漏れる）の 4 例目。

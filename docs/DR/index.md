@@ -40,6 +40,7 @@
 | [DR-0079](DR-0079-ship-via-git-dependency-and-claude-design.md) | 🆕 **出荷口は git 依存 ＋ Claude Design の 2 経路**。`/design-sync` は検証装置から**工場の出荷経路**へ（未決 #2 の答え）。npm publish は使い回し先が 1 つ出てから | 工程0 | decided |
 | [DR-0080](DR-0080-strict-pins-stay-for-reproducibility.md) | 🆕 **厳密ピンは残す — 理由を「PoC と同一版」から「工場の再現性・観測の 1 変数化」へ書き換える**。lint 構成も工場自身の規約として引き取る。DR-0014 の借金は返済期限を失ったが残る | 工程0 | decided |
 | [DR-0081](DR-0081-poc-feedback-redirected-to-factory-conventions.md) | 🆕 **`poc_feedback` は「工場の規約へ戻す候補」に読み替える**。フィールド名と既存 77 件（非 null 64 件）は書き換えず、規約起草時の材料リストとして読む。規約文書の起草はまだしない | 工程0 | decided |
+| [DR-0087](DR-0087-fetching-belongs-to-the-subject-layer.md) | 🆕 ⭐ **取得は題材の層（`src/redmine`）だけが持ち、コアは題材を知らない** — 着手前の実測で**この repo に `fetch` が 0 件**だった＝ MSW を入れるとは「無かった層を新設する」こと。**規約ではなく lint 2 本で守る**（`fetch` 直書き禁止 ＋ コアから題材への import 禁止・**両方とも赤テストで発火を確認**）。[DR-0081](DR-0081-poc-feedback-redirected-to-factory-conventions.md)（工場の規約へ戻す候補）の**最初の実例**。★ 判定規則の候補が見えた——**コアは語彙、題材は対応表** | 工程2 | decided |
 
 ## 発見（finding）
 
@@ -97,6 +98,8 @@
 | [DR-0082](DR-0082-vite-build-prints-type-errors-but-exits-zero.md) | 🆕 ⭐ **`vite build` は型エラーを赤い字でログに出しながら exit 0 で通る** — dts の診断は「解決不能」（K2）では落ち「型の不整合」（K1）では落ちない。**工程1 以降、型を止めるゲートは `tsc --noEmit` の 1 本だけ**。「対象 0 件で緑」とは別種——**ログに赤が在っても終了コードが 0** | 工程1 | 全ゲート運用 |
 | [DR-0083](DR-0083-lib-build-silently-strips-use-client.md) | 🆕 **lib ビルドは `'use client'` を警告 0 で剥がす** — ソース 4 ファイルに在るが `dist/design.mjs` には 0 件。**D4「残す」はソースの話でしかなく出荷物には効いていない**。git 依存（DR-0079）で Next の利用者に dist を向けると Client 境界が失われた状態で届く | 工程1 | 出荷（git 依存） |
 | [DR-0084](DR-0084-comments-in-config-files-leak-into-shipped-css.md) | 🆕 **設定ファイルのコメントに書いたクラス名が配布 CSS に湧く** — `eslint.config.mjs` の禁止規則の説明文（`text-gray-600` / `p-13`）が Tailwind の走査に拾われ、**src で 0 使用のクラスが CSS に生成されている**。docs 側の穴（DR-0021）と同じ形が `.mjs` にも。docs-only の `p-7` は出ない＝ `@source not` は移設後も効いている | 工程1 | 出荷 CSS の純度 |
+| [DR-0085](DR-0085-three-independent-scopes-decide-what-ships.md) | 🆕 ⭐ **`dist` に何が入るかを決める規則は 3 本あり互いに独立** — ① JS = entry からの到達可能性 ② `.d.ts` = dts の `include`（ディレクトリ） ③ 静的ファイル = `publicDir` の丸ごとコピー。題材を足したら **`.d.ts` 8 件と `mockServiceWorker.js` が出荷物に混ざった**（JS は 0 バイト増）。**「出荷面は `src/index.ts` の 1 本」は誤り**。DR-0040 の裏形（漏れる先が検査ではなく出荷） | 工程2 | 出荷（git 依存・Claude Design） |
+| [DR-0086](DR-0086-redmine-has-no-baseline-for-evm.md) | 🆕 ⭐★ **Redmine は EVM の計画も進捗の日次履歴も返さない** — PV は**ベースラインが無い**ので導出しかできず（期限を動かすと過去の PV も動く）、EV は **`include=journals` が単票専用**なので 60 件なら 60 リクエスト。AC だけが `spent_on` で素直に取れる。ほかに単価・稼働可能時間・非稼働日も無い。🟦 **ガントに必要なものは全部ある**＝ガントが重いのはデータではなく描画 | 工程2 | **工程7（EVM）**・工程5・工程6 |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -187,3 +190,6 @@
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
+| DR-0085 | 🆕 🟥 工場の規約 | **「出荷面は `src/index.ts`」と書くだけでは足りない。**`dist` の入口は 3 本（JS の到達可能性・`.d.ts` の `include`・`publicDir` のコピー）あり、**2 本はディレクトリだけで決まる**。層を足すたびに 3 本とも確認する（差分で撮る） |
+| DR-0086 | 🆕 🟥 工場の規約（器） | **モックは実 API が返せるものしか返さない。**返せないもの（ベースライン等）をモックで作ると、繋いだ日に画面が壊れる。**欠落は埋めずに名指しして記録する** |
+| DR-0087 | 🆕 🟥 工場の規約（境界） | **コア / 題材の境界はディレクトリで引き、機械で守る**（`fetch` 直書き禁止 ＋ import 制限）。★ 判定規則の候補: **コアは語彙（有限集合）、題材は対応表** |

@@ -84,6 +84,32 @@ const noServerActions = {
     'Server Actions は禁止。部品層でも第 2 の経路を作らない（PoC §4.5 と同じ趣旨）',
 };
 
+// 🆕 工程2 D12: PoC が持っていて本 repo が落としていた 2 ルールを、**守る対象が生まれたので**戻す。
+// 冒頭の【落としたもの】に「fetch 直書き禁止 … mutator も生成 hooks も無い」と書いてあるのが
+// その理由だった。工程2 で `src/redmine/client.ts`（取得の層）ができたので条件が満たされた。
+// → DR-0081（poc_feedback は「工場の規約へ戻す候補」）の最初の実例。
+//
+// 🟥 **足して 0 件のまま緑なのが一番危ない**ので、赤テストで発火を確かめてある（実行記録 §工程2）。
+const noRawFetch = {
+  selector: "CallExpression[callee.name='fetch']",
+  message:
+    'fetch の直書きは禁止。取得は題材の層（src/redmine/client.ts）だけが持つ（工程2 D4=B）',
+};
+
+// 🆕 工程2: **コアは題材を知らない。**出荷物（src/index.ts から出るもの）が
+// Redmine の URL 形状やステータス id を知った時点で、「使い回せる UI」ではなくなる（DR-0078）。
+const noSubjectImports = {
+  group: ['@/redmine/*', '@/mocks/*', '**/redmine/*', '**/mocks/*'],
+  message:
+    'コア（部品・Pattern・Template）は題材（Redmine）を知らない。データは props で受け取る（工程2 D4=B・データモデル §6）',
+};
+
+const noMaterialLayerImports = {
+  group: ['@/components/ui/*', '**/components/ui/*'],
+  message:
+    '素材層（shadcn）は直接使わない。製品層 @/components/<役割カテゴリ>/… から import すること（D3=B）',
+};
+
 export default defineConfig(
   {
     // 手6: /design-sync の生成物・staging を射程から外す。
@@ -104,6 +130,11 @@ export default defineConfig(
       //   再現手順: この行を外し、`tsconfig.json` の include に
       //             "artifacts/h8/**/*.tsx" を足す（実測は実行記録 §手8）。
       'artifacts/**',
+      // 工程2: MSW の worker スクリプト（`msw init` の生成物・vendor コード）。
+      // 🟥 除外前に測ったら **warning が 1 件増えた**——しかも中身は
+      //    「Unused eslint-disable directive」＝ **生成物が自分で書いた eslint-disable が赤を作った**。
+      //    DR-0040 の再演。内訳は 実行記録 §工程2。
+      'public/mockServiceWorker.js',
     ],
   },
 
@@ -147,6 +178,16 @@ export default defineConfig(
       //   これが効いていないと「トークンを差し替えれば見た目が変わる」（手5）は成立しない。
       'tailwindcss/no-arbitrary-value': 'error',
 
+      'no-restricted-syntax': ['error', noServerActions, noRawFetch],
+    },
+  },
+
+  // 🆕 工程2: 取得の層だけは fetch を書いてよい（というより**ここしか書けない**）。
+  // no-restricted-syntax は後のブロックが前を置き換えるので、noServerActions を再掲する。
+  {
+    name: 'repo/fetch-lives-here',
+    files: ['src/redmine/**/*.{ts,tsx}'],
+    rules: {
       'no-restricted-syntax': ['error', noServerActions],
     },
   },
@@ -164,33 +205,51 @@ export default defineConfig(
     ],
     ignores: ['src/components/ui/**'],
     rules: {
-      'no-restricted-syntax': ['error', noServerActions, ...noPrimitiveValues],
+      'no-restricted-syntax': [
+        'error',
+        noServerActions,
+        noRawFetch,
+        ...noPrimitiveValues,
+      ],
     },
   },
 
   // 手3 D3=B: 画面と story は製品層しか見ない。
   // 製品層自身と `.storybook/**` は素材層を包む側なので対象外。
+  //
+  // 🆕 工程2: no-restricted-imports も**後のブロックが前を置き換える**ので、
+  //    「素材層を見ない」と「題材を見ない」は**射程ごとに 3 ブロックへ割った**。
+  //    story だけは題材（src/redmine・src/mocks）を見てよい——検体がそこにあるため。
   {
     name: 'repo/import-through-product-layer',
-    files: [
-      'src/stories/**/*.{ts,tsx}',
-      // 手4 D8: ③ 層は ② の上にあるので、素材層を直接触ってよい理由が無い
-      'src/patterns/**/*.{ts,tsx}',
-      'src/templates/**/*.{ts,tsx}',
-    ],
+    files: ['src/stories/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          patterns: [
-            {
-              group: ['@/components/ui/*', '**/components/ui/*'],
-              message:
-                '素材層（shadcn）は直接使わない。製品層 @/components/<役割カテゴリ>/… から import すること（D3=B）',
-            },
-          ],
-        },
+        { patterns: [noMaterialLayerImports] },
       ],
+    },
+  },
+
+  {
+    // 手4 D8: ③ 層は ② の上にあるので、素材層を直接触ってよい理由が無い。
+    // 🆕 工程2 D12: ③④ 層は**題材も知らない**（コアとして出荷されるため）。
+    name: 'repo/product-layer-boundaries',
+    files: ['src/patterns/**/*.{ts,tsx}', 'src/templates/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: [noMaterialLayerImports, noSubjectImports] },
+      ],
+    },
+  },
+
+  {
+    // 🆕 工程2 D12: ② 層（素材層を包む側）は素材層を見てよいが、題材は見ない。
+    name: 'repo/core-does-not-know-the-subject',
+    files: ['src/components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', { patterns: [noSubjectImports] }],
     },
   },
 

@@ -3,13 +3,37 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-07（★★★ 🆕 **工程1 が完了した — Next を外し Vite の lib モードへ。部品 33 件の diff は 0 行**。Q1〜Q5 全問に答えが出た（Q4 の実同期だけ人待ち）。ゲートは 6 本のまま・**eslint は内訳まで旧ベースラインと完全一致**（error 33 / warning 1）。🟥 **新発見 3 件: [DR-0082](DR/DR-0082-vite-build-prints-type-errors-but-exits-zero.md)（`vite build` は型エラーを赤い字で出しながら exit 0——型の網は `tsc` 1 本）／[DR-0083](DR/DR-0083-lib-build-silently-strips-use-client.md)（dist は `'use client'` を警告 0 で失う）／[DR-0084](DR/DR-0084-comments-in-config-files-leak-into-shipped-css.md)（eslint 設定のコメントのクラス名が配布 CSS に湧く）**。🟨 手順書 §2 の D1〜D11 は推奨どおりの Claude 判断（事後承認待ち）。🟥 **次の一手は工程2（MSW ＋ データモデル）の手順書**。🟥 **PR のマージは人**）
+最終更新: 2026-08-07（★★★ 🆕 **工程2 が完了した — データの器（MSW ＋ データモデル）。Q1〜Q5 全問に答えが出た**。★★ **Q4 が本体だった**——着手前の実測で **`fetch` が repo に 0 件**と判明し、「MSW を入れる」は**無かった層の新設**だと分かった → 題材の層 `src/redmine/` を新設し、**コア / 題材の境界を lint 2 本で機械化**（[DR-0087](DR/DR-0087-fetching-belongs-to-the-subject-layer.md)・赤テスト済み）。★ **Q1 の答えは「欠落 5 件」**（[DR-0086](DR/DR-0086-redmine-has-no-baseline-for-evm.md)・[データモデル.md](データモデル.md)）——**EVM のベースラインは Redmine に無い**。🟥 **新発見: 出荷物の入口は 3 本あった**（[DR-0085](DR/DR-0085-three-independent-scopes-decide-what-ships.md)）。ゲートは 6 本・**eslint は内訳まで不変**（error 33 / warning 1）。🟨 手順書 §2 の D1〜D13 は推奨どおりの Claude 判断（事後承認待ち）。🟥 **次の一手は工程3（共通シェル）の手順書**。🟥 **PR のマージは人**）
+
+前回: 2026-08-07（**工程1 が完了した — Next を外し Vite の lib モードへ。部品 33 件の diff は 0 行**。Q1〜Q5 全問に答えが出た（Q4 の実同期だけ人待ち）。ゲートは 6 本のまま・**eslint は内訳まで旧ベースラインと完全一致**（error 33 / warning 1）。🟥 **新発見 3 件: [DR-0082](DR/DR-0082-vite-build-prints-type-errors-but-exits-zero.md)（`vite build` は型エラーを赤い字で出しながら exit 0——型の網は `tsc` 1 本）／[DR-0083](DR/DR-0083-lib-build-silently-strips-use-client.md)（dist は `'use client'` を警告 0 で失う）／[DR-0084](DR/DR-0084-comments-in-config-files-leak-into-shipped-css.md)（eslint 設定のコメントのクラス名が配布 CSS に湧く）**。🟨 手順書 §2 の D1〜D11 は推奨どおりの Claude 判断（事後承認待ち）。🟥 **次の一手は工程2（MSW ＋ データモデル）の手順書**。🟥 **PR のマージは人**）
 
 ---
 
 ## 現在地
 
-- ★★★ 🆕 **工程1 が完了した**（2026-08-07・[手順書](手順/工程1_NextからViteへの土台入れ替え.md)・[実行記録 §工程1](実行記録.md)）。**Next → Vite（lib モード）。部品 33 件は 1 行も触っていない**（`git diff --stat` 空＝Q2）。
+- ★★★ 🆕 **工程2 が完了した**（2026-08-07・[手順書](手順/工程2_データの器_MSWとデータモデル.md)・[実行記録 §工程2](実行記録.md)）。**5 画面ぶんのデータを MSW で持てるようになった。部品 33 件は 1 行も触っていない。**
+  - ★★ **問いの本体は Q4 だった**——着手前の実測で **`src/**` の `fetch(` が 0 件**（部品は全部 props で受ける純表示）。
+    **つまり MSW を入れるとは「モックを足す」ことではなく、この repo に無かった「取得の層」を新設すること**だった。
+    → **題材の層 `src/redmine/`（types / model / convert / client）と `src/mocks/` を新設し、`src/index.ts` からは 1 つも export しない**（[DR-0087](DR/DR-0087-fetching-belongs-to-the-subject-layer.md)）
+  - ★★ **境界を文書ではなく機械で守った**——`eslint.config.mjs` に 2 ルールを**戻した**（`fetch` 直書き禁止 ／ コアから題材への import 禁止）。
+    🟦 **落としていた理由が「本 repo に守る対象が存在しない」と冒頭コメントに書いてあり、工程2 で対象が生まれた**＝ [DR-0081](DR/DR-0081-poc-feedback-redirected-to-factory-conventions.md)（工場の規約へ戻す候補）の**最初の実例**。
+    🟥 **両方とも赤テストで発火を確認**（足して 0 件のまま緑が一番危ない）。正の対照＝ `client.ts` の `fetch` 3 箇所は緑
+  - ★ **Q1 の答えは「欠落 5 件」**（[データモデル.md](データモデル.md) §4・[DR-0086](DR/DR-0086-redmine-has-no-baseline-for-evm.md)）——
+    🟥 **EVM の PV はベースラインが無いので導出しかできない**（期限を動かすと過去の PV も動く）／
+    🟥 **EV の日次履歴は `include=journals` が単票専用なので 60 件なら 60 リクエスト**（`include` の許容値が端点で違うことを逐語で確認）／
+    単価・稼働可能時間・非稼働日も無い。🟦 **逆にガントに必要なものは全部あった**＝ **ガントが重いのはデータではなく描画**（工程6 Q2 が本体）
+  - 🟦 **Q2 = yes**——`PUT` 204 → 取り直しで**件名 / 状態 / 進捗 / 変更履歴の 4 項目が全部動いた**（インメモリ db・`resetDb()` で story 間の干渉も断てる）
+  - 🟥 **新発見: 出荷物の入口は 3 本あった**（[DR-0085](DR/DR-0085-three-independent-scopes-decide-what-ships.md)）——
+    ① JS = entry からの到達可能性 ② `.d.ts` = dts の `include`（ディレクトリ） ③ 静的 = `publicDir` の丸ごとコピー。
+    題材を足したら **`.d.ts` 8 件と `mockServiceWorker.js` が dist に混ざった**（JS は 0 バイト増）。塞いだ後は**工程1 の 57 ファイルと完全一致**
+  - 🟥 **[DR-0040](DR/DR-0040-frame-leaks-when-a-layer-is-added.md)（層を足すと射程が漏れる）の再演**——`msw init` の生成物で prettier 2 件 / cspell 6 件 / eslint warning 1 件。
+    ★ **eslint の 1 件は「Unused eslint-disable directive」＝生成物が自分で書いた `eslint-disable` が赤を作った**。**ignore に足す前に測った**
+  - 🟨 **`msw-storybook-addon` は 3.0.0 で API が変わっていた**（2.x の `initialize` / `mswLoader` は無い）。同梱 README で確定＝**記憶していた API のほうが古かった**
+  - 🟥 **K1・K2 は赤・`storybook build` は exit 0**（[DR-0048](DR/DR-0048-build-storybook-does-not-render.md) の再演）。**描画の確認は build ではなく Playwright**
+  - 🟨 **§2 の D1〜D13 は全件推奨どおりの Claude 判断（事後承認待ち・すべて git で戻せる）**
+  - 🟥 **次の一手は工程3（共通シェル）。**着手前に手順書を起こす。Q1〜Q3 は [工場の段取り §工程3](工場の段取り.md) に定義済み。
+    ★ **未決 #6（Redmine 固有 / コアの判定規則）はここで立てる**——候補が 1 つ見えている（**コアは語彙、題材は対応表**）
+- ★★★ **工程1 が完了した**（2026-08-07・[手順書](手順/工程1_NextからViteへの土台入れ替え.md)・[実行記録 §工程1](実行記録.md)）。**Next → Vite（lib モード）。部品 33 件は 1 行も触っていない**（`git diff --stat` 空＝Q2）。
   - ★★ **赤テスト先行が効いた**——K1（型エラー検体）で **`vite build` が exit 0 のまま `error TS2322` をログに赤く印字する**ことが移行前に確定（[DR-0082](DR/DR-0082-vite-build-prints-type-errors-but-exits-zero.md)）。🟥 **型を止めるゲートは `tsc --noEmit` の 1 本だけ**。`pnpm build` の緑を型の保証に数えないこと
   - 🟦 **手6 の継ぎ木は消えた**（Q3）——`tsconfig.dts.json`・`tools/dts-alias.mjs` 削除。`vite-plugin-dts` が `@/` を相対化した `.d.ts` ツリー（56 ファイル）を `dist/` に共置（D11）。`componentSrcMap` **31/31 解決**・converter の `buildCmd`（→ `pnpm build`）も exit 0（Q4 の機械側。🟥 実同期は人）
   - 🟦 **eslint は内訳まで旧ベースラインと完全一致**（error 33 / warning 1）。page.tsx を消しても動かない＝33 件は全部素材層の再確認
@@ -248,8 +272,8 @@
 |---|---|---|
 | **工程0** | 役割の確定（記録だけ） | ✅ **done**（2026-08-07・DR-0078〜0081。🟥 **PR のマージは人**） |
 | **工程1** | 土台の入れ替え（Next → Vite） | ✅ **done**（2026-08-07・[手順書](手順/工程1_NextからViteへの土台入れ替え.md)）。★ 部品 diff 0 行・eslint 内訳まで不変・DR-0082〜0084。🟥 **マージは人**・実同期（Q4 最終確認）も人 |
-| **工程2** | データの器（MSW ＋ データモデル） | ⬜ **next**。着手前に手順書を起こす。★ **Q1（EVM とガントに必要なデータの形）が画面の作りを決める** |
-| **工程3** | ★ 共通シェル（工場の芯・4 画面に効く） | ⬜。ここでコア/Redmine 固有の判定規則を立てる（段取り 未決 #6） |
+| **工程2** | データの器（MSW ＋ データモデル） | ✅ **done**（2026-08-07・[手順書](手順/工程2_データの器_MSWとデータモデル.md)・[PR #9](https://github.com/yatami0/design/pull/9)）。★ Q4 が本体（取得の層の新設）・DR-0085〜0087・[データモデル.md](データモデル.md)。🟥 **マージは人** |
+| **工程3** | ★ 共通シェル（工場の芯・4 画面に効く） | ⬜ **next**。着手前に手順書を起こす。ここでコア/Redmine 固有の判定規則を立てる（段取り 未決 #6。★ 候補＝**コアは語彙・題材は対応表**） |
 | 工程4 | 一覧 → 詳細（編集あり・最重） | ⬜ |
 | 工程5 | 稼働表（ピボット） | ⬜ |
 | 工程6 | 調査: チャート・ガントの素材源 | ⬜（工程3〜5 と並行可） |
@@ -288,7 +312,18 @@
 pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && pnpm build-storybook
 ```
 
-### 🆕 工程1 完了時のベースライン（2026-08-07・現行）
+### 🆕 工程2 完了時のベースライン（2026-08-07・**現行**）
+
+| ゲート | 結果 | 工程1 との差 |
+|---|---|---|
+| `pnpm typecheck` | 🟦 緑 | — |
+| `pnpm lint` | 🟥 **error 33 ／ warning 1** | 🟦 **内訳まで不変**（`tailwindcss/no-arbitrary-value` 24 ／ `restrict-template-expressions` 4 ／ `no-confusing-void-expression` 4 ／ `set-state-in-effect` 1 ／ warning は `react-hooks/incompatible-library`）。**ルールを 2 本足したうえで新しい赤ゼロ**（[DR-0087](DR/DR-0087-fetching-belongs-to-the-subject-layer.md)） |
+| `pnpm build`（= `vite build`） | 🟦 緑 | 🟦 **dist 57 ファイル・`design.mjs` 61.36 kB で工程1 と完全一致**（器は出荷面を 1 バイトも動かしていない）。🟥 入口が 3 本あることは [DR-0085](DR/DR-0085-three-independent-scopes-decide-what-ships.md) |
+| `pnpm format:check` | 🟦 緑 | `public/mockServiceWorker.js` は `.prettierignore` へ（vendor コード） |
+| `pnpm spell` | 🟦 緑 | **257 ファイル**（+13）。辞書 +6 語（`firstname` / `lastname` ＋ 生成データの姓 4 語）・worker は `ignorePaths` |
+| `pnpm build-storybook` | 🟦 緑 | story **39 ファイル／index.json の story 62 件**（+1 ファイル・+2 story＝ MSW の検体）。🟥 **緑は描画を保証しない**——K1/K2 で story が落ちていても exit 0 だった（DR-0048 の再演） |
+
+### 工程1 完了時のベースライン（2026-08-07）
 
 | ゲート | 結果 | 備考 |
 |---|---|---|
@@ -377,7 +412,7 @@ cd ~/conductor/workspaces/design/<workspace 名>   # `main` は ~/conductor/repo
 
 | 穴 | 症状 | 回避 |
 | --- | --- | --- |
-| **① pnpm 11 の依存チェック** | `pnpm typecheck` 等が実行前に `pnpm install` を走らせ、`ERR_PNPM_IGNORED_BUILDS`（`esbuild` / `sharp`）で `exit 1`。🟥 **副作用でプレースホルダの `pnpm-workspace.yaml` が生える**（`allowBuilds: set this to true or false`）。**生えたら消す**——`cspell` が `esbuild` を拾って**新しい赤**になる | `./node_modules/.bin/<tool>` を直接叩く |
+| **① pnpm 11 の依存チェック** | `pnpm typecheck` 等が実行前に `pnpm install` を走らせ、`ERR_PNPM_IGNORED_BUILDS`（`esbuild` / `sharp`。🆕 **工程2 から `msw@2.15.0` も**）で `exit 1`。🟥 **副作用でプレースホルダの `pnpm-workspace.yaml` が生える**（`allowBuilds: set this to true or false`）。**生えたら消す**——`cspell` が `esbuild` を拾って**新しい赤**になる | `./node_modules/.bin/<tool>` を直接叩く |
 | **② mise が非対話シェルで効かない** | `node -v` が **22.16.0**（`mise.toml` は 24）。`cspell` が `Unsupported NodeJS version (22.16.0); >=22.18.0 is required` で落ちる | `export PATH="$HOME/.local/share/mise/installs/node/24.18.1/bin:$PATH"` |
 
 **ゲート 6 本を直接叩く形**（🆕 2026-08-07 工程1 でこの形に更新・全本回して上の表と一致を確認済み）:
@@ -582,12 +617,13 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 ## 次にやること
 
-> ★★ 🆕 **2026-08-07: 工程1 が完了した**（DR-0082〜0084・[実行記録 §工程1](実行記録.md)）。**次:**
+> ★★ 🆕 **2026-08-07: 工程2 が完了した**（DR-0085〜0087・[実行記録 §工程2](実行記録.md)・[データモデル.md](データモデル.md)）。**次:**
 >
-> 1. 🟥 **工程1 の PR を人がマージする**（[手順書 §2](手順/工程1_NextからViteへの土台入れ替え.md) の D1〜D11 は推奨どおりの Claude 判断・事後承認待ち。**異議があれば言ってほしい**——全件 git で戻せる）
-> 2. 🟥 **次回の `/design-sync` は人が打つ**——Q4（出荷経路の維持）の最終確認。converter の入力条件は機械検証済み（31/31 解決・buildCmd 緑）
-> 3. **工程2（データの器: MSW ＋ データモデル）の手順書を起こす**（Q1〜Q3 と D1〜D3 は [工場の段取り §工程2](工場の段取り.md) に定義済み。★ **Q1: EVM とガントに必要なデータの形**が画面の作りを決める）
+> 1. 🟥 **工程2 の PR（[#9](https://github.com/yatami0/design/pull/9)）を人がマージする**（[手順書 §2](手順/工程2_データの器_MSWとデータモデル.md) の D1〜D13 は推奨どおりの Claude 判断・事後承認待ち。**異議があれば言ってほしい**——全件 git で戻せる。とくに **D4**（取得の層をコアに置かない）と **D12**（lint 2 本を戻した）は工場の思想に触る）
+> 2. 🟥 **次回の `/design-sync` は人が打つ**——工程1 Q4（出荷経路の維持）の最終確認。🟦 **工程2 で dist は 1 バイトも動いていない**ので条件は変わっていない
+> 3. **工程3（共通シェル）の手順書を起こす**（Q1〜Q3 は [工場の段取り §工程3](工場の段取り.md)）。★ ここで **未決 #6（Redmine 固有 / コアの判定規則）**を立てる——候補は **「コアは語彙（有限集合）、題材は対応表」**（[DR-0087](DR/DR-0087-fetching-belongs-to-the-subject-layer.md)）
 > 4. 🟨 申し送り: D3（`rsc: false`）の「shadcn 追加インストールで部品が変わって降ってくるか」は**工程3 Q3 で実測**
+> 5. 🟨 申し送り: **`dist/lib/fixtures/issues.d.ts` の漏れは残してある**（工程1 から在ったもの。fixtures の整理は工程3 で story を組み直すときに一緒にやる・[DR-0085](DR/DR-0085-three-independent-scopes-decide-what-ships.md)）
 >
 > 下記の手8f 以下は**廃止済み**（着手しない・経緯の記録として残す）。
 
