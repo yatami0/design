@@ -38,6 +38,8 @@ export {
 export { EmptyState } from '@/patterns/EmptyState';
 // 工程3 D5=C: AppShell に props を足す代わりの「画面の頭」
 export { PageHeader } from '@/patterns/PageHeader';
+// 工程3 D2=C: 帯の見た目はコア、何で絞るかは画面（題材）が差す
+export { FilterBar, FilterField } from '@/patterns/FilterBar';
 export { ListDetail } from '@/patterns/ListDetail';
 // 🟥 振る舞い hook。これを出さないと `ListDetail` は `state` を作れず**使えない**
 //    （conventions header の validate 工程が捕まえた）。`use*` は converter の
@@ -109,6 +111,7 @@ export type {
 } from '@/components/DataDisplay/StatusPill';
 export type { EmptyStateProps } from '@/patterns/EmptyState';
 export type { PageHeaderProps } from '@/patterns/PageHeader';
+export type { FilterBarProps, FilterFieldProps } from '@/patterns/FilterBar';
 export type { ListDetailProps } from '@/patterns/ListDetail';
 export type { ListDetail as ListDetailState } from '@/patterns/useListDetail';
 export type { AppShellProps, NavItem } from '@/templates/AppShell';
