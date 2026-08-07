@@ -5,7 +5,7 @@
 //    → **同じ役割のものを 2 つ選び、1 つのプロパティだけを見る**形に組み替えた。
 //
 // 解説（詳細版）: https://claude.ai/code/artifact/6646b4ea-43f5-433a-89c3-5305f42ecbc0
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Badge } from '@/components/Communication/Badge';
 import { StatusPill } from '@/components/DataDisplay/StatusPill';

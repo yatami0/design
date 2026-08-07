@@ -3,7 +3,7 @@
 //
 // 🟥 生値を書かない。すべてユーティリティ経由で参照する（任意値禁止 lint がここでも効く）。
 //    クラス名は Tailwind が静的に走査するため、変数で組み立てず literal で並べる。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactNode } from 'react';
 
 const meta = {

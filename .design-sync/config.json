@@ -6,7 +6,7 @@
   "pkg": "design",
   "globalName": "Design",
   "entry": "src/index.ts",
-  "buildCmd": "pnpm i --frozen-lockfile && pnpm build:types",
+  "buildCmd": "pnpm i --frozen-lockfile && pnpm build",
 
   "componentSrcMap": {
     "Badge": "src/components/Communication/Badge.tsx",

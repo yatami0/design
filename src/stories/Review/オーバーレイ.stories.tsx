@@ -1,7 +1,7 @@
 // 手5 案2 — 判定軸カタログ（観点 E・F）。
 // blur を消し（V1）、スクリムを 10% → 40% にした。この 2 つはセットで見る必要がある——
 // **blur を消した以上、奥行きはスクリムの濃さだけで作ることになる。**
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Viewpoint } from './_spec';
 

@@ -1,7 +1,7 @@
 // 手5 案2 — 判定軸カタログ（観点 C）。
 // shadcn の 3 段（sm/md/lg）を apple の 2 段（--shadow-1/2）へ多:1 で潰した。
 // **段の区別が失われて平坦に見えないか**を、実際に使っている 7 箇所を並べて見る。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Viewpoint, Group, Spec } from './_spec';
 

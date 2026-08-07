@@ -22,14 +22,11 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
-    "types": ["node"],
+    // 工程1: "vite/client" は CSS 側効果 import（.storybook/preview.tsx の globals.css）の
+    // 型宣言。Next 時代は next-env.d.ts が同じ宣言を持っていた
+    "types": ["node", "vite/client"],
     "allowJs": true,
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     // --- 本 repo 固有（PoC には無い）---
     // shadcn/ui が既定で要求するエイリアス（components.json の aliases）。
     // ⚠ PoC の apps/redmine には paths エイリアスが無い＝移送時の差分になる。
@@ -41,11 +38,8 @@
     "resolveJsonModule": true
   },
   "include": [
-    "next-env.d.ts",
     "src/**/*",
-    ".next/types/**/*.ts",
     "*.config.ts",
-    ".next/dev/types/**/*.ts",
     // 手2b D14: これが無いと .storybook/** は typecheck の対象外になり、
     // lint も projectService が型情報を取れず Parsing error で落ちる（検査されずにエラーだけ出る）。
     ".storybook/**/*.ts",

@@ -3,7 +3,7 @@
 // 🟨 **ジェネリック部品は `component:` を meta に置けなかった**（Q8 の続報）。
 //    `DataGrid<TData, TValue>` の型引数が `unknown` に潰れて args が合わなくなるため、
 //    `component` を省いて `render` で書いている。自作 7 件で取れた雛形の**例外 1 件目**。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import {
   DataGrid,

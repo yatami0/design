@@ -3,7 +3,7 @@
 // 部品を 1 つずつ見ても「面が 3 層になっているか」は分からない。
 // tmp-admin §4.1 の chrome / キャンバス / 白カードが**実際に成立しているか**は、
 // 中身が詰まった画面でしか判定できない。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '@/components/Action/Button';
 import {

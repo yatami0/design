@@ -1,7 +1,7 @@
 // 手5 案2 — 判定軸カタログ（観点 D）。
 // font-medium が 500 → 600 に動いた。素材層 15 箇所が一斉に太くなっている。
 // **V3「強調は weight 600 ⇔ 400 のコントラスト」が出ているか／太すぎないか**を見る。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Viewpoint, Group, Spec } from './_spec';
 

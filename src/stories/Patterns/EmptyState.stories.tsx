@@ -1,5 +1,5 @@
 // 手4 H4-05 — ③ Patterns 層。🟨 Q4 の反例候補（足し算で書ける）。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '@/components/Action/Button';
 import { EmptyState } from '@/patterns/EmptyState';

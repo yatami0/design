@@ -36,9 +36,12 @@ PoC（`~/git/PoC`）の **UI 部分の開発ワークフローが往復するか
 cd ~/git/design
 pnpm install          # node 24 / pnpm 10（mise.toml で固定）
 
-pnpm storybook        # UI カタログ  → http://localhost:6006
-pnpm dev              # 本体アプリ    → http://localhost:3000
+pnpm storybook        # UI カタログ  → http://localhost:6006（`pnpm dev` も同じ）
+pnpm build            # ライブラリ出荷物 → dist/（JS + .d.ts。工程1 で Next → Vite lib モードへ）
 ```
+
+> 🟥 工程1（2026-08-07）で本体アプリ（Next.js・localhost:3000）は廃止した。
+> 画面はカタログ（Storybook の ④ Templates）が持つ（工程0 D5）。
 
 **止めるとき**: 起動したターミナルで `Ctrl+C`。ポートが掴まれたままなら `lsof -ti:6006 | xargs kill`。
 

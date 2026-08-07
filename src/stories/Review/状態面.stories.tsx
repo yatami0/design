@@ -1,7 +1,7 @@
 // 手5 案2 — 判定軸カタログ（観点 A）。★ 最重点
 // 不透明度修飾 17 種 60 箇所。**色は tmp-admin を追ったが、不透明度は shadcn のまま固定。**
 // 値の問題ではなく機構の食い違いなので、tmp-admin の狙いと並べて見せる。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { StatusPill } from '@/components/DataDisplay/StatusPill';
 import { Input } from '@/components/TextInput/Input';

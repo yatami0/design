@@ -1,5 +1,5 @@
 // 手3 H3-04 — 製品層の自作部品。最大幅と中央寄せ。H3-03 で語彙を新設した箇所（Q1）。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Container } from '@/components/Layout/Container';
 

@@ -1,5 +1,5 @@
 // 手4 H4-06 — 自作。shadcn の Badge に success / warning と色ドットが無いため。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { StatusPill } from '@/components/DataDisplay/StatusPill';
 import { Inline } from '@/components/Layout/Inline';

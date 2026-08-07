@@ -1,7 +1,7 @@
 // 手5 案2 — 判定軸カタログ（観点 B）。
 // 部品ごとに並べると、角丸の取り残し 7 箇所が 29 画面に散って比較にならない。
 // **1 画面に「届いた段」「取り残された variant」「そもそも動かない生値」を並べる。**
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Viewpoint, Group, Ruler, Spec } from './_spec';
 

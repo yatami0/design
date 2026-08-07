@@ -1,8 +1,5 @@
 # === 依存・ビルド生成物 ===
 node_modules/
-.next/
-# Next が dev(.next/dev) と build(.next) で書き換える生成物（PoC の DR-0018 と同じ扱い）
-next-env.d.ts
 dist/
 coverage/
 *.tsbuildinfo

@@ -3,13 +3,21 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-07（★★★ 🆕 **工程0 が完了した — 最終目的は「自分用コアデザインシステム（スーパーセット）」に確定**（ユーザー指示）。Redmine 5 画面は**題材**。レイアウトもコアに含める。出荷口は **git 依存 ＋ Claude Design**（design-sync 継続）。D1〜D5 決着・**DR-0078〜0081**・DR-0001/0002/0003 は superseded・CLAUDE.md と `step` 語彙（`工程N`）を工場仕様へ。**旧 手8f／手8b／手9 は正式に廃止**（手8f D1〜D8 の判断待ちも消滅）。🟥 **次の一手は工程1（Next → Vite）**——着手前に手順書を起こす。🟥 **PR のマージは人**）
+最終更新: 2026-08-07（★★★ 🆕 **工程1 が完了した — Next を外し Vite の lib モードへ。部品 33 件の diff は 0 行**。Q1〜Q5 全問に答えが出た（Q4 の実同期だけ人待ち）。ゲートは 6 本のまま・**eslint は内訳まで旧ベースラインと完全一致**（error 33 / warning 1）。🟥 **新発見 3 件: [DR-0082](DR/DR-0082-vite-build-prints-type-errors-but-exits-zero.md)（`vite build` は型エラーを赤い字で出しながら exit 0——型の網は `tsc` 1 本）／[DR-0083](DR/DR-0083-lib-build-silently-strips-use-client.md)（dist は `'use client'` を警告 0 で失う）／[DR-0084](DR/DR-0084-comments-in-config-files-leak-into-shipped-css.md)（eslint 設定のコメントのクラス名が配布 CSS に湧く）**。🟨 手順書 §2 の D1〜D11 は推奨どおりの Claude 判断（事後承認待ち）。🟥 **次の一手は工程2（MSW ＋ データモデル）の手順書**。🟥 **PR のマージは人**）
 
 ---
 
 ## 現在地
 
-- ★★★ 🆕 **工程0 が完了した**（2026-08-07・ブランチ `step/p0-factory-role`）。**役割の確定・記録だけ・コードは 0 行**（[実行記録 §工程0](実行記録.md)）。
+- ★★★ 🆕 **工程1 が完了した**（2026-08-07・[手順書](手順/工程1_NextからViteへの土台入れ替え.md)・[実行記録 §工程1](実行記録.md)）。**Next → Vite（lib モード）。部品 33 件は 1 行も触っていない**（`git diff --stat` 空＝Q2）。
+  - ★★ **赤テスト先行が効いた**——K1（型エラー検体）で **`vite build` が exit 0 のまま `error TS2322` をログに赤く印字する**ことが移行前に確定（[DR-0082](DR/DR-0082-vite-build-prints-type-errors-but-exits-zero.md)）。🟥 **型を止めるゲートは `tsc --noEmit` の 1 本だけ**。`pnpm build` の緑を型の保証に数えないこと
+  - 🟦 **手6 の継ぎ木は消えた**（Q3）——`tsconfig.dts.json`・`tools/dts-alias.mjs` 削除。`vite-plugin-dts` が `@/` を相対化した `.d.ts` ツリー（56 ファイル）を `dist/` に共置（D11）。`componentSrcMap` **31/31 解決**・converter の `buildCmd`（→ `pnpm build`）も exit 0（Q4 の機械側。🟥 実同期は人）
+  - 🟦 **eslint は内訳まで旧ベースラインと完全一致**（error 33 / warning 1）。page.tsx を消しても動かない＝33 件は全部素材層の再確認
+  - 🟥 **出荷の宿題 2 件が見えた**——dist は `'use client'` を警告 0 で失う（[DR-0083](DR/DR-0083-lib-build-silently-strips-use-client.md)・Next の利用者が出たら dist か src かを決める）／eslint 設定のコメントのクラス名が配布 CSS に湧く（[DR-0084](DR/DR-0084-comments-in-config-files-leak-into-shipped-css.md)・純度の未決）
+  - 🟨 **D6 の副作用**: 旧 `page.tsx` L129 の詳細シート（書式管轄の残り 1 件・監視中だった）は**画面ごと消滅**——監視は対象消滅で終了。一覧の形は `④ Templates/AppShell` story が持ち、工程3 で新土台の一覧を組み直す
+  - 🟨 **§2 の D1〜D11 は全件推奨どおりの Claude 判断（事後承認待ち・すべて git で戻せる）**。D3（`rsc: false`）の「追加インストールで部品が変わって降ってくるか」は**工程3 Q3 で実測**すると申し送り
+  - 🟥 **次の一手は工程2（データの器: MSW ＋ データモデル）**。着手前に手順書を起こす。Q1〜Q3 は [工場の段取り §工程2](工場の段取り.md) に定義済み
+- ★★★ **工程0 が完了した**（2026-08-07・ブランチ `step/p0-factory-role`）。**役割の確定・記録だけ・コードは 0 行**（[実行記録 §工程0](実行記録.md)）。
   - ★★ **最終目的が確定した: 「自分用コアデザインシステム」**（ユーザー指示・[DR-0078](DR/DR-0078-repo-becomes-a-ui-factory-for-a-core-design-system.md)）——
     Redmine 固有から抽象化した、複数 repo で使い回す**スーパーセット**。**Redmine 5 画面は題材**（部品需要の供給役）。**レイアウトもコアに含める**（「今後作るサイトは全部パズル」が狙い・🟥 仮説）
   - **出荷口は git 依存 ＋ Claude Design の 2 経路**（[DR-0079](DR/DR-0079-ship-via-git-dependency-and-claude-design.md)）。**`/design-sync` は検証装置から出荷経路へ**（未決 #2 決着）。npm publish は使い回し先が 1 つ出てから
@@ -239,8 +247,8 @@
 | 工程 | 内容 | 状態 |
 |---|---|---|
 | **工程0** | 役割の確定（記録だけ） | ✅ **done**（2026-08-07・DR-0078〜0081。🟥 **PR のマージは人**） |
-| **工程1** | 土台の入れ替え（Next → Vite） | ⬜ **next**。着手前に手順書を起こす。🟥 **赤テスト先行**（「対象 0 件で緑」16 例）。Q4（converter）は**出荷経路の維持条件** |
-| 工程2 | データの器（MSW ＋ データモデル） | ⬜ |
+| **工程1** | 土台の入れ替え（Next → Vite） | ✅ **done**（2026-08-07・[手順書](手順/工程1_NextからViteへの土台入れ替え.md)）。★ 部品 diff 0 行・eslint 内訳まで不変・DR-0082〜0084。🟥 **マージは人**・実同期（Q4 最終確認）も人 |
+| **工程2** | データの器（MSW ＋ データモデル） | ⬜ **next**。着手前に手順書を起こす。★ **Q1（EVM とガントに必要なデータの形）が画面の作りを決める** |
 | **工程3** | ★ 共通シェル（工場の芯・4 画面に効く） | ⬜。ここでコア/Redmine 固有の判定規則を立てる（段取り 未決 #6） |
 | 工程4 | 一覧 → 詳細（編集あり・最重） | ⬜ |
 | 工程5 | 稼働表（ピボット） | ⬜ |
@@ -274,11 +282,22 @@
 **赤がベースライン**（DR-0007 により shadcn の赤を ignore していない）。
 次セッションは**この数字と比較**して「新しい赤が出たか」を判定する。
 
-**ゲートは 6 本になった**（手2b D4 で `build-storybook` を追加）。
+**ゲートは 6 本のまま、構成が工程1 で変わった**（`build` の中身が `next build` → `vite build`）。
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && pnpm build-storybook
 ```
+
+### 🆕 工程1 完了時のベースライン（2026-08-07・現行）
+
+| ゲート | 結果 | 備考 |
+|---|---|---|
+| `pnpm typecheck` | 🟦 緑 | 🟥 借金は残る（`exactOptionalPropertyTypes: false`・DR-0014。返済期限は失った・DR-0080） |
+| `pnpm lint` | 🟥 **error 33 ／ warning 1** | **内訳まで旧ベースラインと完全一致**（`tailwindcss/no-arbitrary-value` 24 ／ `restrict-template-expressions` 4 ／ `no-confusing-void-expression` 4 ／ `set-state-in-effect` 1 ／ warning は `react-hooks/incompatible-library`） |
+| `pnpm build`（= `vite build`） | 🟦 緑 | 56 modules・`dist/design.mjs` 61.36 kB ＋ `.d.ts` ツリー 56 ファイル共置。🟥 **型エラーでも exit 0**（ログには赤が出る・[DR-0082](DR/DR-0082-vite-build-prints-type-errors-but-exits-zero.md)）。**この緑を型の保証に数えない** |
+| `pnpm format:check` | 🟦 緑 | |
+| `pnpm spell` | 🟦 緑 | **243 ファイル**（締め時点・DR 3 本込み）・工程1 で辞書追加 0 語 |
+| `pnpm build-storybook` | 🟦 緑 | framework は `@storybook/react-vite`。story **38 ファイル／index.json の story 60 件**（旧表「41 本」と数え方が違う可能性があるため両方記録）。🟥 緑は描画を保証しない（DR-0048）——工程1 は Playwright で 6 階層の描画を実測した |
 
 | ゲート | 手4 完了時 | 手5 完了時 | **手6 完了時（2026-08-01）** | 備考 |
 |---|---|---|---|---|
@@ -361,13 +380,13 @@ cd ~/conductor/workspaces/design/<workspace 名>   # `main` は ~/conductor/repo
 | **① pnpm 11 の依存チェック** | `pnpm typecheck` 等が実行前に `pnpm install` を走らせ、`ERR_PNPM_IGNORED_BUILDS`（`esbuild` / `sharp`）で `exit 1`。🟥 **副作用でプレースホルダの `pnpm-workspace.yaml` が生える**（`allowBuilds: set this to true or false`）。**生えたら消す**——`cspell` が `esbuild` を拾って**新しい赤**になる | `./node_modules/.bin/<tool>` を直接叩く |
 | **② mise が非対話シェルで効かない** | `node -v` が **22.16.0**（`mise.toml` は 24）。`cspell` が `Unsupported NodeJS version (22.16.0); >=22.18.0 is required` で落ちる | `export PATH="$HOME/.local/share/mise/installs/node/24.18.1/bin:$PATH"` |
 
-**ゲート 6 本を直接叩く形**（2026-08-02 にこの形で全本回してベースラインと一致を確認済み）:
+**ゲート 6 本を直接叩く形**（🆕 2026-08-07 工程1 でこの形に更新・全本回して上の表と一致を確認済み）:
 
 ```bash
 export PATH="$HOME/.local/share/mise/installs/node/24.18.1/bin:$PATH"
 ./node_modules/.bin/tsc --noEmit
 ./node_modules/.bin/eslint .
-./node_modules/.bin/next build
+./node_modules/.bin/vite build
 ./node_modules/.bin/prettier --check .
 ./node_modules/.bin/cspell --no-progress --gitignore "**"
 ./node_modules/.bin/storybook build && rm -rf storybook-static
@@ -563,11 +582,12 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 ## 次にやること
 
-> ★★ 🆕 **2026-08-07: 工程0 が完了した**（DR-0078〜0081・[実行記録 §工程0](実行記録.md)）。**次の一手は工程1（Next → Vite）:**
+> ★★ 🆕 **2026-08-07: 工程1 が完了した**（DR-0082〜0084・[実行記録 §工程1](実行記録.md)）。**次:**
 >
-> 1. 🟥 **工程0 の PR を人がマージする**
-> 2. **工程1 の手順書を起こす**（Q1〜Q5 は [工場の段取り §工程1](工場の段取り.md) に定義済み。§2 の判断ポイント D1〜D5 も同所に推奨つきで在る）
-> 3. **赤テストを先に置く**（わざと壊した部品で `vite build` / `tsc` が赤くなることを確認してから移行。「対象 0 件で緑」16 例の再発防止）
+> 1. 🟥 **工程1 の PR を人がマージする**（[手順書 §2](手順/工程1_NextからViteへの土台入れ替え.md) の D1〜D11 は推奨どおりの Claude 判断・事後承認待ち。**異議があれば言ってほしい**——全件 git で戻せる）
+> 2. 🟥 **次回の `/design-sync` は人が打つ**——Q4（出荷経路の維持）の最終確認。converter の入力条件は機械検証済み（31/31 解決・buildCmd 緑）
+> 3. **工程2（データの器: MSW ＋ データモデル）の手順書を起こす**（Q1〜Q3 と D1〜D3 は [工場の段取り §工程2](工場の段取り.md) に定義済み。★ **Q1: EVM とガントに必要なデータの形**が画面の作りを決める）
+> 4. 🟨 申し送り: D3（`rsc: false`）の「shadcn 追加インストールで部品が変わって降ってくるか」は**工程3 Q3 で実測**
 >
 > 下記の手8f 以下は**廃止済み**（着手しない・経緯の記録として残す）。
 

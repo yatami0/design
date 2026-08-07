@@ -1,5 +1,5 @@
 // 手3 H3-04 — 製品層の自作部品。見出し + 本体。typography も semantic な用途名だけを使う。
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Section } from '@/components/Layout/Section';
 
