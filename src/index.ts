@@ -28,6 +28,11 @@ export { DataGrid } from '@/components/DataDisplay/DataGrid';
 export { StatusPill } from '@/components/DataDisplay/StatusPill';
 // 手8d H8D-06: 面④b（`a { color: var(--primary) }` が 4/6 周）を部品に引き取る
 export { Link } from '@/components/Navigation/Link';
+// 工程3 D3=C: 期間の語彙（有限 union）＋ 逃げ道（custom）を対で持つ。語彙定数も API の一部
+export {
+  PeriodSelect,
+  PERIOD_PRESETS,
+} from '@/components/Selection/PeriodSelect';
 
 // ── ③ Patterns ─────────────────────────────────────────────────
 export { EmptyState } from '@/patterns/EmptyState';
@@ -93,6 +98,11 @@ export type {
   DataGridColumnKind,
 } from '@/components/DataDisplay/DataGrid';
 export type { LinkProps, LinkTone } from '@/components/Navigation/Link';
+export type {
+  PeriodSelectProps,
+  PeriodPreset,
+  PeriodRange,
+} from '@/components/Selection/PeriodSelect';
 export type {
   StatusPillProps,
   StatusTone,
