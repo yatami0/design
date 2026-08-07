@@ -2,10 +2,10 @@
 id: DR-0003
 type: decision
 title: '土台は PoC と同一版・同一 lint の単体 Next.js アプリ（monorepo にしない）'
-status: decided
+status: superseded
 date: 2026-07-26
 step: 手0
-related: [DR-0016, DR-0009]
+related: [DR-0016, DR-0009, DR-0080]
 poc_feedback: null
 ---
 

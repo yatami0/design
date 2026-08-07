@@ -2,10 +2,10 @@
 id: DR-0002
 type: decision
 title: '検証対象は画面ではなく 3 層（Tokens / Components / Patterns・Templates）'
-status: decided
+status: superseded
 date: 2026-07-26
 step: '-'
-related: [DR-0001, DR-0005, DR-0015]
+related: [DR-0001, DR-0005, DR-0015, DR-0078]
 poc_feedback: null
 ---
 
