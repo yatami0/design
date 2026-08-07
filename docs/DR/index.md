@@ -31,6 +31,8 @@
 | [DR-0058](DR-0058-app-only-font-never-reached-the-design-system.md) | ⭐ **本体だけが持っていたフォントを外し ① Tokens 層の既定へ戻す**（手6 D8）。`--font-sans` の自己参照を `layout.tsx` だけが埋めていた＝Storybook もプレビューも移送先も追従できない | 手6 | decided |
 | [DR-0061](DR-0061-field-width-vocabulary.md) | ⭐ **フィールド幅を semantic 語彙として足す**（`--container-field-*` / `w-field-*`・手7 D10=A）。素材層のラッパー化（B）は**手8 の数字が出てから** | 手7 | decided |
 | [DR-0068](DR-0068-merge-through-pull-requests.md) | 手の完了は **GitHub の PR** でマージする（ローカルの `--no-ff` は使わない）。CLAUDE.md §git を書き換えた | — | decided |
+| [DR-0070](DR-0070-product-layer-boundary-rule.md) | ⭐ **素材層と製品層の境界は「見た目の管轄権」＋ 3 段の判定手順で決める**（① 2 回以上出たか ② トークン語彙の有限集合で表せるか ③ 誰の責務か）。6 周の逸脱が全件分類できた。🔺 **ADR 昇格候補** | 手8c | decided |
+| [DR-0072](DR-0072-no-passthrough-of-dependency-types.md) | ⭐ **依存パッケージの型は公開 API に素通ししない**——Omit で選別し自層の名前で出し直す（`ColumnDef` → `DataGridColumn`）。素通しはコード所有モデル（shadcn 型）でだけ成立する。🔺 **ADR 昇格候補** | 手8c | decided |
 
 ## 発見（finding）
 
@@ -81,6 +83,7 @@
 | [DR-0066](DR-0066-neither-side-lints-the-generated-output.md) | ⭐★ **生成物は境界のどちら側でも検査されていない** — 我々は 6 本中 **0 本**。受け手は `no-restricted-syntax` が oxlint に無く**設定ごと parse 不能**。56 セレクタが走ったと仮定しても**当たる 5 件は全部偽陽性**（`.d.ts` からの props 抽出が継承分を落としている）。「食い違い」ではなく「**どちらも見ていない**」 | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 同上） |
 | [DR-0067](DR-0067-inherited-asset-was-not-inheritable.md) | ⭐ **「引き継ぐ」と書いた資産が引き継げなかった** — CC-Skills の GitHub は `Initial commit` の README 1 枚。`validate.mjs` / `anti-slop.mjs` は**存在しない**。本 repo は「🟦 流用できる」と判定しただけで**中身を一度も写していなかった** | 手8 | **段取り §7 の訂正**・PoC |
 | [DR-0069](DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) | ⭐★ **規約ヘッダに禁止を足したら、禁止した箇所以外が壊れた** — 禁止 3・語彙 0 を 842 バイト足したら、`<style>` と `tabular-nums` は消えた一方で **`Container` / `Section` / `DataGrid` が消え、表を素材層で手組みし始めた**。🟥 **予測表だけ見れば「成功」だった**——壊れたのは予測していない場所で、2 周ともユーザーの目視でしか見つからなかった。🟦 **戻したら 6 周目で全部戻り、因果が確定した**（`class=` もヘッダ由来だった） | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 finding） |
+| [DR-0071](DR-0071-closed-product-layer-is-viable.md) | ⭐ **className を閉じた製品層は成立する**（Polaris・React Spectrum が 7 年以上運用）——ただし**閉じた 2 本とも部品の外に出口を対で持つ**（トークン props の Box／UNSAFE_ 接頭辞＋許可リスト）。逃げ道を開けた側の管理コストも実測あり（Primer は sx を v38 で完全廃止）。**S2 の style macro は許可リストを型で機械化**＝指摘 11 の実装例が実在する | 手8c | DR-0032 の外部裏取り・**手9**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -88,7 +91,7 @@
 >
 > | 種別 | 候補 | 起案でやること |
 > | --- | --- | --- |
-> | **decision がそのまま候補** | DR-0032 / DR-0033 / DR-0034 / DR-0052 | **決定文がすでにあるので、MADR の形へ移すだけ** |
+> | **decision がそのまま候補** | DR-0032 / DR-0033 / DR-0034 / DR-0052 ／ 🆕 **DR-0070**（層境界の判定規則）／ 🆕 **DR-0072**（依存の型の扱い）＝手8c で +2 | **決定文がすでにあるので、MADR の形へ移すだけ** |
 > | 🟨 **finding から規則を導く必要がある** | **DR-0063**（禁止と代替の対）／ **DR-0066**（規約と検査の射程はセット）／ 🆕 **DR-0069**（禁止を足す代償） | 🟥 **起案の前に「決定」を 1 本書く工程が要る。**finding は「こうだった」であって「こうする」ではない |
 >
 > 🟥 **この 2 種類を混ぜて起案すると、後者は根拠だけあって決定文が無い ADR になる。**
@@ -157,6 +160,9 @@
 | DR-0066 | 🟥 architecture.md / ui.md の材料 | **「規約を書いた」と「規約が守られているか機械で見ている」は別。**生成 AI に渡す規約は、**検査する側の射程とセットで**設計する。あわせて **`.d.ts` からの props 抽出は継承分を落とす**ので、抽出結果を規則にするなら継承を展開する |
 | DR-0067 | 🟥 architecture.md の材料 | **別リポジトリの資産に依存する計画を書くときは、依存する部分を自分の repo に写してから書く。**「流用できる」は所在の確認であって、可用性の確認ではない |
 | DR-0069 | 🟥 ui.md / architecture.md の材料 | **生成 AI に渡す規約は「足す」ことが無料ではない。**禁止を 1 つ足すと規約全体の従い方が変わりうる。**足したら 1 変数で測り直し、禁止した箇所だけでなく触っていない箇所も数える** |
+| DR-0070 | 🟥 ui.md / architecture.md の材料 | **層境界は「見た目の管轄権」＋判定手順で規則化できる。**packages/ui で部品を足すときの判定に流用できる（2 回・語彙で表せるか・誰の責務か） |
+| DR-0071 | 🟥 ui.md の材料（指摘 11 §11.3 にも） | **「定義したものだけを使う」を機械で強制する実装は実在する**（Spectrum S2 の style macro＝branded type の許可リスト）。閉じるなら**部品の外の出口を対で用意する** |
+| DR-0072 | 🟥 architecture.md の材料 | **公開 API に依存の型を素通ししない。**`.d.ts` が相手側の lint 規則に化ける（DR-0059）以上、型の口の選別は規約の一部 |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
