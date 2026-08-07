@@ -229,10 +229,13 @@ flowchart TD
 - 🟥 **代わりに新しい障害が出た**——converter は**ビルド済み `dist/` を要求する**が、本 repo は Next.js アプリで `dist/` を持たない。
   → 手6 の Q1。**PoC の `packages/ui` にも同じ要求が返る。**
 
-### 仕組み化はまだしない（2 回ルール）
+### 仕組み化はまだしない
 
-CC-Skills の `web-design-mock` / `distill` は**単一ファイル HTML 出力が前提**で、「同じことを React/shadcn で」は同じ需要の 2 回目にあたる。
-ただし**いま仕組みを作るのは早い**——1 回目（HTML）で通った手順が React/shadcn でもそのまま通るかは未検証で、通らない箇所が分かってからでないと何を仕組み化すべきか決まらない。
+> 🆕 **2026-08-07: 見出しから「2 回ルール」を外した**（[DR-0077](DR/DR-0077-abolish-the-two-occurrence-rule.md) で廃止）。
+> **結論は変わらない**が、根拠は回数ではなく**「何を仕組み化すべきかが決まっていない」**の 1 本だけ。
+
+CC-Skills の `web-design-mock` / `distill` は**単一ファイル HTML 出力が前提**である。
+**いま仕組みを作るのは早い**——HTML で通った手順が React/shadcn でもそのまま通るかは未検証で、通らない箇所が分かってからでないと何を仕組み化すべきか決まらない。
 **今回は手で 1 周し、通った/通らなかった箇所を記録する。**記録先だけ先に決めておけば足りる（→ 手9）。
 
 ---
@@ -261,7 +264,7 @@ CC-Skills の `web-design-mock` / `distill` は**単一ファイル HTML 出力�
 | レイアウト決定 | サイドバー 2 セクション・選択状態 neutral・thead 白・ページャ 3 案（未決） | 🟦 ③ Patterns/Templates 層にほぼそのまま持ち込める |
 | 20+ の HTML モック（`current_phase: detail-design` で停止） | 詳細設計フェーズ | 🟨 **見た目の正解として参照。コードは引き継がない**（HTML → React は別作業） |
 | ~~`validate.mjs` / `anti-slop.mjs`~~ | 🟥 **実物が存在しない**（[DR-0067](DR/DR-0067-inherited-asset-was-not-inheritable.md)・2026-08-02） | 🟥 ~~design repo でも効かせる（lint と二重の網）→ 手8~~ → **実行不能。**CC-Skills の GitHub は `Initial commit` の README 1 枚で、**一度も push されていない。**本 repo は「🟦 流用できる」と判定しただけで**中身を写していなかった** |
-| `web-design-mock` / `distill` skill | 単一ファイル HTML 出力が前提 | 🟨 今回は使わない。React/shadcn 版の仕組み化は 1 周してから判断（上記「2 回ルール」） |
+| `web-design-mock` / `distill` skill | 単一ファイル HTML 出力が前提 | 🟨 今回は使わない。React/shadcn 版の仕組み化は 1 周してから判断（上記「仕組み化はまだしない」） |
 
 **引き継げないのは語彙。** shadcn は `background`/`foreground`/`primary`/`destructive` …、CC-Skills は Apple 系（`--space-7`/`--shadow-1`/`--color-accent`）。
 **この語彙のマッピングが「デザイントークン差し替え」の実務的な中身**であり、手2 の成果物になる。

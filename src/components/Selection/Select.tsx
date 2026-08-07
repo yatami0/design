@@ -6,8 +6,9 @@
 //    （r1 `w-48` → r3/r6 `w-field-md` → r4/r5 は DSL の `class=` 事故）。
 //    → 幅を **prop で引き取り、`className` は型から消す**（Polaris `Box` の padding と同型）。
 //
-// 🟦 **昇格させるのは `SelectTrigger` だけ。**他のパーツは逸脱の実測が 0 回なので
-//    素通しのまま再輸出する（規則①＝2 回ルール。設計 §2「作らないもの」）。
+// 🟦 **昇格させるのは `SelectTrigger` だけ。**他のパーツは引き取るべき見た目の選択が
+//    まだ 1 つも特定できていない（逸脱の実測 0 回）ので素通しのまま再輸出する。
+//    設計 §2「作らないもの」。🆕 回数は判断の条件ではない（DR-0077）。
 // 🟥 素材層（src/components/ui/select.tsx）は 1 行も触らない。
 import type * as React from 'react';
 
