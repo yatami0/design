@@ -84,6 +84,7 @@
 | [DR-0067](DR-0067-inherited-asset-was-not-inheritable.md) | ⭐ **「引き継ぐ」と書いた資産が引き継げなかった** — CC-Skills の GitHub は `Initial commit` の README 1 枚。`validate.mjs` / `anti-slop.mjs` は**存在しない**。本 repo は「🟦 流用できる」と判定しただけで**中身を一度も写していなかった** | 手8 | **段取り §7 の訂正**・PoC |
 | [DR-0069](DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) | ⭐★ **規約ヘッダに禁止を足したら、禁止した箇所以外が壊れた** — 禁止 3・語彙 0 を 842 バイト足したら、`<style>` と `tabular-nums` は消えた一方で **`Container` / `Section` / `DataGrid` が消え、表を素材層で手組みし始めた**。🟥 **予測表だけ見れば「成功」だった**——壊れたのは予測していない場所で、2 周ともユーザーの目視でしか見つからなかった。🟦 **戻したら 6 周目で全部戻り、因果が確定した**（`class=` もヘッダ由来だった） | 手8 | **手9**・PoC ／ 🔺 **ADR 昇格候補**（🟨 finding） |
 | [DR-0071](DR-0071-closed-product-layer-is-viable.md) | ⭐ **className を閉じた製品層は成立する**（Polaris・React Spectrum が 7 年以上運用）——ただし**閉じた 2 本とも部品の外に出口を対で持つ**（トークン props の Box／UNSAFE_ 接頭辞＋許可リスト）。逃げ道を開けた側の管理コストも実測あり（Primer は sx を v38 で完全廃止）。**S2 の style macro は許可リストを型で機械化**＝指摘 11 の実装例が実在する | 手8c | DR-0032 の外部裏取り・**手9**・PoC |
+| [DR-0073](DR-0073-context-replay-not-payload-burned-the-limit.md) | 🆕 **使用制限を焼いたのはコンテキストの再読** — 97 往復 × 平均 278k で入力 **49.2M**。同区間のツール実行結果は**全部で 36,586 文字**（比で 4,700 倍）。セッションを跨ぐ再開で初期コストが 28k → **190k**、長コンテキストのモデルでは **auto-compact が 353k まで発火しない**。subagent は 5 本中 2 本が完走しても**通知不着**（5.1M が捨てられた） | — | **OBS-0012**・PoC |
 
 ⭐ = 後続の手の作業内容を直接変えるもの。／ 🔺 = **ADR 昇格候補**（一度決めると戻しにくい・外から見える規約に影響する）。**起案はまだしない**（判定と起案を分ける）。
 
@@ -163,6 +164,7 @@
 | DR-0070 | 🟥 ui.md / architecture.md の材料 | **層境界は「見た目の管轄権」＋判定手順で規則化できる。**packages/ui で部品を足すときの判定に流用できる（2 回・語彙で表せるか・誰の責務か） |
 | DR-0071 | 🟥 ui.md の材料（指摘 11 §11.3 にも） | **「定義したものだけを使う」を機械で強制する実装は実在する**（Spectrum S2 の style macro＝branded type の許可リスト）。閉じるなら**部品の外の出口を対で用意する** |
 | DR-0072 | 🟥 architecture.md の材料 | **公開 API に依存の型を素通ししない。**`.d.ts` が相手側の lint 規則に化ける（DR-0059）以上、型の口の選別は規約の一部 |
+| DR-0073 | 🟥 OBS 候補（運用） | **長い調査セッションのコストは「何を取ったか」ではなく「何往復したか × 溜まった文脈」で決まる。**subagent の結果は通知に全文が乗るので、本体に入れる前に落とす経路を用意する。**投げた subagent が届くとは限らないが、不着でも消費は発生する** |
 | DR-0052 | 🟥 ui.md / architecture.md の材料 | 「トークンで統一する」を掲げるなら、**届かない箇所の扱い**を規約として決めておく必要がある |
 | DR-0051 | 🟥 architecture.md の材料 | 「UI カタログ = Storybook」だけでは足りない。**カタログ（部品軸）とレビュー（判定軸）は別の並べ方が要る** |
 | DR-0024 | 🟥 catalog に追加 | storybook / @storybook/nextjs-vite / addon-a11y / addon-docs / eslint-plugin-storybook / vite の **6 件を厳密ピンで**（shadcn の 7 件と合わせて 13 件） |
