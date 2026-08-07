@@ -3,12 +3,28 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-07（🆕 **✅ 手8e の再同期を通した。31 部品**が Claude Design に載り、**採点は 13 story 全件 `match`**。★ **器 A の赤テストを本物の `_ds_bundle.css` で打ち直して成立**。🟥 **残るは「人が 7 周目を打つ」だけ**——逸脱が消えたかは未測定）
+最終更新: 2026-08-07（🆕 **✅ 手8e を 7 周目まで通した。予測 4 本のうち 3 本が的中し、宣言語彙の外に出たクラスは 0 件**。★★ **予測に無かった観測——デザイン側は `.prompt.md` を直接読んでいた**（[DR-0075](DR/DR-0075-design-side-reads-the-design-system-directly.md) が [DR-0064](DR/DR-0064-design-project-receives-runtime-only.md) を覆した））
 
 ---
 
 ## 現在地
 
+- ★★ 🆕 **7 周目を数えた**（[実行記録 §手8e H8E-09](実行記録.md)・2026-08-07・デザインプロジェクト `89a4410e-3876-41ad-a7c0-452e190d095f`）。
+  **変数は 1 つ**（DS の中身＝部品 4 件 ＋ header 6 箇所）。依頼文も語彙表も 1 文字も変えていない。
+  - ★ **予測 4 本のうち 3 本が的中**——面①（`class-name` 0・`width="md"` ×2）／面③（書式クラス 0・`kind`/`emphasis` に置換）／面④a（`<style>` ブロックごと 0）
+  - 🟨 **面④b は半分**——生 CSS は 0 だが **`Link` も 0**。題名列をリンクにするのをやめたので**リンクを作る場面が消えた**だけ
+  - ★ **宣言語彙の外に出たクラスは 0 件**（6 周目は 3 件）。使われたのは `text-label` / `text-muted-foreground` / `gap-stack-sm` で全部語彙の内
+  - 🟦 **[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) の再演は無かった**（骨格 3 部品も `DataGrid` も健在・DSL 事故 0）。今回は**禁止文を 1 文も足していない**
+  - 🟥 **代わりに新しい面が出た**——`<div class="gap-stack-sm" style="display:flex;flex-direction:column">` ×2。**`Stack` が在るのに使われなかった**。
+    **実測 1 回なので何もしない**（DR-0070 の規則①で不成立）。→ [OBS-0013](OBS/OBS-0013_部品があるのにインラインスタイルで組んだ.md) に積んで 8 周目を待つ
+  - 部品の種類 **15**（r1=10 → r2=17 → r3=18）。素の要素は `<div>`2 ＋ `<span>`2 の **4**（r6 は `<span>` 8）。`<table>` / `<button>` / `<a>` は 0
+- ★★ 🆕 **予測に無かった観測: デザイン側は `.prompt.md` を読んでいた**（[DR-0075](DR/DR-0075-design-side-reads-the-design-system-directly.md)・[実行記録 H8E-10](実行記録.md)）。
+  ツールトレースで **agent がデザインシステムの projectId を直接 list し、`AppShell` / `DataGrid` / `Select` の `.prompt.md` を読んで**いた（**手8d で動かした 3 部品ちょうど**）。
+  - 🟦 **複製は今も 6 ファイルのまま**（DR-0064 §発見 1 は生きている）。覆ったのは **「だから届かない」という §影響の推論**
+  - 🟥 **[DR-0064](DR/DR-0064-design-project-receives-runtime-only.md) を superseded にした。**「観測から直接言えること」に推論が混ざっており、**手8 以降がそれを事実として前提にしていた**——
+    **[OBS-0007](OBS/OBS-0007_発見に推論を混ぜると後続が数え間違える.md) の形の 2 例目**
+  - 🟦 **[DR-0074](DR/DR-0074-we-wrote-the-same-deviations-ourselves.md) の推論が確定した**——`.prompt.md` の実例は **story のソースそのもの**（コメントごと写っている）。**story の逸脱はそのまま agent へ渡る**
+  - 🟥 **手8e H8E-06 の結論は誤りだった**（「`width` は受け手に届かない」）。届く。ただし **lint 規則は `.d.ts` から生成される**ので「agent が知れる」と「lint が見張れる」は別のまま
 - ★★ 🆕 **手8e の再同期を通した**（[実行記録 §手8e](実行記録.md)・2026-08-07・`/design-sync` を人が起動）。
   **Claude Design プロジェクトは 30 → 31 部品**（`Link` 新設）。URL: <https://claude.ai/design/p/3acbb737-85fe-4098-95f4-c99070168ba1>
   - 🟦 **ドライバは `ok: true` / `anchor: ok`。**`unchanged` 26（verified-by-upload）／`changed` 4（`AppShell` `DataGrid` `ListDetail` `Select`）／`added` 1（`Link`）／`removed` 0
@@ -96,8 +112,8 @@
   **受け手は `.d.ts` から独自の lint 設定 `_adherence.oxlintrc.json` を自動生成していた**（ローカルには無い）。
   強制されるのは **`<button>` → `<Button>` の 1 本だけ**で、🟥 **`p-4` / `text-gray-600` は検出されない。**
   🟥 **[DR-0018](DR/DR-0018-design-sync-takes-preview-html.md) を superseded にした**——[DR-0057](DR/DR-0057-design-sync-uploads-compiled-code-not-just-html.md) が訂正（**手6 の作業内容が書き換わった**）。
-- 🟨 **OBS は 11 件で `open` 5 件**（[docs/OBS/](OBS/index.md)。`connected` 3 ／ `promoted` 2 ／ `closed` 1・2026-08-02 に実ファイルで数え直した）。
-  内訳: `open` = **OBS-0004 / 0005 / 0008 / 0009 / 0010**。🟦 **[OBS-0011](OBS/OBS-0011_規約ヘッダの言語は決定ではなく既定値だった.md) は手7 Q6 が答えを出して `closed`**（英語の規約 → 日本語の UI が 3 周とも成立）。
+- 🟨 🆕 **OBS は 13 件で `open` 7 件**（[docs/OBS/](OBS/index.md)。2026-08-07 に実ファイルで数え直した。`connected` 3 ／ `promoted` 2 ／ `closed` 1）。
+  内訳: `open` = **OBS-0004 / 0005 / 0008 / 0009 / 0010 / 0012 / 🆕 0013**。🟦 **[OBS-0011](OBS/OBS-0011_規約ヘッダの言語は決定ではなく既定値だった.md) は手7 Q6 が答えを出して `closed`**（英語の規約 → 日本語の UI が 3 周とも成立）。
   **棚卸しを初回実施し、2 件を DR へ昇格させた**（OBS-0006→DR-0056 / OBS-0007→DR-0055）。
   🟥 **`open` 5 件のうち [OBS-0009](OBS/OBS-0009_不透明度と状態面の概念を理解する.md) だけが他をブロックしている**（OBS-0004 の指摘 8 が学習待ち）。
 
@@ -176,7 +192,7 @@
 | 手8 | 🟥 **問いが書き換わった**——「出力は lint / validate.mjs を通るか」→ **受け手の lint と我々の lint はどこで食い違うか** | [手8](手順/手8_出力は機械ゲートを通るか.md) | ✅ **done**（2026-08-02）。★ 答えは「食い違い」ではなく「**どちらも見ていない**」 |
 | **手8c** | **製品層に何を作るべきかの調査設計**（素材層を組み合わせるための抽象層）。部品は 1 つも実装しない | [手8c](手順/手8c_製品層に何を作るべきかの調査設計.md) | ✅ **done**（2026-08-07・**PR #3 マージ済み `9801b66`＝設計確定**）。★ 判定規則 [DR-0070](DR/DR-0070-product-layer-boundary-rule.md)・設計 [製品層の部品設計.md](製品層の部品設計.md) |
 | **手8d** | 🆕 **製品層の部品を実装する**（設計を 4 件のコードに落とし、機械ゲートまで通す） | [手8d](手順/手8d_製品層の部品実装.md) | ✅ **done**（2026-08-07・[PR #4](https://github.com/yatami0/design/pull/4)）。★ 器 A 確定・新しい赤ゼロ・[DR-0074](DR/DR-0074-we-wrote-the-same-deviations-ourselves.md)。🟥 **マージは人** |
-| **手8e** | 🆕 **7 周目**（再同期 → 生成）で検算を実測に変える。🟥 **`/design-sync` は人が打つ** | 手順書は作らない（skill が手順を持つ） | 🟨 **半分 done**（2026-08-07・[実行記録 §手8e](実行記録.md)）。🟦 **再同期は通った（31 部品・全件 match）**／⬜ **生成と数え上げが残っている** |
+| **手8e** | 🆕 **7 周目**（再同期 → 生成）で検算を実測に変える。🟥 **`/design-sync` は人が打つ** | 手順書は作らない（skill が手順を持つ） | ✅ **done**（2026-08-07・[実行記録 §手8e](実行記録.md)）。★ **予測 3/4 的中・語彙外のクラス 0 件**。★★ **[DR-0075](DR/DR-0075-design-side-reads-the-design-system-directly.md) が [DR-0064](DR/DR-0064-design-project-receives-runtime-only.md) を覆した**。🟥 **8 周目の宿題 2 件**（[OBS-0013](OBS/OBS-0013_部品があるのにインラインスタイルで組んだ.md)・トレースの再取得） |
 | **手8b** | 🆕 **preset 差し替え**（値では解けない「形」の衝突を、部品の作りを選び直して解けるか） | 未作成 | ⬜ 🟨 **「やらない」も結論**（[DR-0056](DR/DR-0056-preset-swap-is-its-own-step.md)） |
 | 手9 | 移送手順（人が実行）+ PoC の docs へ DR/OBS で戻す | 未作成 | ⬜ |
 

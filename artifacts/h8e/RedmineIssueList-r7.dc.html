@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/styles.css">
+<script src="_ds/design-ui-3acbb737-85fe-4098-95f4-c99070168ba1/_ds_bundle.js"></script>
+</helmet>
+<x-import component-from-global-scope="Design.AppProviders" hint-size="100%,100%">
+  <x-import component-from-global-scope="Design.AppShell" brand="Redmine" nav="{{ nav }}" hint-size="100%,100%">
+    <x-import component-from-global-scope="Design.Container" width="wide" gutter="{{ true }}" hint-size="100%,auto">
+      <x-import component-from-global-scope="Design.Section" heading="チケット一覧" gap="md" hint-size="100%,auto">
+
+        <x-import component-from-global-scope="Design.Inline" justify="between" align="center" hint-size="100%,auto">
+          <span class="text-label text-muted-foreground">{{ countLabel }}</span>
+          <x-import component-from-global-scope="Design.Button" hint-size="auto,40px">新規チケット</x-import>
+        </x-import>
+
+        <x-import component-from-global-scope="Design.Inline" gap="md" align="end" wrap="{{ true }}" hint-size="100%,auto">
+          <div class="gap-stack-sm" style="display:flex;flex-direction:column">
+            <x-import component-from-global-scope="Design.Label" hint-size="auto,20px">ステータス</x-import>
+            <x-import component-from-global-scope="Design.Select" value="{{ status }}" on-value-change="{{ setStatus }}" hint-size="auto,40px">
+              <x-import component-from-global-scope="Design.SelectTrigger" width="md" hint-size="auto,40px">
+                <x-import component-from-global-scope="Design.SelectValue" placeholder="ステータス" hint-size="auto,20px"></x-import>
+              </x-import>
+              <x-import component-from-global-scope="Design.SelectContent" hint-size="auto,auto">
+                <x-import component-from-global-scope="Design.SelectItem" value="all" hint-size="auto,32px">すべてのステータス</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="新規" hint-size="auto,32px">新規</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="進行中" hint-size="auto,32px">進行中</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="解決" hint-size="auto,32px">解決</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="却下" hint-size="auto,32px">却下</x-import>
+              </x-import>
+            </x-import>
+          </div>
+
+          <div class="gap-stack-sm" style="display:flex;flex-direction:column">
+            <x-import component-from-global-scope="Design.Label" hint-size="auto,20px">担当者</x-import>
+            <x-import component-from-global-scope="Design.Select" value="{{ assignee }}" on-value-change="{{ setAssignee }}" hint-size="auto,40px">
+              <x-import component-from-global-scope="Design.SelectTrigger" width="md" hint-size="auto,40px">
+                <x-import component-from-global-scope="Design.SelectValue" placeholder="担当者" hint-size="auto,20px"></x-import>
+              </x-import>
+              <x-import component-from-global-scope="Design.SelectContent" hint-size="auto,auto">
+                <x-import component-from-global-scope="Design.SelectItem" value="all" hint-size="auto,32px">すべての担当者</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="佐藤 健一" hint-size="auto,32px">佐藤 健一</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="鈴木 美咲" hint-size="auto,32px">鈴木 美咲</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="田中 亮" hint-size="auto,32px">田中 亮</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="高橋 由紀" hint-size="auto,32px">高橋 由紀</x-import>
+                <x-import component-from-global-scope="Design.SelectItem" value="未割り当て" hint-size="auto,32px">未割り当て</x-import>
+              </x-import>
+            </x-import>
+          </div>
+
+          <x-import component-from-global-scope="Design.Button" variant="ghost" on-click="{{ reset }}" hint-size="auto,40px">条件をクリア</x-import>
+        </x-import>
+
+        <x-import component-from-global-scope="Design.DataGrid" data="{{ rows }}" columns="{{ columns }}" empty="{{ emptyNode }}" on-row-select="{{ onRowSelect }}" hint-size="100%,320px"></x-import>
+
+      </x-import>
+    </x-import>
+  </x-import>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;forceEmptyState&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;表示&quot;}}">
+const ISSUES = [
+  { id: 4821, subject: 'ログイン後にダッシュボードが表示されない', status: '進行中', priority: '高', assignee: '佐藤 健一', updated: '2026-08-06' },
+  { id: 4818, subject: 'CSV エクスポートの文字化けを修正', status: '新規', priority: '通常', assignee: '鈴木 美咲', updated: '2026-08-05' },
+  { id: 4809, subject: '検索結果のページャが 2 ページ目以降で崩れる', status: '進行中', priority: '緊急', assignee: '田中 亮', updated: '2026-08-05' },
+  { id: 4797, subject: 'チケット一覧のフィルタ条件を保存できるようにする', status: '新規', priority: '低', assignee: '未割り当て', updated: '2026-08-04' },
+  { id: 4780, subject: '添付ファイルのアップロード上限を 20MB へ引き上げ', status: '解決', priority: '通常', assignee: '高橋 由紀', updated: '2026-08-03' },
+  { id: 4772, subject: 'ガントチャートの休日表示が実際の稼働日とずれる', status: '進行中', priority: '通常', assignee: '佐藤 健一', updated: '2026-08-02' },
+  { id: 4765, subject: 'メール通知のテンプレートを日本語化', status: '解決', priority: '低', assignee: '鈴木 美咲', updated: '2026-07-31' },
+  { id: 4751, subject: 'プロジェクト削除時に子チケットが残る', status: '却下', priority: '高', assignee: '田中 亮', updated: '2026-07-29' },
+  { id: 4740, subject: 'Wiki のリビジョン比較で差分がハイライトされない', status: '新規', priority: '通常', assignee: '高橋 由紀', updated: '2026-07-28' },
+  { id: 4726, subject: '権限のないユーザーに管理メニューが見える', status: '却下', priority: '緊急', assignee: '未割り当て', updated: '2026-07-27' },
+];
+
+const TONE = { '新規': 'neutral', '進行中': 'warning', '解決': 'success', '却下': 'danger' };
+
+class Component extends DCLogic {
+  state = { status: 'all', assignee: 'all' };
+
+  renderVals() {
+    const D = window.Design || {};
+    const h = React.createElement;
+    const forceEmpty = this.props.forceEmptyState === true;
+    const status = forceEmpty ? '解決' : this.state.status;
+    const assignee = forceEmpty ? '田中 亮' : this.state.assignee;
+
+    const rows = ISSUES.filter(
+      (r) => (status === 'all' || r.status === status) && (assignee === 'all' || r.assignee === assignee)
+    );
+
+    const columns = [
+      { key: 'id', header: 'ID', kind: 'numeric', accessor: (r) => '#' + r.id },
+      { key: 'subject', header: '題名', emphasis: true, accessor: (r) => r.subject },
+      {
+        key: 'status',
+        header: 'ステータス',
+        accessor: (r) => (D.StatusPill ? h(D.StatusPill, { tone: TONE[r.status] || 'neutral' }, r.status) : r.status),
+      },
+      { key: 'priority', header: '優先度', accessor: (r) => r.priority },
+      {
+        key: 'assignee',
+        header: '担当者',
+        accessor: (r) =>
+          r.assignee === '未割り当て'
+            ? h('span', { className: 'text-muted-foreground' }, r.assignee)
+            : r.assignee,
+      },
+      { key: 'updated', header: '更新日', kind: 'numeric', accessor: (r) => r.updated },
+    ];
+
+    const reset = () => this.setState({ status: 'all', assignee: 'all' });
+
+    const emptyNode = D.EmptyState
+      ? h(D.EmptyState, {
+          title: '条件に合うチケットがありません',
+          description: 'ステータスや担当者の絞り込みを変えるか、新しいチケットを作成してください。',
+          action: h(D.Button, { variant: 'outline', onClick: reset }, '条件をクリア'),
+        })
+      : null;
+
+    return {
+      nav: [
+        { key: 'issues', label: 'チケット', active: true },
+        { key: 'projects', label: 'プロジェクト' },
+        { key: 'settings', label: '設定' },
+      ],
+      rows,
+      columns,
+      emptyNode,
+      status,
+      assignee,
+      countLabel: rows.length + ' 件',
+      setStatus: (v) => this.setState({ status: v }),
+      setAssignee: (v) => this.setState({ assignee: v }),
+      reset,
+      onRowSelect: () => {},
+    };
+  }
+}
+</script>
+</body>
+</html>
