@@ -2,10 +2,10 @@
 type: procedure
 step: 工程1
 title: '土台の入れ替え（Next → Vite・lib モード）'
-status: planned # planned | in-progress | done | blocked
+status: done # planned | in-progress | done | blocked
 date: 2026-08-07
 updated_at: 2026-08-07
-next_action: 'P1-01（旧ゲートの射程の赤テスト。next build がまだ在るうちに打つ）'
+next_action: '完了（実測は 実行記録 §工程1）。残: PR マージ（人）・次回 /design-sync（人・Q4 最終確認）・D1〜D11 の事後承認'
 ---
 
 # 工程1 — 土台の入れ替え（Next → Vite）
@@ -100,6 +100,7 @@ next_action: 'P1-01（旧ゲートの射程の赤テスト。next build がま�
 | D8 | `dev` script の行き先 | A: `storybook dev` に向ける ／ B: 削除 | **A** | 「開発サーバ＝カタログ」を scripts の形でも宣言する（D6 と同じ決定の反映）。`start` は削除 | 🟦 |
 | D9 | converter の `buildCmd`（`.design-sync/config.json`） | A: `pnpm build` に書き換え、`build:types` を削除 ／ B: `build:types` の名前を残し中身だけ差し替え | **A** | 継ぎ木を消すのが Q3 の趣旨なのに、**名前だけ残すと「なぜこの alias があるのか」が次の読者に説明できない**。config.json は同期のたびに読まれるので、書き換えの検証は P1-08（入力条件の機械検証）で行う | 🟦 |
 | D10 | `vite.config.ts` を Storybook と共有するか | A: 1 本を共有（react-vite は `vite.config.*` を自動で読む） ／ B: Storybook 用に viteFinal で分離 | **A で始める** | 設定 2 本はドリフトの温床（DR-0026 の教訓）。🟥 **lib モードの `build.lib` が storybook build に漏れて干渉したら**、その実測を書いてから B へ切り替える | 🟦 |
+| D11 | 🆕（実行中に追記）`.d.ts` の置き場 | A: `dist/types/`（旧 継ぎ木と同じ） ／ B: `dist/` 直下に JS と共置 | **B（共置）** | P1-03 の実測で `vite-plugin-dts@5.0.3` が `outDir: 'dist/types'` 指定を無視して `dist/` 直下へ出した。共置は Vite lib の標準形で、converter は `package.json` の `types` フィールドから型ツリーの根を引く（手6 実測）ので **`types: "dist/index.d.ts"` に追随させれば入力条件は変わらない**（P1-08 で検証）。プラグインと戦って旧配置を維持する理由が無い | 🟦 |
 
 ## 3. 成果物
 
