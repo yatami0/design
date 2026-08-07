@@ -32,11 +32,25 @@ export default defineConfig({
       // 置き場は dist/ 直下に JS と共置（D11。outDir 指定は v5.0.3 が無視した——実測）。
       // converter へは package.json の `types: "dist/index.d.ts"` で根を教える
       include: ['src'],
-      exclude: ['src/**/*.stories.tsx', 'src/stories/**', 'src/app/**'],
+      exclude: [
+        'src/**/*.stories.tsx',
+        'src/stories/**',
+        'src/app/**',
+        // 🆕 工程2: **題材（Redmine）は出荷しない**（データモデル §6）。
+        // 🟥 実測で分かったこと: dts の射程は `include`、JS の射程は「entry からの到達可能性」で、
+        //    **2 本ある**。src/mocks は design.mjs に 1 バイトも入らないのに `.d.ts` だけ出ていた。
+        //    → 塞ぐ前に測った差分は 実行記録 §工程2（K4）。
+        'src/mocks/**',
+        'src/redmine/**',
+      ],
       entryRoot: 'src',
     }),
   ],
   build: {
+    // 🆕 工程2: `public/` は **Storybook に worker を配るため**に生えたもの（msw init）。
+    // 🟥 既定では `vite build` がそれを dist へ丸ごと写す＝**ライブラリの出荷物に
+    //    mockServiceWorker.js が混ざる**（実測。K4 で見つけた）。lib モードに public は要らない。
+    copyPublicDir: false,
     lib: {
       entry: path.resolve(import.meta.dirname, 'src/index.ts'),
       formats: ['es'],

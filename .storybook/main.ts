@@ -13,6 +13,9 @@ const config: StorybookConfig = {
   stories: ['../src/stories/**/*.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-a11y', '@storybook/addon-docs'],
   framework: '@storybook/react-vite',
+  // 工程2: MSW の worker スクリプト（`msw init public/` の生成物）を配る。
+  // 🟥 これが無いと worker の登録に失敗する——**そして story は「0 件」で緑になる**。
+  staticDirs: ['../public'],
 };
 
 export default config;
