@@ -107,5 +107,8 @@ id の件は**赤テストで確かめた**。誤った id に戻して回すと
 - 実測の記録: [実行記録.md](../実行記録.md) §手5 H5-08
 - [DR-0053](DR-0053-viewpoints-must-be-answerable-by-eye.md) — 同型の「認識合わせの道具が間違っていた」件（値の誤り／本 DR は器の誤り）
 - [DR-0045](DR-0045-opacity-modifiers-were-invisible-to-lint.md) — 不透明度修飾 60 箇所
-- `src/stories/Review/状態面.stories.tsx` — 群 4（実物の Input）
+- `src/stories/Review/A-StateSurface.stories.tsx` — 群 4（実物の Input）
+  （🆕 2026-08-09 に `状態面.stories.tsx` から改名。**日本語ファイル名だと `@storybook/addon-vitest` が
+  story を 1 件も変換できない**——中身そのまま・名前だけ ASCII にした複製は通ると 1 変数で実測した。
+  **title は日本語のまま。**部品1 D9）
 - `tools/visual-probe.mjs` — `focus` オプションと id 実在チェック
