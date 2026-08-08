@@ -12,7 +12,10 @@
 // 🟥 素材層（src/components/ui/select.tsx）は 1 行も触らない。
 import type * as React from 'react';
 
-import { SelectTrigger as UiSelectTrigger } from '@/components/ui/select';
+import {
+  SelectContent as UiSelectContent,
+  SelectTrigger as UiSelectTrigger,
+} from '@/components/ui/select';
 
 import { FIELD_WIDTH, type FieldWidth } from '@/components/Layout/tokens';
 
@@ -20,7 +23,6 @@ import { FIELD_WIDTH, type FieldWidth } from '@/components/Layout/tokens';
 // 🟨 上流が部品を増やしたらここに足す。窓口を 1 本に保つための手間（手3 D2=A）。
 export {
   Select,
-  SelectContent,
   SelectGroup,
   SelectItem,
   SelectLabel,
@@ -50,4 +52,22 @@ export function SelectTrigger({ width, ...props }: SelectTriggerProps) {
       {...props}
     />
   );
+}
+
+// ── リストの位置決め（DR-0089）─────────────────────────────────────
+// 🟥 **prop を作らない。**「ドロップダウンはアンカーに重ねない」は工場の規定であって
+//    画面ごとの選択ではない。→ `position` と `align` を型から消し、既定を固定する。
+//
+// 実測（tmp/select-position-probe.mjs・2026-08-08）:
+//   ・上流既定の `item-aligned` はトリガ 32px のうち **30px を隠す**（＝重なる）
+//   ・`popper` にすると重なりは 0、`align="start"` で左端が **0px 一致**
+//   ・上流既定の `align="center"` は popper だと **左へ 6px はみ出す**
+//     （item-aligned では align 自体が無視されるので、これまで一度も作用していなかった）
+export type SelectContentProps = Omit<
+  React.ComponentProps<typeof UiSelectContent>,
+  'className' | 'position' | 'align'
+>;
+
+export function SelectContent(props: SelectContentProps) {
+  return <UiSelectContent position="popper" align="start" {...props} />;
 }
