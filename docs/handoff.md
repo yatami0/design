@@ -3,7 +3,9 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-08（★★★ 🆕 **工程4 が完了した — 一覧 → 詳細（編集あり）。UI が初めて真実の側を書き換えた。**★★ **Q1 の答え＝[DR-0092](DR/DR-0092-the-core-holds-the-vessel-not-the-state.md)「コアは器を持ち、状態は持たない」**（[段取り 未決 #4](工場の段取り.md) 決着）——**編集の状態管理（react-hook-form）と検証（zod）は題材が持ち、`devDependencies` に置く。**★★★ 🟦 **ユーザー判断の理由「UI はできるだけ純粋に保つ」を D1 より広い一般則に上げた**——**出荷物に依存を 1 件足すことは、使い回し先全部がその依存を取ること。器（依存 0）で済む形を先に探す**（🟥 **工程6 のチャート・ガントで正面から効く**）。★★★ 🟥 **K1-b が赤になった——Radix `Select` が束ねた値を黙って 0 に潰していた。**選択肢が届く前に `reset` が走ると `SelectItem` が 0 個なので Radix が `onValueChange("")` を発火 → `Number('')` = 0 → **変えていない `status_id: 0` / `priority_id: 0` が PUT に載った。**🟥 **しかもモックは黙って飲んで 204 を返し、画面は「保存した」と表示した**（実 Redmine なら 422 か不正な書き換え）。★★ **これは「対象 0 件で緑」ではない——赤テストが仕事をした初めての形**（K1-b はまさにこれを狙って書いた検体）。塞ぎ方は D16=A の 2 段 → **再実行で 8/8 PASS**。→ コア側の規定にするかは [OBS-0015](OBS/OBS-0015_選択肢に無い値を渡されたSelectが値を消してよいか.md)。★★ **予測 8 本中 6 本的中・1 本半分・1 本外れ**（🟥 **予2 が外れた**——eslint は +5 の予測に対し **+2**、しかも内訳が違い、**ベースラインに一度も出たことのない規則 `no-unnecessary-condition` が `field.tsx` から出た**＝赤の「種類」が増えた）。★ **予8「予測していない箇所が 1 件以上出る」は 5 件的中**（`shadcn add` の対話停止／新種の赤／`satisfies` の主張が半分偽／Radix の値潰し／`titleMap` の key は空白を落とした形）。★ **Q3 = 両方とも部品になった**が、🟥 **役割 9 カテゴリに席が無い部品が 1 工程で 3 件**（`Field` / `DescriptionList` / `Timeline`）→ **指摘 14**（**1 工程 3 件は初めて**・未決 #25 の材料）。★ **Q4 = 画面の `className` 0 件を保った**（🟨 一度 1 件になり、書式をコアへ引き取って戻した）。★ **Q5 = 保たれたが「3 点」の中身は増えた**（`convert.ts` に復路 2 本）。★ **Q6 = 無風**（`.d.ts` の外部型 0・`dependencies` 増 0・題材の混入 0）。🆕 **4 本目の出荷入口を検査で守るようにした**（`tools/title-map-check.mjs`・D4=B。🟥 **書いた初版が誤判定を出した**——`titleMap` の key は空白を落とした形だった）。ゲート 6 本: **error 42 / warning 1**（+2 は全部素材層・**自作分の赤は 0**）・dist **74**・`design.mjs` **83,784 B**・spell **303**（辞書 0 語追加）・story **49 ファイル / 80 件**。🟨 **§2 の D1 はユーザー判断、D2〜D16 は推奨どおりの Claude 判断（事後承認待ち）。**🟥 **次: PR のマージ（人）→ `/design-sync`（人）→ 工程5 の手順書**）
+最終更新: 2026-08-09（★★★ 🆕 **`/design-sync` を打った — 打つものが無かった**（[実行記録 §/design-sync 再同期（2026-08-09・工程4 後）](実行記録.md)・一次記録は `.design-sync/NOTES.md`・`main` 直コミット `a9424b9`）。★★★ 🟥 **台帳と remote が食い違っていた**——アンカーを取ったら**既に 39 部品**で、`DescriptionList` / `Timeline` / `FormLayout` が載っていた＝ **工程4 の後に既に同期が打たれ、記録されていない**（handoff は「次: `/design-sync`（人）」のままだった）。★ **教訓: 現在地の正本は NOTES ではなく remote のアンカー**——再同期の最初に `_ds_sync.json` を取れば 1 発で分かる。ドライバは `ok: true` / `unchanged` **39** / `changed` 0 / **`upload.any: false`**（`finalize_plan` を打っていない・デザイン側は 1 バイトも変わっていない）。★★★ 🟦 **見張り #17 が決着した — `SelectTrigger` の `width` は出荷物で効くようになった**（[PR #11](https://github.com/yatami0/design/pull/11) `1425e30` の効果）。**出荷物を Playwright で開いて実測: sm 128 / md 192 / lg 320 px**（塞ぐ前は **112.31 / 113.59 / 104.88** で **sm > lg の逆転**）。emit されるクラスから `w-fit` も消えた。★★ **これは「名前の実在は効果を保証しない」（検証の方法そのものへの指摘）への答え**——**名前確認で止めず px を読んだ**＝ **効果まで測れる claim は測る**が同期側の作法に 1 つ増えた。★★★ 🟥 **検証の向きを逆にしたら 8 件落ちていた** → **[OBS-0016](OBS/OBS-0016_headerが名指ししていない出荷部品8件をどう埋めるか.md) を起票**。header 検証は毎回「header → 出荷物」（名前が実在するか）を全件見てきたが、**「出荷物 → header」（実在するものが名指しされているか）は一度も数えていなかった**——`DescriptionList` `Timeline` `Breadcrumb` `Tabs` `FilterBar` `FormLayout` `PageHeader` `PeriodSelect` が**カードは出ているのに header の 2 層の列挙に無い**＝ **design agent が手組みに回る側**（[OBS-0013](OBS/OBS-0013_部品があるのにインラインスタイルで組んだ.md) と同型）。🟥 **単純に足せない**（[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)＝842 バイト足したら触っていない箇所が壊れた）ので **header は書き換えていない**。★ **conventions header の実在検証はドリフト 0 件**（クラス 27・custom property 2・props と union 値・**否定の主張**まで全件実測。`window.Design` は **164 export**）。🟦 **見張り #19 も決着**（工程4 D3 = B ＝ `cfg.entry` は `src/index.ts` 据え置き）。🟨 **ベースライン表を 1 件訂正した**——**`pnpm spell` は 303 ではなく 305 ファイル**（同一コミットで再実測）。🟥 **次: 工程5（稼働表）の手順書**）
+
+前回: 2026-08-08（★★★ 🆕 **工程4 が完了した — 一覧 → 詳細（編集あり）。UI が初めて真実の側を書き換えた。**★★ **Q1 の答え＝[DR-0092](DR/DR-0092-the-core-holds-the-vessel-not-the-state.md)「コアは器を持ち、状態は持たない」**（[段取り 未決 #4](工場の段取り.md) 決着）——**編集の状態管理（react-hook-form）と検証（zod）は題材が持ち、`devDependencies` に置く。**★★★ 🟦 **ユーザー判断の理由「UI はできるだけ純粋に保つ」を D1 より広い一般則に上げた**——**出荷物に依存を 1 件足すことは、使い回し先全部がその依存を取ること。器（依存 0）で済む形を先に探す**（🟥 **工程6 のチャート・ガントで正面から効く**）。★★★ 🟥 **K1-b が赤になった——Radix `Select` が束ねた値を黙って 0 に潰していた。**選択肢が届く前に `reset` が走ると `SelectItem` が 0 個なので Radix が `onValueChange("")` を発火 → `Number('')` = 0 → **変えていない `status_id: 0` / `priority_id: 0` が PUT に載った。**🟥 **しかもモックは黙って飲んで 204 を返し、画面は「保存した」と表示した**（実 Redmine なら 422 か不正な書き換え）。★★ **これは「対象 0 件で緑」ではない——赤テストが仕事をした初めての形**（K1-b はまさにこれを狙って書いた検体）。塞ぎ方は D16=A の 2 段 → **再実行で 8/8 PASS**。→ コア側の規定にするかは [OBS-0015](OBS/OBS-0015_選択肢に無い値を渡されたSelectが値を消してよいか.md)。★★ **予測 8 本中 6 本的中・1 本半分・1 本外れ**（🟥 **予2 が外れた**——eslint は +5 の予測に対し **+2**、しかも内訳が違い、**ベースラインに一度も出たことのない規則 `no-unnecessary-condition` が `field.tsx` から出た**＝赤の「種類」が増えた）。★ **予8「予測していない箇所が 1 件以上出る」は 5 件的中**（`shadcn add` の対話停止／新種の赤／`satisfies` の主張が半分偽／Radix の値潰し／`titleMap` の key は空白を落とした形）。★ **Q3 = 両方とも部品になった**が、🟥 **役割 9 カテゴリに席が無い部品が 1 工程で 3 件**（`Field` / `DescriptionList` / `Timeline`）→ **指摘 14**（**1 工程 3 件は初めて**・未決 #25 の材料）。★ **Q4 = 画面の `className` 0 件を保った**（🟨 一度 1 件になり、書式をコアへ引き取って戻した）。★ **Q5 = 保たれたが「3 点」の中身は増えた**（`convert.ts` に復路 2 本）。★ **Q6 = 無風**（`.d.ts` の外部型 0・`dependencies` 増 0・題材の混入 0）。🆕 **4 本目の出荷入口を検査で守るようにした**（`tools/title-map-check.mjs`・D4=B。🟥 **書いた初版が誤判定を出した**——`titleMap` の key は空白を落とした形だった）。ゲート 6 本: **error 42 / warning 1**（+2 は全部素材層・**自作分の赤は 0**）・dist **74**・`design.mjs` **83,784 B**・spell **303**（辞書 0 語追加）・story **49 ファイル / 80 件**。🟨 **§2 の D1 はユーザー判断、D2〜D16 は推奨どおりの Claude 判断（事後承認待ち）。**🟥 **次: PR のマージ（人）→ `/design-sync`（人）→ 工程5 の手順書**）
 
 前回: 2026-08-08（★★ 🆕 **工程4（一覧 → 詳細・編集あり）の手順書を起こした**（[工程4](手順/工程4_一覧から詳細_編集あり.md)・status `planned`）。**コードはまだ 1 行も書いていない。**★★ **問いは 6 本**——段取りの Q1〜Q4 に、**着手前実測で Q5・Q6 が増えた**（🟥 Q5 = 書き込みでも「3 点だけ」は保たれるか＝工程2 Q3 の 2 度目 ／ 🟥 Q6 = 外部依存を製品層に入れると出荷面に何が出るか）。★★★ 🟥 **着手前実測で段取り §工程4 D1 の選択肢が古いと分かった**——「shadcn の `Form`（rhf ＋ zod）か自作か」の二択で書かれているが、**レジストリを引くと第 3 の選択肢が実在する**: **`field` は外部依存 0**（regDeps は `label` / `separator` で両方在庫）、対して **`form` は `react-hook-form` / `zod` / `@hookform/resolvers` の 3 件**を引く。→ 🟥 **§2 D1 の推奨は B（コアは器だけ・rhf は題材の画面が持つ）で、段取りの推奨 A と食い違う。**[段取り 未決 #4](工場の段取り.md) が「**工場の思想に直結する・工程4 の着手前**」と名指ししているので、**D1 だけユーザー確認待ち**（残りの D2〜D12 は推奨どおりの Claude 判断・事後承認待ち）。★ **根拠は [DR-0088](DR/DR-0088-core-subject-boundary-is-decided-by-two-questions.md) の 2 問**——① フォームの状態管理は Redmine を知らない repo でも意味が通る（コア候補）→ ② **フィールドの構成は有限の語で言えない**（＝コアは器だけ）。🟥 **A は出荷物の依存が 3 件増え、使い回し先全部が rhf を取る**（DR-0078 と正面から効く）。★ **もう 1 つ実測で地雷が出た**——**shadcn `sonner` は `next-themes` を引く**ので、保存の完了通知に Toast を採ると**工程1 で外した Next が戻る**（→ D8 = インライン表示）。★ **その他の着手前実測**: ゲート 6 本は `main`（`22440c8`）で**内訳まで一致**（error 40 / warning 1・dist 65・story 45 ファイル / 71 件）。🟨 **`spell` だけ 283 ファイル**（表は 280・差分 3 は工程外の md で**新しい赤ではない**）。🟦 **新しい worktree で `pnpm i --frozen-lockfile` が回避策なしに通った**（工程3 D12 の効果・NOTES 見張り #20 の確認）。🟥 **`ListDetail` は出荷までしているのに一覧が使っていない**（工程3 は `DataGrid` を直に置いた）→ **詳細を足すいまが最初の実利用者**（D5）。🟥 **`Timeline` も `DescriptionList` も役割 9 カテゴリに席が無い**——**工程4 は分類の外に出る最初の工程**（思想はユーザーの持ち物なので**書き換えず指摘 14 として起票**）。🟥 **`convert.ts` は片道しか無い**（`toIssue` だけ）——**復路をどこに置くかで Q5 が決まる**。🟥 **次: D1 の確認 → P4-01 から実行**）
 
@@ -23,7 +25,35 @@
 
 ## 現在地
 
-- ★★★ 🆕 **工程4 が完了した**（2026-08-08・[手順書](手順/工程4_一覧から詳細_編集あり.md)・[実行記録 §工程4](実行記録.md)・ブランチ `brasilia`）。**チケット詳細が新土台で動き、編集が真実の側に書き戻る。**
+- ★★★ 🆕 **`/design-sync` を打った — 打つものが無かった**（2026-08-09・[実行記録 §/design-sync 再同期（2026-08-09・工程4 後）](実行記録.md)・一次記録は `.design-sync/NOTES.md` §工程4 後の再同期・`main` 直コミット `a9424b9`）。
+  デザインプロジェクト <https://claude.ai/design/p/3acbb737-85fe-4098-95f4-c99070168ba1> は **39 部品のまま 1 バイトも変わっていない。**
+  - ★★★ 🟥 **台帳と remote が食い違っていた。**アンカー（`_ds_sync.json`）を取ったら**既に 39 部品**で、
+    `DescriptionList` / `Timeline` / `FormLayout`（工程4 の新設）が載っていた＝ **工程4 の後に既に同期が打たれ、記録されていない。**
+    `git log -- .design-sync/` の最後は `5b96c77`（工程4）で、動いたのは `config.json` の 10 行だけ。**handoff は「次: `/design-sync`（人）」のままだった。**
+    ★ **教訓: 現在地の正本は NOTES ではなく remote のアンカー**——再同期の最初に `get_file _ds_sync.json` を取れば、**台帳が何を言っていようと本当の現在地が 1 発で分かる**（今回それで確定した）
+  - ドライバの判定: 🟦 `ok: true` / `anchor: ok` / **`unchanged` 39・`changed` 0・`added` 0・`removed` 0**（carry-forward が全件効いた＝見張り #18「土台を触った後は全滅」の対照例）／
+    **`upload.any: false`** なので **`finalize_plan` は打っていない**。capture は `empty_worklist`・render check は `[RENDER_SKIPPED]`（**アンカー一致の no-change 再同期での既定挙動**＝想定内）
+  - ★★★ 🟦 **見張り #17 が決着した — `SelectTrigger` の `width` は出荷物で効くようになった**（[PR #11](https://github.com/yatami0/design/pull/11)・`1425e30`・[DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md) を塞いだもの）。
+    **出荷物そのもの**（`Select.html?story=Widths`）を Playwright で開いて実測: **sm 128 / md 192 / lg 320 px**（`--container-field-*` の spacing×32/48/80 どおり）。
+    塞ぐ前は **sm 112.31 / md 113.59 / lg 104.88**（**sm > lg の逆転**）。emit されるクラスから **`w-fit` も消えている**。
+    ★★ **これは「名前の実在は効果を保証しない」＝検証の方法そのものへの指摘への答え。**
+    🟦 **名前確認で止めず px を読んだ**——**効果まで測れる claim は測る**が、同期側の作法として 1 つ増えた
+  - ★★★ 🟥 **検証の向きを逆にしたら 8 件落ちていた** → **[OBS-0016](OBS/OBS-0016_headerが名指ししていない出荷部品8件をどう埋めるか.md) を起票した**。
+    header 検証は毎回「**header → 出荷物**」（名前が実在するか）を全件見てきたが、**「出荷物 → header」（実在するものが名指しされているか）は一度も数えていなかった。**
+    落ちていたのは `DescriptionList` `Timeline` `Breadcrumb` `Tabs` `FilterBar` `FormLayout` `PageHeader` `PeriodSelect` の **8 件**——
+    **カードは出荷しているのに header の 2 層の列挙に無い。**header は「2 層とも実在する部品だから自分で markup を書くな」と言っているので、
+    **列挙に無い部品は design agent が手組みに回る**（[OBS-0013](OBS/OBS-0013_部品があるのにインラインスタイルで組んだ.md) と同型）。
+    🟥 **ただし単純に足せない**——[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) で**842 バイト足したら「触っていない箇所」が壊れた**。
+    **埋め方そのものが問い**なので OBS に起票し、**header は 1 文字も書き換えていない**（skill 側も「既存 header は書き換えず、ドリフトを報告して提案する」規定）
+  - 🟦 **conventions header の実在検証はドリフト 0 件**——クラス 27・custom property 2・部品/パーツ/hook・props と union 値を全件実測。
+    **否定の主張も裏が取れた**（`Container` に `inset` が無い／Layout 7 部品が `className` を受けない／`SelectTrigger` の `className` は `Omit` 済み／`StatusPill` の tone に `info`・`progress` が無い）。
+    `window.Design` は**ブラウザで実ロードして 164 export**（130 → 164・工程4 の `Field` / `Alert` 系のぶん）
+  - 🟦 **見張り #19 も決着**——工程4 の判断ポイント **D3 = B** により `cfg.entry` は `src/index.ts` 据え置き。**再同期は `--entry src/index.ts` で回す**
+  - 🟨 **ベースライン表を 1 件訂正した**——**`pnpm spell` は 303 ではなく 305 ファイル**（同一コミット `5b96c77` を stash して再実測）。
+    🟥 **私の変更で動いた数ではない。**L549 の教訓「ベースライン表はゲートを回すたびに突き合わせる」の **3 例目**
+  - 🟨 **環境の再現は 3 回目も回避策なしで通った**（`pnpm i --frozen-lockfile` exit 0・プレースホルダ `pnpm-workspace.yaml` は生えず＝見張り #20 の 3 回目の確認）
+  - 🟥 **次: 工程5（稼働表）の手順書**
+- ★★★ ~~🆕~~ **工程4 が完了した**（2026-08-08・[手順書](手順/工程4_一覧から詳細_編集あり.md)・[実行記録 §工程4](実行記録.md)・ブランチ `brasilia`）。**チケット詳細が新土台で動き、編集が真実の側に書き戻る。**
   - ★★ **Q1 の答え——[DR-0092](DR/DR-0092-the-core-holds-the-vessel-not-the-state.md)「コアは器を持ち、状態は持たない」**（[段取り 未決 #4](工場の段取り.md) 決着）。
     コアが持つのはラベル・必須の印・エラー文の置き場だけで、**エラーは `error?: string`（ただの文字列）**。
     **編集の状態管理（react-hook-form）と検証（zod）は題材の層が持ち、`devDependencies` に置く。**
@@ -66,7 +96,8 @@
   - 🟥 **`storybook build` は K1-b が赤のあいだも exit 0 だった**——[DR-0048](DR/DR-0048-build-storybook-does-not-render.md) の再演 **3 度目**。保存の確認は Playwright（`tools/edit-probe.mjs`）
   - ゲート 6 本: typecheck 緑 ／ **eslint error 42 / warning 1**（+2 は全部素材層・**コアも題材も自作分の赤は 0**）／ build 緑・**dist 74 ファイル**（+9・全部コア）・`design.mjs` **83,784 B** ／ format 緑 ／ spell 緑 **303**（**辞書 0 語追加**）／ storybook 緑・**story 49 ファイル / index.json 80 件**
   - 🟨 **§2 の D1 はユーザー判断（B・「UI はできるだけ純粋に保つ」）。D2〜D16 は推奨どおりの Claude 判断（事後承認待ち・すべて 🟦 戻せる）。**うち実行中の追記は **D13〜D16 の 4 件**（手順書の規律どおり §2 に足してから進めた）
-  - 🟥 **次: PR のマージ（人）→ `/design-sync`（人）→ 工程5（稼働表）の手順書**
+  - ✅ ~~**次: PR のマージ（人）→ `/design-sync`（人）→ 工程5（稼働表）の手順書**~~ ——
+    **PR #13 はマージ済み（`5b96c77`）。`/design-sync` も消化済み**（2026-08-09・上の最新項目）。**残るは工程5 の手順書**
 - ★★ **工程4 の手順書を起こした**（2026-08-08・[工程4](手順/工程4_一覧から詳細_編集あり.md)）。**起こした時点ではコードは 1 行も書いていない。**
   - ★★ **問いは 6 本。**段取りの Q1〜Q4 に、**着手前実測で 2 本足した**——
     **Q5 = 書き込みでも「実 API に繋ぐ日に書き換わるのは 3 点だけ」は保たれるか**（工程2 Q3 の 2 度目。工程3 は**読み取りだけ**で通した）／
@@ -468,7 +499,7 @@ pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && 
 | `pnpm lint` | 🟥 **error 42 ／ warning 1** | **+2 は全部素材層**——`ui/alert.tsx` の任意値 1（`has-[>svg]:grid-cols-[auto_1fr]`）／ 🆕 `ui/field.tsx` の **`@typescript-eslint/no-unnecessary-condition` 1**。★ **この規則はベースラインに一度も出たことがなかった**＝赤の「種類」が増えた。内訳: `no-arbitrary-value` **32** ／ `restrict-template-expressions` 4 ／ `no-confusing-void-expression` 4 ／ `no-unnecessary-condition` **1** ／ `set-state-in-effect` 1 ／ warning は `incompatible-library`。🟦 **ルールを 1 本足して（D12）自作の新規コードの赤は 0**（コアも題材も） |
 | `pnpm build`（= `vite build`） | 🟦 緑 | **dist 74 ファイル**（+9・**全部コア**）・`design.mjs` **83,784 B**（+9,365）。🟦 **題材の混入 0**（JS・`.d.ts`・静的の 3 本とも）・**外部ライブラリの型名 0 件** |
 | `pnpm format:check` | 🟦 緑 | — |
-| `pnpm spell` | 🟦 緑 | **303 ファイル**（+20）。🟦 **辞書 0 語追加**（Storybook 既定の自動ドキュメント用タグを書きかけたが、repo の語彙 `own` に揃えて消した） |
+| `pnpm spell` | 🟦 緑 | 🆕 **305 ファイル**（+22）。🟥 **工程4 完了時に 303 と記録したのは誤り**——2026-08-09 に**同じコミット（`5b96c77`）を stash して再実測したら 305**。🟨 **原因は未確定だが、工程4 の md を 2 本足す前に測った可能性が高い**（＝ L549 の教訓「ベースライン表は手の完了時ではなくゲートを回すたびに突き合わせる」の **3 例目**）。🟦 **辞書 0 語追加**（Storybook 既定の自動ドキュメント用タグを書きかけたが、repo の語彙 `own` に揃えて消した） |
 | `pnpm build-storybook` | 🟦 緑 | story **49 ファイル／index.json 80 件**（+4 ファイル・+9 story）。🟥 **緑は描画も保存も保証しない**（DR-0048 の再演 **3 度目**——K1-b が赤のあいだも exit 0 だった）。確認は `tools/edit-probe.mjs`（Playwright） |
 
 🟨 **ゲートではない検査が 2 本ある**（人が回すもの・`pnpm lint` 等には入れない）:
