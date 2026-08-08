@@ -18,6 +18,9 @@ import type {
   TimeEntry,
   Version,
 } from './model';
+// 🟨 型だけの循環（client → convert → client）。`import type` は esbuild が消すので
+//    実行時の循環は起きない。`IssuePatch` は API 表現なので置き場は client.ts のまま。
+import type { IssuePatch } from './client';
 import type {
   RedmineIssue,
   RedmineIssueRelation,
@@ -140,4 +143,62 @@ export function toVersion(version: RedmineVersion): Version {
 /** 🟥 表示名は API に無いので**ここで作る**（データモデル §2.5）。 */
 export function toUserPerson(user: RedmineUser): Person {
   return { id: user.id, name: `${user.lastname} ${user.firstname}` };
+}
+
+// ── ★ 復路（画面 → API）— 工程4 D9 ────────────────────────────────
+//
+// 🟥 **工程2〜3 は片道しか無かった**（`toIssue` 系だけ）。読み取りしかしていなかったので
+//    必要が無く、**「実 API に繋ぐ日に書き換わるのは 3 点だけ」も片道だけで締めていた**。
+//    編集を入れると**逆向きの翻訳が要る**——`IssuePatch` は snake_case だから、
+//    ここに置かなければ画面が snake_case を書くことになる（＝ Q5 が破れる）。
+// 🟦 **置き場をここにした根拠**: 対応表（camelCase ↔ snake_case・語 ↔ id）は
+//    題材が持つ（[DR-0088](../../docs/DR/DR-0088-core-subject-boundary-is-decided-by-two-questions.md) 付則）。
+
+/** 画面が編集できる項目だけを持つ、**コアの語だけでできた**編集内容。 */
+export interface IssueEdit {
+  subject: string;
+  description: string;
+  statusId: number;
+  priorityId: number;
+  assigneeId: number | null;
+  doneRatio: number;
+  /** 変更コメント。空文字なら送らない。 */
+  notes: string;
+}
+
+/**
+ * ★ 復路の翻訳。**変わった項目だけ**を `IssuePatch` にする。
+ *
+ * 🟥 **全項目を送らない。**全部送ると、取得してから保存するまでの間に他人が入れた変更を
+ *    黙って踏み潰す（K1 が「body に変えていない項目まで載っていたら別の赤」と書いているのはこれ）。
+ */
+export function toIssuePatch(before: Issue, after: IssueEdit): IssuePatch {
+  const patch: IssuePatch = {};
+  if (after.subject !== before.subject) patch.subject = after.subject;
+  if (after.description !== before.description) {
+    patch.description = after.description;
+  }
+  if (after.statusId !== before.status.id) patch.status_id = after.statusId;
+  if (after.priorityId !== before.priority.id) {
+    patch.priority_id = after.priorityId;
+  }
+  if (after.assigneeId !== (before.assignee?.id ?? null)) {
+    patch.assigned_to_id = after.assigneeId;
+  }
+  if (after.doneRatio !== before.doneRatio) patch.done_ratio = after.doneRatio;
+  if (after.notes !== '') patch.notes = after.notes;
+  return patch;
+}
+
+/** 取得した課題を、フォームの初期値（コアの語だけ）へ落とす。 */
+export function toIssueEdit(issue: Issue): IssueEdit {
+  return {
+    subject: issue.subject,
+    description: issue.description,
+    statusId: issue.status.id,
+    priorityId: issue.priority.id,
+    assigneeId: issue.assignee?.id ?? null,
+    doneRatio: issue.doneRatio,
+    notes: '',
+  };
 }

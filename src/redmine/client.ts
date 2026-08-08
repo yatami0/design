@@ -9,6 +9,8 @@
 //    それ以外（画面・部品）は 1 行も変わらないはず——という主張の検証は工程3 以降。
 import {
   toIssue,
+  toPriority,
+  toStatus,
   toIssueDetail,
   toTimeEntry,
   toUserPerson,
@@ -17,13 +19,17 @@ import {
 import type {
   Issue,
   IssueDetail,
+  IssuePriority,
+  IssueStatus,
   Page,
   Person,
   TimeEntry,
   Version,
 } from './model';
 import type {
+  RedmineIssuePrioritiesResponse,
   RedmineIssueResponse,
+  RedmineIssueStatusesResponse,
   RedmineIssuesResponse,
   RedmineTimeEntriesResponse,
   RedmineUsersResponse,
@@ -167,4 +173,26 @@ export async function fetchVersions(projectId: number): Promise<Version[]> {
     `/projects/${String(projectId)}/versions.json`,
   );
   return data.versions.map(toVersion);
+}
+
+// 🆕 工程4 D15=B: 編集で選べる値の集合（どちらも実 API に在る端点）。
+// 🟨 封筒が無い（ページングしない）ので `Page<T>` ではなく素の配列を返す。
+
+/** ステータスの一覧。`closed` は Redmine の `is_closed` をそのまま持つ。 */
+export async function fetchIssueStatuses(): Promise<IssueStatus[]> {
+  const data = await getJson<RedmineIssueStatusesResponse>(
+    '/issue_statuses.json',
+  );
+  return data.issue_statuses.map((status) => ({
+    ...toStatus(status),
+    closed: status.is_closed,
+  }));
+}
+
+/** 優先度の一覧。 */
+export async function fetchIssuePriorities(): Promise<IssuePriority[]> {
+  const data = await getJson<RedmineIssuePrioritiesResponse>(
+    '/enumerations/issue_priorities.json',
+  );
+  return data.issue_priorities.map(toPriority);
 }
