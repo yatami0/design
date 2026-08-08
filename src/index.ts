@@ -26,6 +26,10 @@ export { Spacer } from '@/components/Layout/Spacer';
 export { Stack } from '@/components/Layout/Stack';
 export { DataGrid } from '@/components/DataDisplay/DataGrid';
 export { StatusPill } from '@/components/DataDisplay/StatusPill';
+// 工程4 D6/D7=A: 詳細画面の 2 部品。🟥 役割 9 カテゴリに席が無く、
+// Ant Design の `group: Data Display` を根拠に DataDisplay へ置いた（指摘 14）
+export { DescriptionList } from '@/components/DataDisplay/DescriptionList';
+export { Timeline } from '@/components/DataDisplay/Timeline';
 // 手8d H8D-06: 面④b（`a { color: var(--primary) }` が 4/6 周）を部品に引き取る
 export { Link } from '@/components/Navigation/Link';
 // 工程3 D3=C: 期間の語彙（有限 union）＋ 逃げ道（custom）を対で持つ。語彙定数も API の一部
@@ -40,6 +44,9 @@ export { EmptyState } from '@/patterns/EmptyState';
 export { PageHeader } from '@/patterns/PageHeader';
 // 工程3 D2=C: 帯の見た目はコア、何で絞るかは画面（題材）が差す
 export { FilterBar, FilterField } from '@/patterns/FilterBar';
+// 工程4 D1=B: フォームの器。🟥 **値は持たない**——react-hook-form / zod は題材が持つ
+//    （ユーザー判断「UI はできるだけ純粋に保つ」。D12 の lint が機械で守る）
+export { FormLayout, FormField } from '@/patterns/FormLayout';
 export { ListDetail } from '@/patterns/ListDetail';
 // 🟥 振る舞い hook。これを出さないと `ListDetail` は `state` を作れず**使えない**
 //    （conventions header の validate 工程が捕まえた）。`use*` は converter の
@@ -84,6 +91,11 @@ export * from '@/components/Overlay/Tooltip';
 export * from '@/components/Selection/Checkbox';
 export * from '@/components/Selection/Select';
 export * from '@/components/TextInput/Input';
+// 工程4 D6: 編集の素材（textarea / field / alert）。
+// 🟨 `field` は「フォーム 1 枠の器」で、役割カテゴリは Layout に置いた（D14=A・Card の先例）
+export * from '@/components/TextInput/Textarea';
+export * from '@/components/Layout/Field';
+export * from '@/components/Communication/Alert';
 
 // ── 型（design agent が読む API 契約 `.d.ts` の材料）─────────────
 export type { BoxProps } from '@/components/Layout/Box';
@@ -109,7 +121,18 @@ export type {
   StatusPillProps,
   StatusTone,
 } from '@/components/DataDisplay/StatusPill';
+export type {
+  DescriptionListProps,
+  DescriptionListItem,
+  DescriptionListColumns,
+  DescriptionListOrientation,
+} from '@/components/DataDisplay/DescriptionList';
+export type {
+  TimelineProps,
+  TimelineEvent,
+} from '@/components/DataDisplay/Timeline';
 export type { EmptyStateProps } from '@/patterns/EmptyState';
+export type { FormLayoutProps, FormFieldProps } from '@/patterns/FormLayout';
 export type { PageHeaderProps } from '@/patterns/PageHeader';
 export type { FilterBarProps, FilterFieldProps } from '@/patterns/FilterBar';
 export type { ListDetailProps } from '@/patterns/ListDetail';

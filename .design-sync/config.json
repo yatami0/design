@@ -44,7 +44,14 @@
     "PeriodSelect": "src/components/Selection/PeriodSelect.tsx",
     "FilterBar": "src/patterns/FilterBar.tsx",
     "PageHeader": "src/patterns/PageHeader.tsx",
-    "FilterField": "src/patterns/FilterBar.tsx"
+    "FilterField": "src/patterns/FilterBar.tsx",
+    "DescriptionList": "src/components/DataDisplay/DescriptionList.tsx",
+    "Timeline": "src/components/DataDisplay/Timeline.tsx",
+    "FormLayout": "src/patterns/FormLayout.tsx",
+    "FormField": "src/patterns/FormLayout.tsx",
+    "Textarea": "src/components/TextInput/Textarea.tsx",
+    "Field": "src/components/Layout/Field.tsx",
+    "Alert": "src/components/Communication/Alert.tsx"
   },
   "readmeHeader": ".design-sync/conventions.md",
   "guidelinesGlob": [
@@ -83,6 +90,7 @@
     "E·Fオーバーレイ": null,
     "I層の比較": null,
     "データの器（MSW）": null,
-    "チケット一覧": null
+    "チケット一覧": null,
+    "チケット詳細": null
   }
 }

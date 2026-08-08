@@ -15,7 +15,7 @@ import type {
   RedmineTimeEntry,
 } from '@/redmine/types';
 
-import { BASE_DATE } from './data';
+import { BASE_DATE, PRIORITIES, STATUSES } from './data';
 import { getDb } from './db';
 import { atNoon } from './random';
 
@@ -160,6 +160,14 @@ export const handlers = [
         issue?: Record<string, unknown>;
       };
       const patch = body.issue ?? {};
+
+      // 🟥 工程4 K1/K2 の証拠——「保存された絵が出た」ではなく
+      //    「**この method・URL・body が・何回**飛んだ」を残す。
+      //    🟥 とくに **body に変えていない項目まで載っていないか**を見る
+      //    （全項目 PUT は他人の編集を踏み潰す形。手順書 §0.1 K1）。
+      console.info(
+        `[msw] PUT /issues/${String(id)}.json ${JSON.stringify(patch)}`,
+      );
       const changes: { name: string; from: string | null; to: string }[] = [];
 
       const applyNamed = (
@@ -197,21 +205,11 @@ export const handlers = [
         });
         issue.done_ratio = patch['done_ratio'];
       }
-      applyNamed('status', patch['status_id'], [
-        { id: 1, name: '新規' },
-        { id: 2, name: '進行中' },
-        { id: 3, name: '解決' },
-        { id: 4, name: 'フィードバック' },
-        { id: 5, name: '終了' },
-        { id: 6, name: '却下' },
-      ]);
-      applyNamed('priority', patch['priority_id'], [
-        { id: 3, name: '低め' },
-        { id: 4, name: '通常' },
-        { id: 5, name: '高め' },
-        { id: 6, name: '急いで' },
-        { id: 7, name: '今すぐ' },
-      ]);
+      // 🆕 工程4 D15=B: 工程2 はここに表のインライン複製を持っていた。
+      //    編集で「選べる値の集合」が要るようになり複製が 3 箇所になるところだったので、
+      //    `data.ts` の 1 つに寄せた（生成・端点・適用がすべて同じ表を見る）。
+      applyNamed('status', patch['status_id'], STATUSES);
+      applyNamed('priority', patch['priority_id'], PRIORITIES);
 
       // 🟥 現在時刻を読まない（D5）。基準日で固定しておく——story の再現性が優先。
       issue.updated_on = atNoon(BASE_DATE);
@@ -270,6 +268,28 @@ export const handlers = [
       total_count: projects.length,
       offset: 0,
       limit: DEFAULT_LIMIT,
+    });
+  }),
+
+  // 🆕 工程4 D15=B: 編集で選べる値の集合。**どちらも Redmine に実在する端点**
+  //    （`/issue_statuses.json` ／ `/enumerations/issue_priorities.json`）。
+  //    🟨 一覧の絞り込みで使う `open` / `closed` / `*` は**絞り込み専用の語**で、
+  //       ここには出てこない（実 API も返さない）——出どころが違う（手順書 D15）。
+  http.get(`${REDMINE_BASE_URL}/issue_statuses.json`, () => {
+    return HttpResponse.json({
+      issue_statuses: STATUSES.map((status) => ({
+        ...status,
+        is_closed: CLOSED_STATUS_IDS.has(status.id),
+      })),
+    });
+  }),
+
+  http.get(`${REDMINE_BASE_URL}/enumerations/issue_priorities.json`, () => {
+    return HttpResponse.json({
+      issue_priorities: PRIORITIES.map((priority) => ({
+        ...priority,
+        is_default: priority.id === 4,
+      })),
     });
   }),
 

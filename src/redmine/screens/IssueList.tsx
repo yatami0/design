@@ -41,12 +41,16 @@ import {
 } from '@/components/Selection/Select';
 import { EmptyState } from '@/patterns/EmptyState';
 import { FilterBar, FilterField } from '@/patterns/FilterBar';
+import { ListDetail } from '@/patterns/ListDetail';
 import { PageHeader } from '@/patterns/PageHeader';
+import { useListDetail } from '@/patterns/useListDetail';
 import { AppShell, type NavItem } from '@/templates/AppShell';
 
 import type { Issue } from '../model';
 import { periodToQuery } from '../period';
 import { useIssues } from '../useIssues';
+
+import { IssueDetail } from './IssueDetail';
 
 /**
  * ステータス絞り込みの選択肢（★ 対応表）。「未完了 = open」という翻訳は
@@ -117,6 +121,7 @@ export function IssueList({ today }: IssueListProps) {
   const [preset, setPreset] = useState<PeriodPreset>('all');
   const [range, setRange] = useState<PeriodRange | undefined>(undefined);
   const [offset, setOffset] = useState(0);
+  const detail = useListDetail<Issue>();
 
   const updatedOn = periodToQuery(preset, range, today ?? new Date());
   const { page, loading, error } = useIssues({
@@ -186,17 +191,29 @@ export function IssueList({ today }: IssueListProps) {
         <EmptyState title="読み込みに失敗した" description={error} />
       )}
       {error === undefined && (
-        <DataGrid
-          data={page?.items ?? []}
-          columns={COLUMNS}
-          empty={
-            <EmptyState
-              title={loading ? '読み込み中' : 'チケットが無い'}
-              description={
-                loading ? '取得しています。' : '絞り込みに合うチケットが無い。'
+        // 🆕 工程4 D5=A: 手4 で作って出荷までしている `ListDetail` の**最初の実利用者**。
+        //    工程3 は `DataGrid` を直に置いていた（行を押しても何も起きなかった）。
+        <ListDetail
+          state={detail}
+          list={
+            <DataGrid
+              data={page?.items ?? []}
+              columns={COLUMNS}
+              onRowSelect={detail.select}
+              empty={
+                <EmptyState
+                  title={loading ? '読み込み中' : 'チケットが無い'}
+                  description={
+                    loading
+                      ? '取得しています。'
+                      : '絞り込みに合うチケットが無い。'
+                  }
+                />
               }
             />
           }
+          title={(issue) => `${issue.displayId} ${issue.subject}`}
+          detail={(issue) => <IssueDetail id={issue.id} />}
         />
       )}
       <Pagination>

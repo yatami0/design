@@ -110,6 +110,21 @@ const noMaterialLayerImports = {
     '素材層（shadcn）は直接使わない。製品層 @/components/<役割カテゴリ>/… から import すること（D3=B）',
 };
 
+// 🆕 工程4 D12: **コアは編集の状態を持たない。**
+// ユーザー判断 2026-08-08「UI はできるだけ純粋に保つ」＋ 工程4 D1=B の帰結——
+// フォームの状態管理（react-hook-form）と検証（zod）は**題材の画面**が持ち、
+// コアは器（ラベル・必須の印・エラー文の置き場）だけを持つ。
+//
+// 🟥 これを機械で守らないと、**import 1 行で出荷物の依存が増える**。
+//    しかも増えたことは dist の中身では見えない（entry から到達しなければ束ねられないので、
+//    「dist が綺麗」のまま `package.json` の名乗りだけが濁る）→ 型と lint でしか捕まらない。
+// 🟦 発火は赤テストで確認済み（実行記録 §工程4 P4-04）。
+const noFormStateLibs = {
+  group: ['react-hook-form', '@hookform/*', 'zod', 'zod/*'],
+  message:
+    'コア（部品・Pattern・Template）は編集の状態と検証の仕組みを知らない。フォームの器は「ただのデータ」を受け取り、react-hook-form / zod は題材（src/redmine/**）が持つ（工程4 D1=B・ユーザー判断「UI はできるだけ純粋に保つ」）',
+};
+
 export default defineConfig(
   {
     // 手6: /design-sync の生成物・staging を射程から外す。
@@ -242,17 +257,29 @@ export default defineConfig(
     rules: {
       'no-restricted-imports': [
         'error',
-        { patterns: [noMaterialLayerImports, noSubjectImports] },
+        {
+          patterns: [
+            noMaterialLayerImports,
+            noSubjectImports,
+            // 🆕 工程4 D12
+            noFormStateLibs,
+          ],
+        },
       ],
     },
   },
 
   {
     // 🆕 工程2 D12: ② 層（素材層を包む側）は素材層を見てよいが、題材は見ない。
+    // 🆕 工程4 D12: 素材層（src/components/ui/**）も含めて、コアは状態ライブラリを見ない。
+    //    shadcn の `form` を後から足すと rhf が素材層に入るので、**射程はここが要**。
     name: 'repo/core-does-not-know-the-subject',
     files: ['src/components/**/*.{ts,tsx}'],
     rules: {
-      'no-restricted-imports': ['error', { patterns: [noSubjectImports] }],
+      'no-restricted-imports': [
+        'error',
+        { patterns: [noSubjectImports, noFormStateLibs] },
+      ],
     },
   },
 

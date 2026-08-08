@@ -30,7 +30,11 @@ const TRACKERS: readonly RedmineNamed[] = [
   { id: 3, name: 'サポート' },
 ];
 
-const STATUSES: readonly RedmineNamed[] = [
+/**
+ * 🆕 工程4 D15=B: **編集の選択肢の正本。**生成にも `/issue_statuses.json` にも
+ * PUT の適用にもこの 1 つを使う（工程2 は PUT ハンドラにインラインの複製を持っていた）。
+ */
+export const STATUSES: readonly RedmineNamed[] = [
   { id: 1, name: '新規' },
   { id: 2, name: '進行中' },
   { id: 3, name: '解決' },
@@ -39,7 +43,7 @@ const STATUSES: readonly RedmineNamed[] = [
   { id: 6, name: '却下' },
 ];
 
-const PRIORITIES: readonly RedmineNamed[] = [
+export const PRIORITIES: readonly RedmineNamed[] = [
   { id: 3, name: '低め' },
   { id: 4, name: '通常' },
   { id: 5, name: '高め' },

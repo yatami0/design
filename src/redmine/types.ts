@@ -146,3 +146,22 @@ export type RedmineVersionsResponse = RedminePage & {
   versions: RedmineVersion[];
 };
 export type RedmineIssueResponse = { issue: RedmineIssue };
+
+// 🆕 工程4 D15=B: 編集で選べる値の集合。**ページングの封筒を持たない**——
+//    Redmine のこの 2 端点は `total_count` / `offset` / `limit` を返さない（配列だけ）。
+//    出典: <https://www.redmine.org/projects/redmine/wiki/Rest_IssueStatuses>
+//          <https://www.redmine.org/projects/redmine/wiki/Rest_Enumerations>
+export interface RedmineIssueStatus extends RedmineNamed {
+  is_closed: boolean;
+}
+
+export interface RedmineIssuePriority extends RedmineNamed {
+  is_default: boolean;
+}
+
+export type RedmineIssueStatusesResponse = {
+  issue_statuses: RedmineIssueStatus[];
+};
+export type RedmineIssuePrioritiesResponse = {
+  issue_priorities: RedmineIssuePriority[];
+};
