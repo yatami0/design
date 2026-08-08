@@ -31,3 +31,9 @@ public/mockServiceWorker.js
 # 🟥 整形すると「design agent が吐いたそのもの」でなくなり、Q1〜Q3 の数え上げの証拠性が落ちる。
 # ds-bundle/ と同じ扱い。DR-0040（層を足すたびに射程が漏れる）の 4 例目。
 artifacts/
+
+# 部品1（2026-08-09）: Conductor の作業領域（agent 間の受け渡し用スクラッチ）。
+# 🟥 repo の .gitignore ではなく Conductor が .git/info/exclude 側で除外しているので、
+#    git からは見えないのに prettier からは見える——**除外の口が 2 系統ある**形。
+#    DR-0040（層を足すたびに射程が漏れる）の 5 例目。実測: a11y 走査の生データ 2 件で format:check が赤くなった。
+.context/
