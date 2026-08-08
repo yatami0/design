@@ -111,9 +111,9 @@
 
 | # | 見張るもの | なぜ |
 | --- | --- | --- |
-| 17 | 🟥 **`SelectTrigger` の `width` が出荷物で効いていない** | `w-fit`（上流 base）に負ける。`fix/select-overlay-and-field-width`（`4922d83`）が直しているが**未マージ**。**マージ後の再同期で消えたことを確認する**。消えなければ header の claim が偽のまま |
+| 17 | 🟥 **`SelectTrigger` の `width` が出荷物で効いていない** | `w-fit`（上流 base）に負ける。[PR #11](https://github.com/yatami0/design/pull/11)（`1425e30`）が直した。🆕 **2026-08-08 にマージ済み**——**次の再同期で消えたことを確認する**。消えなければ header の claim が偽のまま |
 | 18 | 🟨 **土台を触る工程の後は carry-forward が全滅する** | 指紋は story ファイル全体。工程1 の型 import 1 行で **31 件が全部 `changed`** になった。**再同期に「全件再採点」の時間を見込む**（今回 56 story） |
-| 19 | 🟨 **`cfg.entry` を `dist/design.mjs` に倒すかは未決** | 工程1 で `dist` が実在するようになった。skill は「顧客がビルドした dist を出せ」と言うが、今は `src/index.ts` を converter がバンドルしている。**出荷物の由来が変わる判断**なので工程側で決める |
+| 19 | 🟨 **`cfg.entry` を `dist/design.mjs` に倒すかは未決** | 工程1 で `dist` が実在するようになった。skill は「顧客がビルドした dist を出せ」と言うが、今は `src/index.ts` を converter がバンドルしている。**出荷物の由来が変わる判断**なので工程側で決める | 🆕 **→ [段取り §工程4 D3](../docs/工場の段取り.md) に判断ポイントとして持ち込んだ**（2026-08-08）。🟥 [DR-0091](../docs/DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md) で**出荷入口が 4 本**と分かったので、D3 は 4 本目の性質にも効く
 | 20 | 🟦 **pnpm の回避策はもう要らない** | 工程3 D12 の `allowBuilds` 宣言で `pnpm i --frozen-lockfile` が素直に通る。**プレースホルダ `pnpm-workspace.yaml` は生えなかった**（実測）。下の「pnpm 経由を避ける」節は歴史として残す |
 
 | # | 見張るもの | なぜ |
@@ -167,7 +167,7 @@ header は `SelectTrigger` に `width: sm|md|lg` があると教えている。*
 **`w-field-*` を width ユーティリティと認識しない**ので両方が生き残り、**stylesheet の順序で `w-fit` が勝つ**。
 → **header の「`width` で控えを sizing できる」は、名前としては真だが効果としては偽。**
 
-🟦 **ブランチ `fix/select-overlay-and-field-width`（`4922d83`「死んでいた語彙クラスを塞いだ」）が同じ箇所を直している。**
+🟦 **[PR #11](https://github.com/yatami0/design/pull/11)（`1425e30`「死んでいた語彙クラスを塞いだ」）が同じ箇所を直している。**
 🟥 **未マージなので今回の出荷物には入っていない。**マージ後に再同期すれば消えるはず——**消えたことを次回確認する**。
 🟥 **header は書き換えていない**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。直すのはコード側。
 

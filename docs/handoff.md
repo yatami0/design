@@ -3,7 +3,7 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-08（★★★ 🆕 **工程3 の PR #10 と `/design-sync` の PR #12 はマージ済み**（`5a9abde` / `cfeaff5`）。★★★ 🆕 **同期を打った — 31 → 36 部品**（[実行記録 §/design-sync 再同期（工程3 後）](実行記録.md)・`.design-sync/NOTES.md`）。**工程3 が託した観測 3 点の答え: ① 6 件中 5 件がカードに（`FilterField` は story が無く落ちた） ② 🟥 測れていない**（当該分岐が一度も走っていない＝「対象 0 件で緑」の型 → [OBS-0014](OBS/OBS-0014_同一ファイルに2キーを向けたときconverterが何をするか.md)）**③ 題材は湧かなかったが自動ではない**——`titleMap` に `null` を手で足した結果で、🟥 **`/design-sync` は `dist` を経由しない 4 本目の出荷入口**（判定軸は story の `title`。[DR-0087](DR/DR-0087-fetching-belongs-to-the-subject-layer.md) の lint はこの経路を 1 行も見ていない・[DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)）。★ **同期が独立に見つけたもの 2 件**: 🟥 **carry-forward 全滅の原因は型 import 1 行**（`@storybook/nextjs-vite` → `react-vite`。描画に 0 ピクセルなのに story 45 件全部の指紋が動いた）／ 🟥 **`SelectTrigger` の `width` は出荷物でも効いていない**——**header の claim は「名前としては真、効果としては偽」**（名前の実在は効果を保証しない＝ header 検証の方法そのものへの指摘）。🟦 **順番の懸念は解決した**——同期が先に打たれたので、**塞ぐ前の状態が出荷物に記録された**＝次回同期が before/after の対照になる（NOTES 見張り #17）。🟥 **次: PR #11 のマージ（人）→ 再同期で #17 を確認 → 工程4 の手順書**）
+最終更新: 2026-08-08（★★★ 🆕 **未マージの PR は 0 件になった** — #10（工程3）／ #12（`/design-sync`）／ **#11（Select の修正・`1425e30`）**をすべてマージ済み（🟨 **#11 のマージはユーザー指示による**——[DR-0068](DR/DR-0068-merge-through-pull-requests.md)「マージは人」の例外を明示的に受けた）。🆕 **見張り #19（`cfg.entry` を dist に倒すか）を [段取り §工程4 D3](工場の段取り.md) に持ち込んだ**——工程4 は**題材 story が増える最初の工程**なので、**出荷面の話（D3 ＋ `titleMap` の機械化）をこの工程で 1 度に片付ける**。★★★ 🆕 **同期を打った — 31 → 36 部品**（[実行記録 §/design-sync 再同期（工程3 後）](実行記録.md)・`.design-sync/NOTES.md`）。**工程3 が託した観測 3 点の答え: ① 6 件中 5 件がカードに（`FilterField` は story が無く落ちた） ② 🟥 測れていない**（当該分岐が一度も走っていない＝「対象 0 件で緑」の型 → [OBS-0014](OBS/OBS-0014_同一ファイルに2キーを向けたときconverterが何をするか.md)）**③ 題材は湧かなかったが自動ではない**——`titleMap` に `null` を手で足した結果で、🟥 **`/design-sync` は `dist` を経由しない 4 本目の出荷入口**（判定軸は story の `title`。[DR-0087](DR/DR-0087-fetching-belongs-to-the-subject-layer.md) の lint はこの経路を 1 行も見ていない・[DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)）。★ **同期が独立に見つけたもの 2 件**: 🟥 **carry-forward 全滅の原因は型 import 1 行**（`@storybook/nextjs-vite` → `react-vite`。描画に 0 ピクセルなのに story 45 件全部の指紋が動いた）／ 🟥 **`SelectTrigger` の `width` は出荷物でも効いていない**——**header の claim は「名前としては真、効果としては偽」**（名前の実在は効果を保証しない＝ header 検証の方法そのものへの指摘）。🟦 **順番の懸念は解決した**——同期が先に打たれたので、**塞ぐ前の状態が出荷物に記録された**＝次回同期が before/after の対照になる（NOTES 見張り #17）。🟥 **次: PR #11 のマージ（人）→ 再同期で #17 を確認 → 工程4 の手順書**）
 
 前回: 2026-08-08（★★★ 🆕 **工程3 の PR #10 はマージ済み**（`5a9abde`）。★★★ 🆕 **工程外の修正を 1 本入れた — Select の位置決めと、語彙クラスが死んでいた件**（[実行記録 §Select の位置決めと語彙クラス](実行記録.md)・ブランチ `fix/select-overlay-and-field-width`）。**発端はユーザーの指摘「ボタンと開くリストの大きさが揃わない」。**★★ 🟥 **本体は幅ではなかった**——① 上流既定 `item-aligned` が**トリガ 32px のうち 30px を隠していた**（[DR-0089](DR/DR-0089-overlays-do-not-cover-their-anchor.md)・ユーザー判断「ドロップダウンは被らないのが自然」→ `popper` ＋ `align="start"` を**製品層で固定し prop にしない**） ② ★★★ 🟥 **計測中に釣れた: 手8d の `width` prop は 3 語とも一度も効いていなかった**（[DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md)。`twMerge('w-fit w-field-md')` が**両方残す** → CSS 順で `w-fit` が勝つ。実測 sm 112 / md 114 / lg 105 px ＝ **sm > lg の逆転**）。**「対象 0 件で緑」の prop 版**——prop も型も lint も story も緑で、**作用だけが無かった**。塞ぐと全 76 story で **11 件 → 0 件**。🟦 **素材層で書き換えたのは `src/lib/utils.ts` の import 1 行のみ**（`src/components/ui/**` は 0 行）。ゲート 6 本は**内訳まで一致**（error 40 / warning 1）・dist 65 ファイル（+1）・story 71 件（±0）。🟥 **次: この PR のマージ（人）→ `/design-sync`（人）→ 工程4 の手順書**）
 
@@ -19,7 +19,12 @@
 
 ## 現在地
 
-- ★★★ 🆕 **`main` は `cfeaff5`**（工程3 の PR #10 ＋ `/design-sync` の PR #12 がマージ済み）。**未マージは PR #11 だけ**（`fix/select-overlay-and-field-width`・[DR-0089](DR/DR-0089-overlays-do-not-cover-their-anchor.md) / [DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md)）。
+- ★★★ 🆕 **`main` は `1425e30`。未マージの PR は 0 件**（#10 工程3 ／ #12 `/design-sync` ／ #11 Select の修正）。
+  🟨 **#11 のマージはユーザー指示で Claude が実行した**——[DR-0068](DR/DR-0068-merge-through-pull-requests.md)「マージは人が実行する」の**明示的な例外**。過去 3 件と同じ **squash** に揃えた。
+  🟥 **squash で `4922d83` が main から消えた**ので、それを SHA で名指ししていた 3 箇所（`.design-sync/NOTES.md` 見張り #17 ほか）を **PR #11 と `1425e30` に貼り替えた**（証跡の参照先が死ぬのを防ぐ）。
+- ★★ 🆕 **見張り #19 を [段取り §工程4 の判断ポイント D3](工場の段取り.md) に持ち込んだ**（ユーザー指示 2026-08-08「2 の判断も手順に入れておきましょう」）。
+  **`cfg.entry` を `src/index.ts` → `dist/design.mjs` に倒すか。**🟨 推奨は**据え置き**——倒すと ① [DR-0083](DR/DR-0083-lib-build-silently-strips-use-client.md)（dist は `'use client'` を警告 0 で失う）を出荷物に持ち込む ② `pnpm build` が同期の前提になる。
+  🟦 **倒せば 4 本目の入口が `dist` を見るようになる**が、🟥 **判定軸は `title` のままなので「dist を渡す」と「境界が守られる」は別**（[DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)）。
 - ★★★ 🆕 **`/design-sync` を打った（人・2026-08-08）— 31 → 36 部品**（[実行記録 §/design-sync 再同期（工程3 後）](実行記録.md)・一次記録は `.design-sync/NOTES.md` §工程3 後の再同期）。
   デザインプロジェクト <https://claude.ai/design/p/3acbb737-85fe-4098-95f4-c99070168ba1>。**56 story すべて `match`・render check 36/36 clean・削除 0。**
   - ★★ **工程3 が託した観測 3 点の答え**——
@@ -710,9 +715,8 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 >    ① 6 件中 **5 件**がカードに（`FilterField` は story が無く落ちた）
 >    ② 🟥 **測れていない**（当該分岐が一度も走っていない）→ [OBS-0014](OBS/OBS-0014_同一ファイルに2キーを向けたときconverterが何をするか.md)
 >    ③ 🟦 湧かなかったが**自動ではない** → [DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)（**4 本目の出荷入口**）
-> 2b. 🆕 🟥 **PR #11（`fix/select-overlay-and-field-width`）を人がマージする**——[DR-0089](DR/DR-0089-overlays-do-not-cover-their-anchor.md)（オーバーレイは重ねない）＋ [DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md)（`width` prop が効いていなかった）。
->    **マージしたら再同期して NOTES の見張り #17 を確認する**（出荷物から `w-fit` の勝ちが消えたか）。🟦 **順番の懸念は解決済み**——同期が先に打たれたので、次回同期が before/after の対照になる
-> 2c. 🆕 🟨 **NOTES 見張り #19 を工程側で決める**——`cfg.entry` を `src/index.ts` → `dist/design.mjs` に倒すか。**出荷物の由来が変わる判断**。🟥 [DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md) で入口が 4 本と分かったので、**この判断は 4 本目の性質にも効く**
+> 2b. ✅ ~~PR #11 をマージする~~ **完了**（`1425e30`・🟨 ユーザー指示で Claude が実行）。🟥 **残るのは「マージ後の再同期で NOTES 見張り #17 を確認する」**——出荷物から `w-fit` の勝ちが消えたか。**次に `/design-sync` を打つときの観測 1 点目**
+> 2c. ✅ ~~NOTES 見張り #19 を工程側で決める~~ **持ち込み完了**（[段取り §工程4 D3](工場の段取り.md)）。🟥 **決めるのは工程4 の手順書 §2**——推奨は据え置き。**工程4 で `titleMap` の機械化と一緒に片付ける**
 > 2d. 🆕 🟥 **工程4 で題材 story を足すときは `titleMap` への追記を忘れない**（[DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)。lint は見張っていない。機械化するかは未決）
 > 3. **工程4（一覧 → 詳細・編集あり）の手順書を起こす**（問いの種は [工場の段取り §工程4](工場の段取り.md)。★ **編集の状態管理の置き場＝未決 #4 はここで決める**。DR-0088 の 2 問が新種の固有物「編集の状態」を裁けるかが Q4 の続き）
 > 4. 🟨 申し送り: **fixtures の全廃は工程4 で再判定**（工程3 D6=C。出荷面の漏れは塞ぎ済み・中身の重複だけ残る。既存 4 story を作り直す必要が出るかで決める）
