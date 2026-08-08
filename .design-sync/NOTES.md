@@ -105,15 +105,15 @@
 
 ## 🟥 Re-sync risks（次の実行が見張るもの）
 
-> 最終更新: 2026-08-08（**工程3 後の再同期。土台が Vite になった後の 1 回目で 36 部品**。下の「工程3 後の再同期」節が最新の実測）
+> 最終更新: 2026-08-09（**工程4 後の再同期。打つものが無かった**——remote は既に 39 部品で current だった。下の「工程4 後の再同期」節が最新の実測）
 
 ### 🆕 2026-08-08 に足した見張り（#17〜#20）
 
 | # | 見張るもの | なぜ |
 | --- | --- | --- |
-| 17 | 🟥 **`SelectTrigger` の `width` が出荷物で効いていない** | `w-fit`（上流 base）に負ける。[PR #11](https://github.com/yatami0/design/pull/11)（`1425e30`）が直した。🆕 **2026-08-08 にマージ済み**——**次の再同期で消えたことを確認する**。消えなければ header の claim が偽のまま |
+| 17 | 🟦 **解決済み（2026-08-09 に実測で確認）** | `SelectTrigger` の `width` は**出荷物で効くようになった**。[PR #11](https://github.com/yatami0/design/pull/11)（`1425e30`）の効果。**出荷している `Select.html?story=Widths` を Playwright で実測: sm 128 / md 192 / lg 320 px**（＝ `--container-field-*` の spacing×32/48/80 どおり）。塞ぐ前は **sm 112.31 / md 113.59 / lg 104.88**（sm > lg の逆転）。emit されるクラスからも **`w-fit` が消えている**（tailwind-merge が畳むようになった）。**header の claim は「名前としても効果としても真」になった** |
 | 18 | 🟨 **土台を触る工程の後は carry-forward が全滅する** | 指紋は story ファイル全体。工程1 の型 import 1 行で **31 件が全部 `changed`** になった。**再同期に「全件再採点」の時間を見込む**（今回 56 story） |
-| 19 | 🟨 **`cfg.entry` を `dist/design.mjs` に倒すかは未決** | 工程1 で `dist` が実在するようになった。skill は「顧客がビルドした dist を出せ」と言うが、今は `src/index.ts` を converter がバンドルしている。**出荷物の由来が変わる判断**なので工程側で決める | 🆕 **→ [段取り §工程4 D3](../docs/工場の段取り.md) に判断ポイントとして持ち込んだ**（2026-08-08）。🟥 [DR-0091](../docs/DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md) で**出荷入口が 4 本**と分かったので、D3 は 4 本目の性質にも効く
+| 19 | 🟦 **決着済み（工程4 D3 = B・据え置き）** | **`cfg.entry` は `src/index.ts` のまま。**倒すと ① [DR-0083](../docs/DR/DR-0083-lib-build-silently-strips-use-client.md)（dist は `'use client'` を警告 0 で失う）を出荷物に持ち込む ② `pnpm build` が同期の前提になる。🟦 倒す利点（入口 4 本 → 実質 2 系統）は本物だが、🟥 **判定軸は `title` のままなので「dist を渡す」と「境界が守られる」は別**（[DR-0091](../docs/DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)）——**境界は D4 の検査（`tools/title-map-check.mjs`）が受け持つ。**再同期は `--entry src/index.ts` で回すこと
 | 20 | 🟦 **pnpm の回避策はもう要らない** | 工程3 D12 の `allowBuilds` 宣言で `pnpm i --frozen-lockfile` が素直に通る。**プレースホルダ `pnpm-workspace.yaml` は生えなかった**（実測）。下の「pnpm 経由を避ける」節は歴史として残す |
 
 | # | 見張るもの | なぜ |
@@ -132,6 +132,45 @@
 | 12 | 🟨 **README の自動生成部と conventions header は矛盾している**（未解決） | 生成部（`## Where things are`）は `guidelines/` と `<Name>.prompt.md` を「読め」と書くが、**デザイン側には届かない**（[DR-0064](../docs/DR/DR-0064-design-project-receives-runtime-only.md)）。🟥 **header 側に打ち消しを置いたら別の場所が壊れたのでロールバックした**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。**矛盾は残したまま。次に触るときは 1 変数で測る** |
 | 13 | 🆕 🟦 **`[TOKENS_MISSING]` が 9 → 1 に減った** | 前回は `--radix-*` 9 件。今回は「1 missing, below threshold」で **tag そのものが出ない。**原因未特定（sb CSS の採取結果が変わった可能性）。**増えたら見る** |
 | 14 | 🆕 🟦 **`[REFERENCE_STALE?]` と `AppShell` の `[SPOT_CHECK]` は今回出なかった** | どちらも 3 回連続で出ていたもの。**参照 Storybook を同じセッションで建て直したため**と思われる。次回また出たら「建て直しのタイミング」が原因と確定できる |
+
+## 🆕 工程4 後の再同期（2026-08-09）— 打つものが無かった
+
+**ドライバは `upload.any: false`。**remote は既に**工程4 の出荷物そのもの**（39 部品）で、この build と 1 バイトも違わなかった。
+
+| 観測 | 結果 |
+| --- | --- |
+| ドライバの判定 | 🟦 `ok: true` / `anchor: ok` / `learningsUnmerged: []` / `canary: null` / `pendingGrade: []` |
+| 検証の内訳 | 🟦 **`unchanged` 39 ／ `changed` 0 ／ `added` 0 ／ `removed` 0。**carry-forward が**全件効いた**（見張り #18 の「土台を触った後は全滅」の対照例） |
+| アップロード | 🟦 **`any: false`**（`bundle` / `styling` / `aux` すべて false・`deletePaths` []）。**`finalize_plan` は打っていない** |
+| render check | 🟨 **skipped**（`[RENDER_SKIPPED]`）。**アンカー一致の no-change 再同期では既定でこうなる**——ドライバ由来の想定内の warn。全件回すなら `--render-sample 0` |
+| capture | 🟦 `empty_worklist`（採点対象 0）。**シートは 1 枚も撮っていない** |
+
+### 🟥 NOTES が remote に遅れていた —— 工程4 の同期は記録されずに打たれている
+
+**アンカーを取ったら既に 39 部品あった**（`DescriptionList` / `Timeline` / `FormLayout` は工程4 の新設）。
+つまり**工程4 の後に誰かが `/design-sync` を打ってアップロードし、`.design-sync/NOTES.md` を更新していない。**
+`git log -- .design-sync/` の最後は `5b96c77`（工程4）で、**動いたのは `config.json` の 10 行だけ**。
+🟥 **handoff は「次: `/design-sync`（人）」のままだった**——**台帳と remote が食い違っていた。**
+
+★ **教訓: アンカーは「前回の NOTES」ではなく remote が正。**再同期の最初に `get_file _ds_sync.json` を取れば、
+**NOTES が何を言っていようと本当の現在地が分かる**（今回それで「打つものが無い」と 1 発で確定した）。
+
+### 🟦 conventions header の実在検証 —— ドリフト 0 件、そして初めて「効果」まで測った
+
+**名前のドリフトは 0 件**（クラス 27・custom property 2・部品/パーツ/hook・props と union 値を全件実測）。
+**否定の主張も裏が取れた**——`Container` に `inset` が無い ／ Layout 7 部品が `className` を受けない ／
+`SelectTrigger` の `className` は `Omit` で型から消えている ／ `StatusPill` の tone に `info` / `progress` が無い。
+`window.Design` は**ブラウザで実際にロードして 164 export を列挙**した（130 → 164。工程4 の `Field` / `Alert` 系のぶん）。
+
+★★ **今回は「名前の実在」で止めず、`width` を実測した**（見張り #17）。
+前回の指摘——**「名前の実在は効果を保証しない」＝検証の方法そのものへの指摘**——への答え。
+🟦 **効果まで測れる claim は測る**。今回は出荷物を Playwright で開いて px を読んだ（`.design-sync/.cache/verify-header.mjs`・gitignore なので毎回書き捨て）。
+
+### 🆕 2026-08-09 に足した見張り（#21）
+
+| # | 見張るもの | なぜ |
+| --- | --- | --- |
+| 21 | 🟥 **header が名指ししていない出荷部品が 8 件ある** | `DescriptionList` `Timeline` `Breadcrumb` `Tabs` `FilterBar` `FormLayout` `PageHeader` `PeriodSelect`。**カードは出ているのに header の 2 層の列挙に載っていない。**header は「2 層とも実在する部品だから自分で markup を書くな」と言っているので、**載っていない部品は design agent が手組みする側に回る**（工程7 で `Card` が無くてカード面を手組みされたのと同じ形）。🟥 **ただし [DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) があるので足すなら 1 変数で測る**——手8 で 842 バイト足したら**触っていない箇所が壊れた**。**今回は書き換えていない**（skill も「既存 header は書き換えず、ドリフトを報告して提案する」） |
 
 ## 🆕 工程3 後の再同期（2026-08-08）— 土台が Vite になった後の 1 回目
 
