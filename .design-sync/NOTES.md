@@ -105,7 +105,16 @@
 
 ## 🟥 Re-sync risks（次の実行が見張るもの）
 
-> 最終更新: 2026-08-07（**手8e の再同期。製品層 4 件の実装＋`Link` 新設で 31 部品**。下の「手8e の再同期」節が最新の実測）
+> 最終更新: 2026-08-08（**工程3 後の再同期。土台が Vite になった後の 1 回目で 36 部品**。下の「工程3 後の再同期」節が最新の実測）
+
+### 🆕 2026-08-08 に足した見張り（#17〜#20）
+
+| # | 見張るもの | なぜ |
+| --- | --- | --- |
+| 17 | 🟥 **`SelectTrigger` の `width` が出荷物で効いていない** | `w-fit`（上流 base）に負ける。`fix/select-overlay-and-field-width`（`4922d83`）が直しているが**未マージ**。**マージ後の再同期で消えたことを確認する**。消えなければ header の claim が偽のまま |
+| 18 | 🟨 **土台を触る工程の後は carry-forward が全滅する** | 指紋は story ファイル全体。工程1 の型 import 1 行で **31 件が全部 `changed`** になった。**再同期に「全件再採点」の時間を見込む**（今回 56 story） |
+| 19 | 🟨 **`cfg.entry` を `dist/design.mjs` に倒すかは未決** | 工程1 で `dist` が実在するようになった。skill は「顧客がビルドした dist を出せ」と言うが、今は `src/index.ts` を converter がバンドルしている。**出荷物の由来が変わる判断**なので工程側で決める |
+| 20 | 🟦 **pnpm の回避策はもう要らない** | 工程3 D12 の `allowBuilds` 宣言で `pnpm i --frozen-lockfile` が素直に通る。**プレースホルダ `pnpm-workspace.yaml` は生えなかった**（実測）。下の「pnpm 経由を避ける」節は歴史として残す |
 
 | # | 見張るもの | なぜ |
 | --- | --- | --- |
@@ -123,6 +132,59 @@
 | 12 | 🟨 **README の自動生成部と conventions header は矛盾している**（未解決） | 生成部（`## Where things are`）は `guidelines/` と `<Name>.prompt.md` を「読め」と書くが、**デザイン側には届かない**（[DR-0064](../docs/DR/DR-0064-design-project-receives-runtime-only.md)）。🟥 **header 側に打ち消しを置いたら別の場所が壊れたのでロールバックした**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。**矛盾は残したまま。次に触るときは 1 変数で測る** |
 | 13 | 🆕 🟦 **`[TOKENS_MISSING]` が 9 → 1 に減った** | 前回は `--radix-*` 9 件。今回は「1 missing, below threshold」で **tag そのものが出ない。**原因未特定（sb CSS の採取結果が変わった可能性）。**増えたら見る** |
 | 14 | 🆕 🟦 **`[REFERENCE_STALE?]` と `AppShell` の `[SPOT_CHECK]` は今回出なかった** | どちらも 3 回連続で出ていたもの。**参照 Storybook を同じセッションで建て直したため**と思われる。次回また出たら「建て直しのタイミング」が原因と確定できる |
+
+## 🆕 工程3 後の再同期（2026-08-08）— 土台が Vite になった後の 1 回目
+
+**同期範囲は 31 → 36 部品**（`Breadcrumb` `Tabs` `PeriodSelect` `FilterBar` `PageHeader` が追加）。
+`cfg.componentSrcMap` は 37 件だが `FilterField` に story が無いので**カードは 36 件**。
+
+| 観測 | 結果 |
+| --- | --- |
+| ドライバの判定 | 🟦 `ok: true` / `anchor: ok` / `learningsUnmerged: []` / `canary: null` / `removed: []` |
+| 検証の内訳 | 🟥 **`unchanged` 0 ／ `changed` 31 ／ `added` 5。**carry-forward が**全滅**した |
+| 採点 | 🟦 **56 story すべて `match`**（`close` 0・`mismatch` 0・factual failure 0）。**36 シート全部を画像判定**（sibling-trusted は 1 件も使っていない） |
+| render check | 🟦 **36/36 clean**（`bad` 0 / `thin` 0 / `variantsIdentical` 0 / `gridOverflow` 0） |
+| 🟥 conventions header の実在検証 | **名前のドリフトは 0 件**（クラス 27・custom property 5・部品/Provider/hook 41 を全件実測）。🟥 **ただし「効いていない」claim が 1 件出た**（下記） |
+
+### 🟥 carry-forward が全滅した原因 —— 型 import の 1 行
+
+`sourceKey` の入力は `globalSlice` / `componentSlice` / **story ファイルの `srcSha`** / owned preview / story 一覧
+（`.ds-sync/lib/sync-hashes.mjs` の `sourceKeyFor`）。**config は 1 文字も動いていない**（`keyRecipe` 7・`scriptsSha` も同一）。
+動いたのは **story 45 ファイル全部の 1 行目**——工程1 の
+`import type { Meta, StoryObj } from '@storybook/nextjs-vite'` → `'@storybook/react-vite'`。
+
+★ **型だけの import で、描画には 1 ピクセルも効かない。**それでも指紋は story ファイル全体なので**全件が `changed`**になる。
+🟦 **これは仕様どおり**（指紋を「描画に効く部分だけ」にはできない）。**土台を入れ替える工程の後は再採点が全件走ると見込むこと**（今回 56 story）。
+
+### 🟥 `SelectTrigger` の `width` は**出荷物では効いていない**（新規）
+
+header は `SelectTrigger` に `width: sm|md|lg` があると教えている。**名前は全部実在する**——
+`w-field-sm/md/lg` は `_ds_bundle.css` に別々の規則で載っており（`--container-field-sm/md/lg` = spacing×32/48/80）、
+`FIELD_WIDTH`（`src/components/Layout/tokens.ts`）も生きている。
+🟥 **それでも 3 つは同じ幅で描かれる**（`Select` の `Widths` story・**storybook 側も preview 側も同じ**なので採点は `match`）。
+
+原因: 上流 `ui/select.tsx` の base クラスに **`w-fit`** があり、`cn()`（tailwind-merge）は
+**`w-field-*` を width ユーティリティと認識しない**ので両方が生き残り、**stylesheet の順序で `w-fit` が勝つ**。
+→ **header の「`width` で控えを sizing できる」は、名前としては真だが効果としては偽。**
+
+🟦 **ブランチ `fix/select-overlay-and-field-width`（`4922d83`「死んでいた語彙クラスを塞いだ」）が同じ箇所を直している。**
+🟥 **未マージなので今回の出荷物には入っていない。**マージ後に再同期すれば消えるはず——**消えたことを次回確認する**。
+🟥 **header は書き換えていない**（[DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)）。直すのはコード側。
+
+### 🟨 その他
+
+- **`cfg.titleMap` に `null` を 2 件足した**——`データの器（MSW）`（★ Review・工程2）と `チケット一覧`（⑤ 題材・工程3）。
+  どちらも `[TITLE_UNMAPPED]` で警告に出ていたもの。**題材（Redmine）は出荷しない**（[DR-0087](../docs/DR/DR-0087-fetching-belongs-to-the-subject-layer.md)）ので除外が正。
+  🟦 `null` の titleMap 項目は `componentFor()` の key に入らないので**既存 31 件の grade は動かない**（実測で確認）。
+- 🟦 **`cfg.entry` は `src/index.ts` のまま**にした。工程1 で `dist/design.mjs` が実在するようになったので
+  **converter に「本物の dist」を渡す選択肢が生まれている**が、出荷物の由来が変わる判断なので**この同期では動かさない**。
+  🟥 **次の工程で決めること**（`--entry dist/design.mjs` に倒すか）。
+- 🟨 **`pnpm i --frozen-lockfile` は素直に通った**（工程3 D12 の `allowBuilds` 宣言のおかげ。
+  プレースホルダ `pnpm-workspace.yaml` は**生えなかった**——NOTES 上段の「pnpm 経由を避ける」は**もう要らない**）。
+- 🟨 **`.ds-sync` の `npm i` は `esbuild` の postinstall を実行しない**（npm 11 の allow-scripts）。
+  🟦 **実測で問題なし**（`transformSync` が通る。バイナリは optional dep 側から来る）。
+- 出なかった警告: `[GRID_OVERFLOW]` 0・`[SPOT_CHECK]` 0・`[REFERENCE_STALE?]` 0（参照 Storybook を同じセッションで建て直した——risk #14 の読みが 3 回連続で当たった）。
+- `[TOKENS_MISSING]` は今回も「1 missing, below threshold」で **tag が出ない**（risk #13 据え置き）。
 
 ## 🆕 手8 の再同期（2026-08-02）— aux だけを動かした
 
