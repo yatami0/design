@@ -184,9 +184,12 @@ export default defineConfig(
 
   // 🆕 工程2: 取得の層だけは fetch を書いてよい（というより**ここしか書けない**）。
   // no-restricted-syntax は後のブロックが前を置き換えるので、noServerActions を再掲する。
+  // 🟥 工程3 D11: 例外の射程を `src/redmine/**` 全体 → **client.ts 1 ファイル**に絞った。
+  //    広いままだと画面（screens/）が client.ts を迂回して fetch を直書きできる
+  //    （K7 で「全体例外のときは緑」を実証してから絞った）。
   {
     name: 'repo/fetch-lives-here',
-    files: ['src/redmine/**/*.{ts,tsx}'],
+    files: ['src/redmine/client.ts'],
     rules: {
       'no-restricted-syntax': ['error', noServerActions],
     },
@@ -250,6 +253,33 @@ export default defineConfig(
     files: ['src/components/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': ['error', { patterns: [noSubjectImports] }],
+    },
+  },
+
+  {
+    // 🆕 工程3 D11: アプリ層（題材の画面）。手3 D4=B′ の「アプリ層」の規則が
+    // 工程1 で src/app が消えて以来、掛かる先を失っていた（DR-0074 の w-48 と同じ経路）。
+    // 画面には ① 素材層の直 import 禁止（窓口 1 本） ② 数値の段・パレット色の禁止 を張る。
+    // ③ fetch 禁止は global ブロックのものが効く（例外を client.ts に絞ったため）。
+    // 🟥 発火は K7 で「穴の実証 → 塞いで赤 → 検体を消して緑」まで確認した（実行記録 §工程3）。
+    name: 'repo/subject-screens-frame',
+    files: ['src/redmine/screens/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        noServerActions,
+        noRawFetch,
+        ...noPrimitiveValues,
+      ],
+      'no-restricted-imports': [
+        'error',
+        { patterns: [noMaterialLayerImports] },
+      ],
+      // 🆕 工程3 D15: K2 の実測「`as unknown as` は型でもベースの lint でも止まらない」への答え。
+      // 画面は model の型だけを読めばよく、キャストが要る正当な場面が無い——
+      // ここが開いていると「3 点だけ」（工程2 Q3）が as 1 個で破れる。射程は画面層だけ
+      // （client.ts / handlers.ts には request.json() など正当なキャストが残る）。
+      '@typescript-eslint/no-unsafe-type-assertion': 'error',
     },
   },
 

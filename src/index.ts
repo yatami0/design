@@ -28,9 +28,18 @@ export { DataGrid } from '@/components/DataDisplay/DataGrid';
 export { StatusPill } from '@/components/DataDisplay/StatusPill';
 // 手8d H8D-06: 面④b（`a { color: var(--primary) }` が 4/6 周）を部品に引き取る
 export { Link } from '@/components/Navigation/Link';
+// 工程3 D3=C: 期間の語彙（有限 union）＋ 逃げ道（custom）を対で持つ。語彙定数も API の一部
+export {
+  PeriodSelect,
+  PERIOD_PRESETS,
+} from '@/components/Selection/PeriodSelect';
 
 // ── ③ Patterns ─────────────────────────────────────────────────
 export { EmptyState } from '@/patterns/EmptyState';
+// 工程3 D5=C: AppShell に props を足す代わりの「画面の頭」
+export { PageHeader } from '@/patterns/PageHeader';
+// 工程3 D2=C: 帯の見た目はコア、何で絞るかは画面（題材）が差す
+export { FilterBar, FilterField } from '@/patterns/FilterBar';
 export { ListDetail } from '@/patterns/ListDetail';
 // 🟥 振る舞い hook。これを出さないと `ListDetail` は `state` を作れず**使えない**
 //    （conventions header の validate 工程が捕まえた）。`use*` は converter の
@@ -64,6 +73,9 @@ export * from '@/components/Display/Label';
 export * from '@/components/Display/Separator';
 export * from '@/components/Layout/Card';
 export * from '@/components/Navigation/Pagination';
+// 工程3 D4=B: 共通シェルの素材（tabs / breadcrumb）。calendar は PeriodSelect の内部実装なので出さない
+export * from '@/components/Navigation/Tabs';
+export * from '@/components/Navigation/Breadcrumb';
 export * from '@/components/Overlay/Dialog';
 export * from '@/components/Overlay/DropdownMenu';
 export * from '@/components/Overlay/Popover';
@@ -89,10 +101,17 @@ export type {
 } from '@/components/DataDisplay/DataGrid';
 export type { LinkProps, LinkTone } from '@/components/Navigation/Link';
 export type {
+  PeriodSelectProps,
+  PeriodPreset,
+  PeriodRange,
+} from '@/components/Selection/PeriodSelect';
+export type {
   StatusPillProps,
   StatusTone,
 } from '@/components/DataDisplay/StatusPill';
 export type { EmptyStateProps } from '@/patterns/EmptyState';
+export type { PageHeaderProps } from '@/patterns/PageHeader';
+export type { FilterBarProps, FilterFieldProps } from '@/patterns/FilterBar';
 export type { ListDetailProps } from '@/patterns/ListDetail';
 export type { ListDetail as ListDetailState } from '@/patterns/useListDetail';
 export type { AppShellProps, NavItem } from '@/templates/AppShell';

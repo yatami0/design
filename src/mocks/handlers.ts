@@ -44,6 +44,37 @@ function matchesStatus(issue: RedmineIssue, statusId: string): boolean {
   return issue.status.id === Number(statusId);
 }
 
+/**
+ * 工程3 D14=B — `updated_on` の絞り込み。実装するのは `><YYYY-MM-DD|YYYY-MM-DD`
+ * （両端含む・period.ts が組む形）**だけ**。実 API は `>=` 単独なども受けるが、
+ * 使っていない形をモックに足すと「実 API より親切」になる（工程2 の規律）。
+ */
+function matchesUpdatedOn(issue: RedmineIssue, param: string | null): boolean {
+  if (param === null) return true;
+  const match = /^><(\d{4}-\d{2}-\d{2})\|(\d{4}-\d{2}-\d{2})$/.exec(param);
+  const from = match?.[1];
+  const to = match?.[2];
+  // 解釈できない形は絞らない（実 API はフィルタ不成立として無視する）
+  if (from === undefined || to === undefined) return true;
+  const day = issue.updated_on.slice(0, 10);
+  return from <= day && day <= to;
+}
+
+/**
+ * 工程3 P3-06 — `sort`。一覧画面が使う分だけ（`updated_on:desc` / `id` とその逆順）。
+ * 未指定の既定は id 降順（工程2 と同じ）。
+ */
+function compareIssues(
+  sort: string | null,
+): (a: RedmineIssue, b: RedmineIssue) => number {
+  const [field = 'id', direction] = (sort ?? 'id:desc').split(':');
+  const sign = direction === 'desc' ? -1 : 1;
+  if (field === 'updated_on') {
+    return (a, b) => sign * a.updated_on.localeCompare(b.updated_on);
+  }
+  return (a, b) => sign * (a.id - b.id);
+}
+
 function relationsOf(id: number): RedmineIssueRelation[] {
   return getDb().relations.filter(
     (relation) => relation.issue_id === id || relation.issue_to_id === id,
@@ -62,10 +93,13 @@ export const handlers = [
   // ── 一覧 ───────────────────────────────────────────────────────────
   http.get(`${REDMINE_BASE_URL}/issues.json`, ({ request }) => {
     const url = new URL(request.url);
+    // 🟥 K1 の証拠——「絵が変わった」ではなく「このクエリが飛んだ」を残す（工程3 P3-06）
+    console.info(`[msw] GET /issues.json${url.search}`);
     const { offset, limit } = readPaging(url);
     const statusId = url.searchParams.get('status_id') ?? 'open';
     const assignedTo = url.searchParams.get('assigned_to_id');
     const projectId = url.searchParams.get('project_id');
+    const updatedOn = url.searchParams.get('updated_on');
     const withRelations = (url.searchParams.get('include') ?? '').includes(
       'relations',
     );
@@ -79,7 +113,8 @@ export const handlers = [
       .filter(
         (issue) => projectId === null || issue.project.id === Number(projectId),
       )
-      .sort((a, b) => b.id - a.id);
+      .filter((issue) => matchesUpdatedOn(issue, updatedOn))
+      .sort(compareIssues(url.searchParams.get('sort')));
 
     return HttpResponse.json({
       issues: filtered

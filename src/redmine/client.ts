@@ -74,6 +74,11 @@ export interface IssueQuery {
   offset?: number;
   limit?: number;
   sort?: string;
+  /**
+   * 更新日の絞り込み（工程3 D14=B）。`><YYYY-MM-DD|YYYY-MM-DD` の演算子記法は
+   * Redmine 固有の知識なので、組み立ては period.ts（対応表）だけが持つ。
+   */
+  updated_on?: string;
 }
 
 export async function fetchIssues(
