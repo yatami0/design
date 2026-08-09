@@ -14,6 +14,7 @@
 // 🟥 **ゲート 6 本には入れていない**（部品1 D7）。critical を 0 にしてから足す——
 //    赤いまま足すと「新しい赤」が見えなくなり、ベースライン運用が壊れる。
 import storybookTest from '@storybook/addon-vitest/vitest-plugin';
+import tailwindcss from '@tailwindcss/vite';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 
@@ -27,6 +28,20 @@ export default defineConfig({
   //    機械で守られていない）と同じ形をもう 1 つ増やすことになる。
   resolve: { alias: viteConfig.resolve?.alias },
   plugins: [
+    // 🆕 部品2 D10（2026-08-09）— ★★★ 🟥 **これが無いと CSS が 1 行も当たらない。**
+    //    `preview.tsx` は `globals.css` を import しているが、その中身は
+    //    `@import 'tailwindcss'` で、**展開するのは `@tailwindcss/vite` プラグイン。**
+    //    プラグインは `vite.config.ts` にしかなく、上の `resolve.alias` だけを
+    //    引いていたので、**この runner は素の CSS しか見ていなかった。**
+    //
+    //    🟥 **本ファイル冒頭が「jsdom は CSS を計算しないので実ブラウザにする」と
+    //    書いているのに、実ブラウザで CSS が空だった**——**理由に挙げた当のものが
+    //    動いていなかった。**実測（部品2 C2-05）: 素の `<button>` は幅 0、
+    //    素の `<span>小</span>` は 16px（文字幅）、thumb の背景は `rgba(0, 0, 0, 0)`。
+    //    🟦 **部品1 の「critical 0」は無効にならない**——`button-name` 等は
+    //    名前の有無だけを見るので CSS に依存しない。**依存するのは
+    //    `color-contrast`（rule 単位で無効化済み）と面④ の実効値。**
+    tailwindcss(),
     // configDir は本ファイルからの相対。main.ts の stories glob をそのまま使う。
     storybookTest({ configDir: '.storybook' }),
   ],

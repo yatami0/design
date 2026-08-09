@@ -42,8 +42,15 @@ const NUMERIC_STEP =
 
 // 色も同じ穴を持つ。`text-gray-600` は Tailwind のパレット 288 色の 1 つで、
 // 用途を一切言っていない＝ primitive。ユーザー要求は「**色と余白**は定義したものだけ」。
+// 🆕 部品2 D9（2026-08-09）: **`white` / `black` が抜けていた。**
+//    上の並びは全部「色名 + 数字の段」なので `-[0-9]` で締めていたが、
+//    `bg-white` / `text-black` は**段を持たない**ので 1 つも当たらない。
+//    🟥 実害が出た——shadcn の `slider.tsx` の thumb が `bg-white`（テーマを持たない
+//    不透明色。`.dark` でも白のまま）で、`no-arbitrary-value`（角括弧しか見ない）にも
+//    このルールにも掛からなかった。**赤テストで「素通りする」ことを確認してから足した。**
+//    🟨 `/N` の不透明度つき（`bg-black/10`）も同じ穴なので合わせて締める。
 const PRIMITIVE_COLOR =
-  '/(^|\\s)(bg|text|border|ring|outline|fill|stroke|from|via|to|divide|placeholder|caret|accent|decoration|shadow)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-[0-9]/';
+  '/(^|\\s)(bg|text|border|ring|outline|fill|stroke|from|via|to|divide|placeholder|caret|accent|decoration|shadow)-((slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-[0-9]|(white|black)(\\/[0-9]+)?(\\s|$))/';
 
 // 検査する文脈は `tailwindcss/no-arbitrary-value` に合わせる（実測: className / cva / cn は見る、
 // 素の const や object literal は見ない）。同じ穴を空けないよう同じ 3 文脈を張る。

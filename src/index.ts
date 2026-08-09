@@ -96,6 +96,14 @@ export * from '@/components/TextInput/Input';
 export * from '@/components/TextInput/Textarea';
 export * from '@/components/Layout/Field';
 export * from '@/components/Communication/Alert';
+// 部品2 C2-03（D1=A）: 役割 9 カテゴリの欠落のうち、**レジストリの依存が 0 の 5 件**。
+// 🟦 題材の需要から逆算したのではなく、[部品カタログ](../docs/部品カタログ.md) の
+//    9 カテゴリの穴を埋めた（部品1 D1 = C → B の B）。**この repo で初めての「充足駆動」。**
+export * from '@/components/Selection/RadioGroup';
+export * from '@/components/Selection/Switch';
+export * from '@/components/Selection/Slider';
+export * from '@/components/Communication/Progress';
+export * from '@/components/Display/Avatar';
 
 // ── 型（design agent が読む API 契約 `.d.ts` の材料）─────────────
 export type { BoxProps } from '@/components/Layout/Box';
