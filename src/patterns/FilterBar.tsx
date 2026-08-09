@@ -29,11 +29,22 @@ export interface FilterFieldProps {
   children: React.ReactNode;
 }
 
+// 🟥 **部品1 B1-05: ラベルは描いていたのに、コントロールに紐づいていなかった。**
+//    axe の critical `button-name` が 3 件（Status / Assignee ×2）。**目には見えるのに、
+//    支援技術からは名前が無い**——「絵はあるが効いていない」の a11y 版（DR-0090 と同型）。
+//
+// 🟦 **`<label>` で包むだけで直る**（id も cloneElement も要らない）。HTML の labelable 要素は
+//    button / input / select / textarea で、**Radix の `SelectTrigger` は `<button>`**。
+//    暗黙の関連付けは**最初の labelable 子孫**を拾うので、`Stack` を挟んでも届く。
+//    🟥 `<span>` のままでは届かない——`role="combobox"` は **「内容から名前を取る」ロールではない**ので、
+//    トリガに文字が見えていても（実測: 「ステータス」が見えている）名前は空だった。
 export function FilterField({ label, children }: FilterFieldProps) {
   return (
-    <Stack gap="sm">
-      <span className="text-label text-muted-foreground">{label}</span>
-      {children}
-    </Stack>
+    <label>
+      <Stack gap="sm">
+        <span className="text-label text-muted-foreground">{label}</span>
+        {children}
+      </Stack>
+    </label>
   );
 }

@@ -138,6 +138,13 @@ export default defineConfig(
       '**/.design-sync/.cache/**', // 生成された preview wrapper・compare の作業状態
       '**/ds-bundle/**', // converter の出力（アップロードされる成果物）
       '**/.ds-sync/**', // skill から写した converter スクリプト＋その依存
+      // 🆕 部品1 B1-05（2026-08-09）: Conductor の作業領域（agent 間の受け渡し用スクラッチ）。
+      // 🟥 repo の .gitignore ではなく Conductor が .git/info/exclude 側で除外しているので、
+      //    **git からは見えないのに検査からは見える**——除外の口が 2 系統ある（DR-0040 の 5 例目）。
+      // 🟨 **prettier では塞いだのに eslint では塞いでいなかった**——同じ穴を 2 度踏んだ。
+      //    実測: a11y 走査の使い捨てスクリプトが `no-unused-vars` を 1 件持ち込み、
+      //    ベースラインが 42 → 43 になった（新しい赤として検出できたのはゲートのおかげ）。
+      '**/.context/**',
       // 手8 D7=B の帰結: Claude Design の生成物（`artifacts/h7/**` の `.dc.html` 原本と、
       // `artifacts/h8/**` の TSX 機械翻訳）は**検体であって製品ではない**。
       // 🟥 測るときだけ射程に入れる。恒久的に入れると、翻訳由来の赤（TS4114 の

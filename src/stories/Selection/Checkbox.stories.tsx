@@ -13,7 +13,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+// 🟥 部品1 B1-05: 素で置くと `role="checkbox"` に名前が無い（axe critical）。
+//    States は Label + htmlFor で正しく組んでいたのに、Default だけ裸だった。
+export const Default: Story = {
+  render: () => (
+    <div className="flex items-center gap-inline-sm">
+      <Checkbox id="cb-default" />
+      <Label htmlFor="cb-default">未対応のみ</Label>
+    </div>
+  ),
+};
 
 /**
  * ★ 手5 の判定対象。checkbox.tsx は `rounded-[4px]`（純粋な生値。DR-0010 の (C)）を持つので、

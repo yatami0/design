@@ -40,8 +40,15 @@
 - **`Sidebar` / `AppShell` / `Dialog` / `Tooltip` は `cardMode: "single"`**（`[GRID_OVERFLOW]`＝fixed/portal がセル外に出るため）。
   🟨 **Overlay 全部ではない。**`DropdownMenu` / `Popover` / `Sheet` は**閉じた状態の story しか無い**ので flag されない。
 
-- 🟥 **`Dialog` の `Open` story は storybook 側でも描画されない**（`sb-error: no storybook root content`）。
-  → `cfg.overrides.Dialog.skip` に `②-素材層-overlay-dialog--open` を入れてある。**preview 側の問題ではない。**
+- ~~🟥 **`Dialog` の `Open` story は storybook 側でも描画されない**（`sb-error: no storybook root content`）。~~
+  🟥 **2026-08-09 訂正: これは偽だった。`Open` は描画されている。**部品1 B1-03 で Playwright で直接見た実測——
+  `#storybook-root` は空（0 文字）だが、**portal `#radix-_r_0_` に `[role=dialog]`「開いた状態 / …/ Close」が出ている。**
+  ★★ **原因は部品ではなく観測範囲**——`sb-error: no storybook root content` も `/design-sync` の比較ハーネスも
+  **`#storybook-root` だけを見ている**ので、**portal に出る部品は丸ごと観測から消える。**
+  🟨 **同じことに Tooltip では気づいていた**（下の「参照側が足りない」の項）が、**`Tooltip` 固有の癖として処理していた。系統的な問題。**
+  → 🟥 **`cfg.overrides.Dialog.skip` は「描画できないから」ではなく「root だけを見る比較ハーネスでは撮れないから」が正しい理由。**
+  **skip 自体は当面そのままでよいが、根拠を取り違えたまま次の同期に持ち込まない。**
+  🟦 **a11y は clean**（document スコープで走査して違反 0）。詳細は [`docs/部品の完成バー.md`](../docs/部品の完成バー.md) §0 罠 3。
 
 - 🟥 **`Tooltip` の `Always Open` は「参照側が足りない」形の差が出る。**
   storybook のショットは `#storybook-root` だけを撮るので、**portal されたツールチップが枠外**に落ちて写らない。
