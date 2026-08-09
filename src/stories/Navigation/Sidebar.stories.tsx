@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, userEvent, waitFor } from 'storybook/test';
 
 import {
   Sidebar,
@@ -34,6 +35,32 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const tree = (
+  <>
+    <Sidebar>
+      <SidebarHeader>
+        <span className="text-emphasis font-emphasis">Redmine</span>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>チケット</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton isActive>一覧</SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+    <SidebarInset>
+      <div className="p-inset-lg">
+        <SidebarTrigger />
+        <p className="text-body">本文領域（SidebarInset）</p>
+      </div>
+    </SidebarInset>
+  </>
+);
 
 export const Default: Story = {
   render: () => (
@@ -72,4 +99,73 @@ export const Default: Story = {
       </SidebarInset>
     </SidebarProvider>
   ),
+};
+
+/**
+ * 🆕 **畳んだ状態**（部品5 C5-05・D1=C）。
+ *
+ * ★★ 🟥 **[OBS-0019](../../../docs/OBS/OBS-0019_storyが一度も描いていない状態をどこまで機械で要求するか.md) が名指しした 2 つの姿の 1 つ。**
+ * 2026-07-26 から `Default`（デスクトップ・展開）**1 本だけ**で、
+ * **`collapsed` は一度も描かれていなかった**＝ **バーの全面がこの姿を 1 度も見ていない。**
+ *
+ * 🟨 **開閉（overlay）とは別の形**——**閉じた overlay は DOM を持たない**が、
+ * **`collapsed` は DOM が在って別の姿になる**（`data-state` が変わり、幅が 0 に落ちる）。
+ * ★ **面③（状態面）に足すかは D8 で決める。**
+ */
+export const Collapsed: Story = {
+  render: () => <SidebarProvider defaultOpen={false}>{tree}</SidebarProvider>,
+  play: async () => {
+    // 🟥 `?.` を使わない（バー §5）——無ければ undefined が返って expect が通ってしまう
+    const root = document.querySelector('[data-slot="sidebar"]');
+    if (root === null) throw new Error('Sidebar が描画されていない');
+    await expect(root.getAttribute('data-state')).toBe('collapsed');
+    await expect(root.getAttribute('data-collapsible')).toBe('offcanvas');
+  },
+};
+
+/**
+ * 🆕 **モバイルの姿**（部品5 C5-05・D6=B）。
+ *
+ * ★★★ 🟥 **着手前実測で分かったこと 3 つ**——
+ * ① **道具は既に在った**（`@storybook/addon-vitest` は story の `globals.viewport` を読んで
+ *    `page.viewport()` を実際に呼ぶ。**部品4 D1 は「viewport の道具を新設することになる」を理由に
+ *    mobile を範囲外にしたが、その前提が誤りだった**）
+ * ② 🟥 **mobile では `Sidebar` が 1 要素も描かれない**（`openMobile` の初期値は `false` で、
+ *    **外から開く prop が無い**）。**それでも面① は緑**——`SidebarTrigger` が描かれているから。
+ * ③ 🟥 **開くと portal に出るが、名乗るのは `data-slot="sidebar"`**（`sheet-content` ではない）
+ *    ＝ **`tools/opened-overlay-check.mjs` の一覧にも `expectOpened('sheet-content')` にも掛からない。**
+ *
+ * 🟨 **台帳（`tools/a11y-scan.mjs`）はこの story を 1200×900 で測る**（D7=A）——
+ * **バーが見る絵（320px）と台帳が見る絵（1200px）は違う。**
+ */
+export const Mobile: Story = {
+  globals: { viewport: { value: 'mobile1' } },
+  render: () => <SidebarProvider>{tree}</SidebarProvider>,
+  play: async ({ canvasElement }) => {
+    // 🟥 開く前は「部品が 1 要素も無い」——これ自体が観測項目（Q4）
+    await expect(
+      document.querySelectorAll('[data-slot="sidebar"]').length,
+    ).toBe(0);
+
+    const trigger = canvasElement.querySelector<HTMLElement>(
+      '[data-slot="sidebar-trigger"]',
+    );
+    if (trigger === null) throw new Error('SidebarTrigger が描画されていない');
+    await userEvent.click(trigger);
+
+    await waitFor(async () => {
+      await expect(
+        document.querySelectorAll('[data-slot="sidebar"][data-mobile="true"]')
+          .length,
+      ).toBe(1);
+    });
+    const panel = document.querySelector<HTMLElement>(
+      '[data-slot="sidebar"][data-mobile="true"]',
+    );
+    if (panel === null)
+      throw new Error('モバイルの Sidebar が portal に出ていない');
+    // 🟥 大きさを持っているか（面① と同じ判定・在るだけでは足りない）
+    const box = panel.getBoundingClientRect();
+    await expect(box.width > 0 && box.height > 0).toBe(true);
+  },
 };

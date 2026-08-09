@@ -2,18 +2,31 @@
 id: OBS-0019
 type: question
 title: story が一度も描いていない状態を、どこまで機械で要求するか
-status: open
+status: closed
 date: 2026-08-09
 updated: 2026-08-09
 step: '-'
 tags: [storybook, a11y, 完成バー, sidebar, overlay]
-related: [DR-0096, DR-0098, DR-0099, DR-0035, OBS-0008]
+related: [DR-0096, DR-0098, DR-0099, DR-0035, DR-0100, DR-0101, OBS-0008, OBS-0020, OBS-0021, OBS-0023]
 promoted_to: null
 ---
 
 # OBS-0019: story が一度も描いていない状態を、どこまで機械で要求するか
 
 > 凡例：🟦 確定／根拠あり ・ 🟨 暫定／裁量 ・ 🟥 未確認・要本人確認
+
+> 🆕 ★★★ **2026-08-09・[部品5](../手順/部品5_判定の保留と描かれていない状態.md) で決着した（`closed`）。**
+>
+> | 積んだもの | どうなったか |
+> | --- | --- |
+> | **`Sidebar` の `collapsed` / mobile** | 🟦 **両方 story にした**（`Sidebar/Collapsed` / `Sidebar/Mobile`）。**道具の新設は 0**——`@storybook/addon-vitest` は story の `globals.viewport` を読んで `page.viewport()` を実際に呼ぶ（**部品4 D1 が mobile を外した理由は誤りだった**） |
+> | **§5 の判定の保留 12 件** | 🟦 **全件割れた**（🆕 [DR-0100](../DR/DR-0100-pending-judgements-split-into-three-kinds.md)）。🟥 **§5 の見立て「`aria-valid-attr-value` は本物の可能性がある」は外れた**——**参照先 ID は 2 件とも実在し、axe が実在を確かめずに保留を立てていた**（ソース実測） |
+> | **面③ に `collapsed` を足すか**（§2 の未決） | 🟨 **足さない**（部品5 D8=B）。**面③ の 8 つは全部品に共通してありうる姿**だが、**`collapsed` は 1 部品固有**——足すと**残り 47 部品で毎回「対象 0 件で緑」を作る**。→ [完成バー §7](../部品の完成バー.md) に「**部品固有の状態は面③ に無い**」として書いた |
+>
+> 🟥 **本件から出た新しい問いは 3 本に割った**——
+> [OBS-0020](OBS-0020_カレンダーのnavが月ラベルを覆っている.md)（重なり）／
+> [OBS-0021](OBS-0021_面1は部品が描かれたことを見ていない.md)（面① は部品を見ていない）／
+> [OBS-0023](OBS-0023_台帳とバーが別のviewportを見ている.md)（計測器どうしの食い違い）。
 
 ## 0. 一行サマリ【起票時必須】
 
