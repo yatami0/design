@@ -51,7 +51,12 @@
     "FormField": "src/patterns/FormLayout.tsx",
     "Textarea": "src/components/TextInput/Textarea.tsx",
     "Field": "src/components/Layout/Field.tsx",
-    "Alert": "src/components/Communication/Alert.tsx"
+    "Alert": "src/components/Communication/Alert.tsx",
+    "RadioGroup": "src/components/Selection/RadioGroup.tsx",
+    "Switch": "src/components/Selection/Switch.tsx",
+    "Slider": "src/components/Selection/Slider.tsx",
+    "Progress": "src/components/Communication/Progress.tsx",
+    "Avatar": "src/components/Display/Avatar.tsx"
   },
   "readmeHeader": ".design-sync/conventions.md",
   "guidelinesGlob": [
