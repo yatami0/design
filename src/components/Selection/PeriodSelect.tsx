@@ -67,6 +67,14 @@ export interface PeriodSelectProps {
   onRangeChange?: (range: PeriodRange) => void;
   /** トリガの幅。語彙は `--container-field-*`（SelectTrigger と同じ口）。 */
   width?: FieldWidth;
+  /**
+   * 支援技術に読ませる名前。既定は「期間」。
+   * 🟥 **既定を持つ理由**: `role="combobox"` は**内容から名前を取らない**ので、
+   *    トリガに「今週」と見えていても名前は空になる（部品1 B1-05 の実測）。
+   *    **単体で置いても壊れない**のが自己完結した製品層の部品の責務（DR-0070）。
+   *    `FilterField` などが別の見出しを付けるときだけ上書きする。
+   */
+  'aria-label'?: string;
 }
 
 export function PeriodSelect({
@@ -75,6 +83,7 @@ export function PeriodSelect({
   range,
   onRangeChange,
   width = 'md',
+  'aria-label': ariaLabel = '期間',
 }: PeriodSelectProps) {
   return (
     <Inline gap="sm">
@@ -85,7 +94,7 @@ export function PeriodSelect({
           if (isPeriodPreset(next)) onValueChange(next);
         }}
       >
-        <SelectTrigger width={width}>
+        <SelectTrigger width={width} aria-label={ariaLabel}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

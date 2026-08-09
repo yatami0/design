@@ -28,7 +28,7 @@ export const Default: Story = {
   render: () => (
     <Select>
       {/* 🟦 以前はここが `className="w-48"` だった。**我々の story 自身が面①と同じ逸脱を持っていた** */}
-      <SelectTrigger width="md">
+      <SelectTrigger width="md" aria-label="ステータス">
         <SelectValue placeholder="ステータス" />
       </SelectTrigger>
       <SelectContent>
@@ -50,7 +50,7 @@ export const Widths: Story = {
     <Stack gap="md" align="start">
       {(['sm', 'md', 'lg'] as const).map((width) => (
         <Select key={width}>
-          <SelectTrigger width={width}>
+          <SelectTrigger width={width} aria-label={`w-field-${width}`}>
             <SelectValue placeholder={`w-field-${width}`} />
           </SelectTrigger>
           <SelectContent>

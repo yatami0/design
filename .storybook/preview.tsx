@@ -44,11 +44,25 @@ const preview: Preview = {
       },
     },
 
+    // 🆕 部品1 B1-05（2026-08-09）— [完成バー](../docs/部品の完成バー.md) 面② を機械で効かせる。
+    //
+    // 🟥 **2026-07-26 から 'todo'（＝出すが落とさない）だった。**目盛りを一度も読まないまま
+    //    286 件たまった（出荷物の棚で 88 件）。addon-vitest を入れた（B1-02）ので落とす経路ができた。
     a11y: {
-      // 'todo' — 違反はパネルに出すが失敗させない。
-      // 手2b では addon-vitest を入れていない（D10）ので CI で落ちる経路は無い。
-      // DR-0023（touch-min 44px）の測定手段として残している。
-      test: 'todo',
+      test: 'error',
+      options: {
+        rules: {
+          // 🟨 **serious の color-contrast は落とさない（バー §3）。**
+          //    77 件を色の組で畳んだら 7 種類・全部トークンの組で、**① 層の配色の決定**だった
+          //    （最多は --muted-foreground が 13 部品に 44 件）。**部品側では直せない。**
+          //    落とすと直せない赤が常時点灯し、「新しい赤を見つける」運用が壊れる。
+          //    🟦 **消したのではない**——`.context/a11y-detail.mjs` が数え続け、
+          //    判断は [OBS-0017](../docs/OBS/OBS-0017_意味色とfillの対比が全滅している.md) が持つ。
+          'color-contrast': { enabled: false },
+          // storybook の iframe に <main> が無いことによる harness 由来（部品の欠陥ではない）
+          region: { enabled: false },
+        },
+      },
     },
   },
 };

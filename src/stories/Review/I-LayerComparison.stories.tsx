@@ -50,7 +50,7 @@ export const Default: Story = {
           name: 'Checkbox',
           code: 'rounded-[4px]',
           note: 'shadcn が発明した生値。トークンを 1 つも経由しないので、何を差し替えても 4px のまま。',
-          demo: <Checkbox />,
+          demo: <Checkbox aria-label="層の比較の検体" />,
         }}
         right={{
           tag: 'own',
