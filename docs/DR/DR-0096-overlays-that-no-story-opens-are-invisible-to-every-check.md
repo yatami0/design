@@ -11,6 +11,14 @@ poc_feedback: '工場の規約: 開閉を持つ部品は「開いた story」を
 
 # DR-0096: 開かれない overlay は、どの検査からも見えない
 
+> 🟥 **2026-08-09 訂正（部品4 の実測・[DR-0004](DR-0004-document-system-and-git.md) §4「事実誤認の訂正は本文を直す」）。**
+> **§影響 で名指しした一覧が誤っていた。**発見そのもの（**開かれない overlay はどの検査からも見えない**）は**維持**する。
+> **訂正は 3 点**——① 開く story は **2 件ではなく 3 件**（`Tooltip/AlwaysOpen` を数え落とした）
+> ② **`Tooltip` は「いまも開かれていない」ではない**（**2026-07-27 の手5 から `<Tooltip open>` で開いている**）
+> ③ **残る対象は 4 件ではなく 3 件 ＋ 誰も挙げていなかった 1 件**（`dropdown-menu-sub-content`）。
+> ★ **数え方が「story 名に `Open` が付くか」だった**のが原因で、
+> **一覧を機械が引く形に置き換えた**（[DR-0099](DR-0099-the-blind-spot-list-must-be-machine-derived.md)）。
+
 ## 背景
 
 [部品3](../手順/部品3_DatePickerと射程の外の3件.md) C3-03 で `DatePicker`（Popover ＋ Calendar の合成）に
@@ -64,8 +72,13 @@ DR-0048 は「**実行しないから見えない**」、本件は「**実行し
 **観測から直接言えること**
 
 - **開閉を持つ部品は「開いた story」が無いと 1 度も検査されていない。**
-  現況で開く story を持つのは `Dialog/Open` と 🆕 `DatePicker/Open` の **2 件だけ**——
-  🟥 **`DropdownMenu` / `Sheet` / `Tooltip` / `Select` の中身は、いまも開かれていない。**
+  ~~現況で開く story を持つのは `Dialog/Open` と 🆕 `DatePicker/Open` の **2 件だけ**——
+  🟥 **`DropdownMenu` / `Sheet` / `Tooltip` / `Select` の中身は、いまも開かれていない。**~~
+
+  > 🟥 **2026-08-09 訂正（部品4 の実測）。上の 1 行は誤り。**正しくは:
+  > **開く story を持つのは 3 件**（`Dialog/Open` ／ **`Tooltip/AlwaysOpen`**（手5 から）／ `DatePicker/Open`）、
+  > **開かれていないのは 3 件**（`DropdownMenu` / `Sheet` / `Select`）**＋ 本 DR が挙げていない `dropdown-menu-sub-content`**。
+  > 一覧は機械が引く形に置き換えた（`tools/opened-overlay-check.mjs`・[DR-0099](DR-0099-the-blind-spot-list-must-be-machine-derived.md)）。
 - **名前の既定は持てない**（popover の中身を決めるのは使う側）ので、
   **「名前を付けること」を文書に書く形では守れない**——**型で要求するしかない。**
 - ★ **「44 部品が完成バーを通っている」の意味が 1 段弱まる**——
@@ -77,6 +90,15 @@ DR-0048 は「**実行しないから見えない**」、本件は「**実行し
 - 上記 4 部品（`DropdownMenu` / `Sheet` / `Tooltip` / `Select`）にも同種の欠陥があるかは**測っていない**。
   🟨 `Sheet` は Radix の `Dialog` 系なので `SheetTitle` が紐づく見込みだが、**確かめていない**。
 - **「開いた story」を機械で要求できるか**（開閉を持つ部品の一覧を機械が知る方法）は未検討。
+
+> 🟦 **2026-08-09・部品4 で両方に答えが出た**（推論の節はそのまま残す＝ 何を推論したかの記録）:
+> - **同種の `aria-dialog-name` は 1 件も出なかった。**代わりに **`aria-hidden-focus`（serious）が
+>   `DropdownMenu` と `Select` で出た**が、🟦 **これは部品の欠陥ではなく axe の限界**
+>   （`isModalOpen()` は `[role=dialog]` しか見ない）。**フォーカスは実際に閉じ込められている**（実測）。
+> - **`Sheet` の推論は当たったが、理由は違った**——**通ったのではなく axe が判定を放棄していた**
+>   （`incomplete`・[DR-0098](DR-0098-incomplete-was-counted-as-green.md)）。
+> - **機械で要求できる。**静的（一覧を `Primitive.Portal` から引く）＋ 動的（主張が真か）の
+>   **2 段で閉じる**（[DR-0099](DR-0099-the-blind-spot-list-must-be-machine-derived.md)）。
 
 ## 関連
 

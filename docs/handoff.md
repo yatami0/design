@@ -3,7 +3,9 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-09（★★★ 🆕 **部品3 が完了した — `DatePicker` を出荷し、バーが見ていなかった 4 件を全部拾った**（ブランチ `da-nang`・[手順書](手順/部品3_DatePickerと射程の外の3件.md)・[実行記録 §部品3](実行記録.md)・**PR 待ち**）。**出荷部品 44 → 48・story 106 → 124。**★★ 🟥 **`shadcn add` を 1 度も打たない初めての回**——素材は全部在庫にあり、足りないのは**合成の設計**だけ（`date-picker` は**レジストリ 404**）。★★★ 🟥 **Q1 の答え: バーは通ったが、面④ に測れない語彙があることが出た。**`width`（トークンに裏打ちされた語彙）は測れるが、🟥 **`mode`（`'single' | 'range'`）は実効値を持たない**——**振る舞いの分岐なので `getComputedStyle` では何も言えず、DOM の差でしか主張できない**。★★ **これは「バーが上流の部品向けに作られていた」ことの表れ**——**shadcn の部品の語彙は cva ＝ 見た目の語彙**なので、この形に気づく機会が無かった。★★★ 🟥 **K2 が本物の欠陥を捕まえた。しかも落ちたのは新部品ではなかった**——`DatePicker/Open`（**Popover を開く初めての story**）が **`aria-dialog-name`** で落ち、原因は **`PopoverContent` が `role="dialog"` なのに名前を 1 つも持たない**こと。🟥 **`Popover` は工程3 から 2 日間、名前の無い dialog を出荷していた。**★★ **見えなかった理由は「Popover を開く story が 1 本も無かった」**——`Popover/Default` も `PeriodSelect/Custom` もトリガを描くだけで、**閉じた overlay は DOM を持たないので axe の対象が 0 件**（[DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md)・**「対象 0 件で緑」の 17 例目**）。★ **[DR-0048](DR/DR-0048-build-storybook-does-not-render.md) が「実行しないから見えない」なのに対し、本件は「実行しても、開かないから見えない」**。塞ぎ方は **製品層で `PopoverContent` を昇格させ `aria-label` を型で必須に**（D10=B・**素材層 0 行**・`tsc` が既存 2 箇所を両方落とした）。🟥 **`DropdownMenu` / `Sheet` / `Tooltip` / `Select` の中身はいまも開かれていない。**★★★ 🟥 **もう 1 本、バー自身の食い違いが出た**——[完成バー §3](部品の完成バー.md) は「**serious は落とさない**」と書いていたが、**実装（`a11y.test: 'error'`）は impact を 1 度も見ていない**（`color-contrast` / `region` を **rule 単位**で無効化しているだけ）。**気づけなかったのは serious が 77 → 113 → 142 件とも 100% `color-contrast`（無効化済み）だったから＝ 例外が全量を覆っていて、規則が働く場面が 1 度も来なかった**（[DR-0097](DR/DR-0097-an-exception-that-covered-the-whole-set-hid-the-rule.md)）。🟦 **実装のほうが正しかった**ので**定義を実装に合わせて訂正した**（D11=A）。★★★ 🟥 **Q4 = 出荷物の依存 2 件は、誰の判断でもなく入っていた**（[DR-0095](DR/DR-0095-shipped-dependencies-arrived-without-a-decision.md)）——`react-day-picker` / `date-fns` は**工程3 で `shadcn add calendar` の副産物**として `dependencies` に入り、**`calendar` 自身は「出さない」と明示して出荷していない**のに**依存だけ払っていた**。**[DR-0092](DR/DR-0092-the-core-holds-the-vessel-not-the-state.md) の一般則が立ったのは翌日**＝ **規則が一度も当たっていない依存**。🟦 **D4=A（ユーザー判断「推奨で」）で追認**（器では済まない＝カレンダーは有限の語で言えない）。★★ **Q2 = 回った**——`PeriodSelect` の `custom` 分岐（手組み約 20 行）が **`<DatePicker mode="range">` の 6 行**になり、K6 は緑。★ **工程3 D13=A の判断は変えていない**（**持ち方が変わっただけ**）が、🟨 **D13=A の選択肢に「部品が別の部品を使う」が無かった**＝ **部品を作ると既存の判断の選択肢が 1 つ増える**。★★ **Q5 = 42/42 が 44px 未達**（日付セル 28×28）。★★★ 🟥 **予測していなかったほうが重い——44px の規定には迂回路がある**: 当たり判定の拡張は製品層 `Button` にしか無く、`calendar.tsx` は **`buttonVariants(...)` を直接当てて見た目だけ受け取る**。🟥 **`buttonVariants` は `src/index.ts` から export している**＝ **使い回し先も同じ迂回ができる**。🟨 **28px は WCAG AA（24px）を満たすので axe は緑**——「a11y が緑だから当たり判定も大丈夫」は成り立たない（2 例目）。★ **Q3 = critical 0**（K4 は外れ）。🟥 **ただし「借金が無かった」の証明にならない**——**story を書いたのがバーを知っている側**で、**K4 が測ったのは「書く人がバーを知っているか」だった**。★ **Q6 = `locale` は器（prop）**。🟥 **ただし既定の文言はコアが日本語で持っている**（`PeriodSelect` の `aria-label='期間'` に続く 2 例目）＝ **「言語はコアに入っていない」は既に偽だった**。★★ 🆕 **ゲートが 6 本 → 7 本になった**（D7=A・ユーザー判断）。`pnpm test-storybook` を足し、**K7 で赤の伝播を確認**（わざと 1 story を落として exit 1・戻して exit 0）。ゲート: typecheck 緑 ／ **error 50 / warning 1（内訳一致・自作分 0）** ／ dist **85**・`design.mjs` **92,605 B** ／ format 緑 ／ spell **340**（辞書 0 語追加） ／ story **58 / 124** ／ **バー 124/124 緑** ／ **a11y critical 0・`color-contrast` 以外の serious 0**・🟨 **serious 142（色の組 9 種類）**。🟥 **次: この PR のマージ（人）→ [DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) が名指しした「開いた story」を持たない 4 部品**）
+最終更新: 2026-08-09（★★★ 🆕 **部品4 が完了した — 開かれない overlay を 4 本開けたら、緑の中身が 2 種類あることが出た**（ブランチ `bangkok`・[手順書](手順/部品4_開かれないoverlayを開く.md)・[実行記録 §部品4](実行記録.md)・**PR 待ち**）。**部品は 1 件も増えていない**——story を 4 本と検査を 1 本足しただけ（**48 部品のまま・story 124 → 128**）。★★★ 🟥 **着手前実測で [DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) の名指しが誤っていると分かった**——「開く story は 2 件だけ」「`Tooltip` の中身はいまも開かれていない」は**両方とも誤り**で、**`Tooltip/AlwaysOpen` は 2026-07-27（手5）から `<Tooltip open>` で開いていた**（実測で `[data-slot="tooltip-content"]` 1 件・`role="tooltip"`）。★★ **原因は数え方**——**story 名に `Open` が付くかで数えた**ので `AlwaysOpen` が漏れた（[DR-0004](DR/DR-0004-document-system-and-git.md) §4 に従い **DR-0096 の本文を訂正した**）。★★★ 🟥 **Q1 の答え: `aria-dialog-name` は 1 件も出なかった**（`Popover` は固有の穴だった）。**代わりに `aria-hidden-focus`（serious）が `DropdownMenu` と `Select` で出た**が、🟦 **これは部品の欠陥ではなく axe の限界**——**`axe-core@4.12.1` の `isModalOpen()` は `dialog, [role=dialog], [aria-modal=true]` しか見ない**（ソース実測）ので、**`role="menu"` / `role="listbox"` の modal overlay は原理的に判定できない**。🟦 **フォーカスは実際に閉じ込められている**（`userEvent.tab()` ×3 で 4 部品とも 1 度も外へ出ない）。★★★ 🟥 **この回いちばんの発見はそこではない —— `Sheet` は「通った」のではなく、axe が判定を放棄していた**（🆕 [DR-0098](DR/DR-0098-incomplete-was-counted-as-green.md)）。story 内で `axe.run(document)` を直接走らせると **`violations: 0` ／ `incomplete: aria-hidden-focus/serious/3`**。🟥 **落とす側（`a11y.test: 'error'`）も数える側（`tools/a11y-scan.mjs` の `resultTypes: ['violations']`）も incomplete を見ていなかった**＝ **「機械が分からないと答えたもの」を repo は 1 件も記録していなかった**。★★ **これは「対象 0 件で緑」（通算 17 例）とは別の型**——**対象は在り、検査も走り、それでも緑になる**。🟦 **数える場所を作った**（D8=B・**出荷物の棚に 23 件**: `aria-hidden-focus` 11 / `color-contrast` 10 / 🟥 **`aria-valid-attr-value` 2**）が**落としてはいない**。★★★ 🟥 **Q2・Q3 の答え: 射程の外の一覧は機械が引く**（🆕 [DR-0099](DR/DR-0099-the-blind-spot-list-must-be-machine-derived.md)）。**静的**（`tools/opened-overlay-check.mjs` が素材層の `Primitive.Portal` から一覧を引き、主張を要求）＋ **動的**（`src/stories/opened.ts` の `expectOpened` が主張の真偽を測る）の **2 段**。🟥 **片方では閉じない**——静的だけなら「書いてあるが開いていない」を通し（面① が実際にその形だった）、動的だけなら「書かなければ 0 件で緑」になる。★★★ 🟥 **機械に引かせたら 7 件出た**——**`dropdown-menu-sub-content`（入れ子メニュー）は DR-0096 の 4 件にも着手前実測の 3 件にも入っていない**＝ **目で数えると「目に入る粒度」でしか数えられない**。★ **`aria-hidden-focus` の塞ぎ方は D7=C**（該当 story だけ rule を外し、**引き換えに `expectFocusTrapped` で直接測る**）——🟥 **外すだけなら「消した」**（部品1 D3 が `color-contrast` でやった「数える場所を移す」形）。🟦 **story 単位の無効化で a11y 検査ごと消えていないことを赤テストで確認した**。🟨 **D9 は一度 B（`Dialog` には不要）に決めたあと、D8=B の計測で保留 2 件が出て A に訂正した**＝ **「対象 0 件」の判定を violations だけ見て下していた**。🟥 **K2 の予測は 3 本中 2 本が外れ、K7（予測していない箇所）は 4 件**。ゲート **7 本**: typecheck 緑 ／ **error 50 / warning 1（内訳一致・自作分 0）** ／ dist **85**・`design.mjs` **92,605 B**（**完全に不変**） ／ format 緑 ／ spell **346**（辞書 +1 = `pointerdown`） ／ story **58 / 128** ／ **バー 128/128 緑** ／ **a11y critical 0**・🟥 **`color-contrast` 以外の serious 3**（＝ `aria-hidden-focus`・**落とさず数える**） ／ 🟨 **serious 148・色の組 9 種類**（据え置き） ／ 🆕 **判定の保留 23**。🟥 **次: この PR のマージ（人）→ [OBS-0019](OBS/OBS-0019_storyが一度も描いていない状態をどこまで機械で要求するか.md)**（`Sidebar` の `collapsed` / mobile と、**未調査の保留 12 件**）。🟨 **`opened-overlay-check.mjs` をゲート 8 本目にするかはユーザー判断**）
+
+前回: 2026-08-09（★★★ **部品3 が完了した — `DatePicker` を出荷し、バーが見ていなかった 4 件を全部拾った**（ブランチ `da-nang`・[手順書](手順/部品3_DatePickerと射程の外の3件.md)・[実行記録 §部品3](実行記録.md)・**PR 待ち**）。**出荷部品 44 → 48・story 106 → 124。**★★ 🟥 **`shadcn add` を 1 度も打たない初めての回**——素材は全部在庫にあり、足りないのは**合成の設計**だけ（`date-picker` は**レジストリ 404**）。★★★ 🟥 **Q1 の答え: バーは通ったが、面④ に測れない語彙があることが出た。**`width`（トークンに裏打ちされた語彙）は測れるが、🟥 **`mode`（`'single' | 'range'`）は実効値を持たない**——**振る舞いの分岐なので `getComputedStyle` では何も言えず、DOM の差でしか主張できない**。★★ **これは「バーが上流の部品向けに作られていた」ことの表れ**——**shadcn の部品の語彙は cva ＝ 見た目の語彙**なので、この形に気づく機会が無かった。★★★ 🟥 **K2 が本物の欠陥を捕まえた。しかも落ちたのは新部品ではなかった**——`DatePicker/Open`（**Popover を開く初めての story**）が **`aria-dialog-name`** で落ち、原因は **`PopoverContent` が `role="dialog"` なのに名前を 1 つも持たない**こと。🟥 **`Popover` は工程3 から 2 日間、名前の無い dialog を出荷していた。**★★ **見えなかった理由は「Popover を開く story が 1 本も無かった」**——`Popover/Default` も `PeriodSelect/Custom` もトリガを描くだけで、**閉じた overlay は DOM を持たないので axe の対象が 0 件**（[DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md)・**「対象 0 件で緑」の 17 例目**）。★ **[DR-0048](DR/DR-0048-build-storybook-does-not-render.md) が「実行しないから見えない」なのに対し、本件は「実行しても、開かないから見えない」**。塞ぎ方は **製品層で `PopoverContent` を昇格させ `aria-label` を型で必須に**（D10=B・**素材層 0 行**・`tsc` が既存 2 箇所を両方落とした）。🟥 **`DropdownMenu` / `Sheet` / `Tooltip` / `Select` の中身はいまも開かれていない。**★★★ 🟥 **もう 1 本、バー自身の食い違いが出た**——[完成バー §3](部品の完成バー.md) は「**serious は落とさない**」と書いていたが、**実装（`a11y.test: 'error'`）は impact を 1 度も見ていない**（`color-contrast` / `region` を **rule 単位**で無効化しているだけ）。**気づけなかったのは serious が 77 → 113 → 142 件とも 100% `color-contrast`（無効化済み）だったから＝ 例外が全量を覆っていて、規則が働く場面が 1 度も来なかった**（[DR-0097](DR/DR-0097-an-exception-that-covered-the-whole-set-hid-the-rule.md)）。🟦 **実装のほうが正しかった**ので**定義を実装に合わせて訂正した**（D11=A）。★★★ 🟥 **Q4 = 出荷物の依存 2 件は、誰の判断でもなく入っていた**（[DR-0095](DR/DR-0095-shipped-dependencies-arrived-without-a-decision.md)）——`react-day-picker` / `date-fns` は**工程3 で `shadcn add calendar` の副産物**として `dependencies` に入り、**`calendar` 自身は「出さない」と明示して出荷していない**のに**依存だけ払っていた**。**[DR-0092](DR/DR-0092-the-core-holds-the-vessel-not-the-state.md) の一般則が立ったのは翌日**＝ **規則が一度も当たっていない依存**。🟦 **D4=A（ユーザー判断「推奨で」）で追認**（器では済まない＝カレンダーは有限の語で言えない）。★★ **Q2 = 回った**——`PeriodSelect` の `custom` 分岐（手組み約 20 行）が **`<DatePicker mode="range">` の 6 行**になり、K6 は緑。★ **工程3 D13=A の判断は変えていない**（**持ち方が変わっただけ**）が、🟨 **D13=A の選択肢に「部品が別の部品を使う」が無かった**＝ **部品を作ると既存の判断の選択肢が 1 つ増える**。★★ **Q5 = 42/42 が 44px 未達**（日付セル 28×28）。★★★ 🟥 **予測していなかったほうが重い——44px の規定には迂回路がある**: 当たり判定の拡張は製品層 `Button` にしか無く、`calendar.tsx` は **`buttonVariants(...)` を直接当てて見た目だけ受け取る**。🟥 **`buttonVariants` は `src/index.ts` から export している**＝ **使い回し先も同じ迂回ができる**。🟨 **28px は WCAG AA（24px）を満たすので axe は緑**——「a11y が緑だから当たり判定も大丈夫」は成り立たない（2 例目）。★ **Q3 = critical 0**（K4 は外れ）。🟥 **ただし「借金が無かった」の証明にならない**——**story を書いたのがバーを知っている側**で、**K4 が測ったのは「書く人がバーを知っているか」だった**。★ **Q6 = `locale` は器（prop）**。🟥 **ただし既定の文言はコアが日本語で持っている**（`PeriodSelect` の `aria-label='期間'` に続く 2 例目）＝ **「言語はコアに入っていない」は既に偽だった**。★★ 🆕 **ゲートが 6 本 → 7 本になった**（D7=A・ユーザー判断）。`pnpm test-storybook` を足し、**K7 で赤の伝播を確認**（わざと 1 story を落として exit 1・戻して exit 0）。ゲート: typecheck 緑 ／ **error 50 / warning 1（内訳一致・自作分 0）** ／ dist **85**・`design.mjs` **92,605 B** ／ format 緑 ／ spell **340**（辞書 0 語追加） ／ story **58 / 124** ／ **バー 124/124 緑** ／ **a11y critical 0・`color-contrast` 以外の serious 0**・🟨 **serious 142（色の組 9 種類）**。🟥 **次: この PR のマージ（人）→ [DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) が名指しした「開いた story」を持たない 4 部品**）
 
 前回: 2026-08-09（★★ **部品3 の手順書を起こした**（status `planned`・**コードは 1 行も書いていない**）。**問いは 6 本・判断ポイントは D1〜D9。**🟥 **D4（依存の追認）と D7（ゲート 7 本目）をユーザー確認に上げた**——前者は出荷物そのものを決め、後者は CLAUDE.md の規約で全工程に効くため。**着手前実測は 4 件**——① `date-picker` は**レジストリ 404** ② 🟥 **`react-day-picker` / `date-fns` は工程3 で判断の記録なしに `dependencies` へ**（DR-0092 が立つ前日） ③ 素材 29 件のうち製品層の窓口を持たないのは `calendar` ただ 1 件 ④ **セル 28px が 42 個並ぶ**）
 
@@ -33,7 +35,61 @@
 
 ## 現在地
 
-- ★★★ 🆕 **部品3 が完了した — `DatePicker` を出荷し、バーが見ていなかった 4 件を全部拾った**（2026-08-09・[手順書](手順/部品3_DatePickerと射程の外の3件.md)・[実行記録 §部品3](実行記録.md)・ブランチ `da-nang`・[PR #17](https://github.com/yatami0/design/pull/17)）。
+- ★★★ 🆕 **部品4 が完了した — 開かれない overlay を 4 本開けたら、「緑」の中身が 2 種類あることが出た**（2026-08-09・[手順書](手順/部品4_開かれないoverlayを開く.md)・[実行記録 §部品4](実行記録.md)・ブランチ `bangkok`・**PR 待ち**）。
+  **部品は 1 件も増えていない**（48 のまま）。**story 124 → 128 ／ 検査 ＋1 本 ／ 素材層 0 行。**
+  - ★★★ 🟥 **着手前実測で [DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) の名指しが誤っていた**——
+    「開く story は **2 件**」「**`Tooltip` の中身はいまも開かれていない**」は**両方とも誤り**。
+    **`Tooltip/AlwaysOpen` は 2026-07-27（手5）から `<Tooltip open>` で開いていた**
+    （実測: `[data-slot="tooltip-content"]` **1 件**・`role="tooltip"`・portal）。
+    ★★ **原因は数え方**——**story 名に `Open` が付くかで数えた**ので `AlwaysOpen` が漏れた。
+    🟦 **[DR-0004](DR/DR-0004-document-system-and-git.md) §4「事実誤認の訂正は本文を直す」に従って DR-0096 を訂正した**（D5=A）
+  - ★★★ 🟥 **この回いちばんの発見: `Sheet` は「通った」のではなく、axe が判定を放棄していた**（🆕 [DR-0098](DR/DR-0098-incomplete-was-counted-as-green.md)）
+
+    | story | `violations` | `incomplete` |
+    | --- | --- | --- |
+    | `Sheet/Open` | 🟦 **0** | 🟥 **`aria-hidden-focus` / serious / 3 ノード** |
+    | `DropdownMenu/Open` | 🟥 `aria-hidden-focus` | 🟥 同 / 2 ノード |
+
+    🟥 **落とす側（`a11y.test: 'error'`）も数える側（`tools/a11y-scan.mjs` の `resultTypes: ['violations']`）も
+    incomplete を見ていなかった**＝ **「機械が分からないと答えたもの」を repo は 1 件も記録していなかった。**
+    ★★ **「対象 0 件で緑」（通算 17 例）とは別の型**——**対象は在り、検査も走り、それでも緑になる。**
+    🟦 **数える場所を作った**（D8=B・**出荷物の棚 23 件**）が、**落としてはいない**——
+    🟥 **うち `aria-valid-attr-value` 2 件は harness 由来ではない**（参照先が実在しないときに出る形＝ **本物の可能性**）
+  - ★★★ 🟥 **Q2・Q3 の答え: 射程の外の一覧は機械が引く**（🆕 [DR-0099](DR/DR-0099-the-blind-spot-list-must-be-machine-derived.md)）
+
+    | 段 | 何を言うか | 実装 |
+    | --- | --- | --- |
+    | **静的** | **主張を持つ story が在るか** | 🆕 `tools/opened-overlay-check.mjs`（素材層の **`Primitive.Portal`** から引く） |
+    | **動的** | **その主張が真か** | 🆕 `src/stories/opened.ts` の `expectOpened(slot)` |
+
+    🟥 **片方では閉じない**——静的だけなら「**書いてあるが開いていない**」を通し（**面① が実際にその形だった**）、
+    動的だけなら「**書かなければ 0 件で緑**」＝ **DR-0096 の穴をそのまま再生産する。**
+    ★★★ 🟥 **機械に引かせたら 7 件出た**——**`dropdown-menu-sub-content`（入れ子メニュー）は
+    DR-0096 の 4 件にも、着手前実測の 3 件にも入っていない**＝ **目で数えると「目に入る粒度」でしか数えられない**
+  - ★★ 🟥 **Q1 の答え: `aria-dialog-name` は 1 件も出なかった**（`Popover` は固有の穴だった）。
+    **代わりに `aria-hidden-focus`（serious）が `DropdownMenu` / `Select` で出た。**
+    🟦 **部品の欠陥ではなく axe の限界**——`axe-core@4.12.1` の `isModalOpen()` は
+    **`dialog, [role=dialog], [aria-modal=true]` しか見ない**（ソース実測）ので、
+    **`role="menu"` / `role="listbox"` の modal overlay は原理的に判定できない。**
+    🟦 **フォーカスは実際に閉じ込められている**（`userEvent.tab()` ×3 で **4 部品とも 1 度も外へ出ない**）。
+    → **D7=C: 該当 story だけ rule を外し、引き換えに `expectFocusTrapped` で直接測る**
+    （🟥 **外すだけなら「消した」**——部品1 D3 が `color-contrast` でやった「数える場所を移す」形）。
+    🟦 **story 単位の無効化で a11y 検査ごと消えていないことを赤テストで確認した**
+  - 🟨 **D9 は途中で訂正した**——当初 B（`Dialog` にはフォーカスの主張は不要・「対象 0 件」）と決めたが、
+    **D8=B で incomplete を数え始めたら `Dialog` にも保留 2 件が出た**（Radix の `data-radix-focus-guard`）。
+    ★ **「対象 0 件」の判定を violations だけを見て下していた**——**同じ回の中で同じ形を 2 度踏んだ**
+  - 🟥 **K2 の予測は 3 本中 2 本が外れた**（`DropdownMenu` は落ちたが rule が違う ／ `Select` は通ると予測して落ちた）。
+    🟥 **K7（予測していない箇所）は 4 件**——① rule 自体 ② **`Sheet` の緑が incomplete だった** ③ `dropdown-menu-sub-content` ④ `Dialog` の保留
+  - ゲート **7 本**: typecheck 緑 ／ 🟦 **error 50 / warning 1（内訳一致・自作分 0）** ／
+    🟦 **dist 85・`design.mjs` 92,605 B（完全に不変）** ／ format 緑 ／ spell **346**（辞書 +1 = `pointerdown`） ／
+    story **58 ファイル / 128 件** ／ 🟦 **バー 128/128 緑** ／ 🟦 **a11y critical 0** ／
+    🟥 **`color-contrast` 以外の serious 3**（＝ `aria-hidden-focus`・**落とさず数える**） ／
+    🟨 **serious 148・色の組 9 種類**（種類は据え置き） ／ 🆕 🟥 **判定の保留 23**
+  - 🟨 **やり残し 5 件**（手順書 §6 に理由つき）: 🟥 **判定の保留 12 件が未調査**（`aria-valid-attr-value` 2 / `color-contrast` 10）／
+    `Sidebar` の `collapsed` / mobile（[OBS-0019](OBS/OBS-0019_storyが一度も描いていない状態をどこまで機械で要求するか.md)）／
+    他のゲートにも「保留」の口があるか ／ 🟨 **`opened-overlay-check.mjs` をゲート 8 本目にするか（ユーザー判断）** ／ 面③ の借金 33 件
+  - 🟥 **次: この PR のマージ（人）→ [OBS-0019](OBS/OBS-0019_storyが一度も描いていない状態をどこまで機械で要求するか.md)**
+- ★★★ ~~🆕~~ **部品3 が完了した — `DatePicker` を出荷し、バーが見ていなかった 4 件を全部拾った**（2026-08-09・[手順書](手順/部品3_DatePickerと射程の外の3件.md)・[実行記録 §部品3](実行記録.md)・ブランチ `da-nang`・[PR #17](https://github.com/yatami0/design/pull/17)）。
   **出荷部品 44 → 48 ／ story 106 → 124 ／ 素材層は 29 のまま。**
   - ★★ 🟥 **`shadcn add` を 1 度も打たない初めての回**——素材は全部在庫にあり、足りないのは**合成の設計**だけ
     （`date-picker` は**レジストリ 404**）。★ **手3 D1=(c)「欠落品 ／ 既定値ラッパー」のどちらでもない第 3 の形が出た**
@@ -1125,17 +1181,26 @@ DesignSync({method: 'list_projects'}) → {"projects":[]}
 
 ## 次にやること
 
-> ★★★ 🆕 **2026-08-09 更新（部品軸）: 部品1・部品2 は done・PR も全部マージ済み。**
-> 🆕 **2026-08-09 追記: 部品3 も done。**🟥 **次の一手はこの PR のマージ（人）。**
+> ★★★ 🆕 **2026-08-09 更新（部品軸）: 部品1・部品2・部品3 は done・PR も全部マージ済み**（部品3 = `1897a4e` / PR #17）。
+> 🆕 **2026-08-09 追記: 部品4 も done**（ブランチ `bangkok`）。🟥 **次の一手はこの PR のマージ（人）。**
+>
+> | # | やること | 誰がやるか |
+> | --- | --- | --- |
+> | **A** | 🟥 ★★ **部品4 の PR をマージする** | 🟥 **人**（[DR-0068](DR/DR-0068-merge-through-pull-requests.md)） |
+> | **B** | 🟨 ★★ **`node tools/opened-overlay-check.mjs` をゲート 8 本目にするか**——🟦 **材料は揃っている**（赤テスト両方向済み・所要 0.1 秒・**現在 7/7 緑**）。🟥 **ユーザー判断に上げる理由は部品3 D7 と同じ**——**ゲートの本数は CLAUDE.md の規約**で全工程・全セッションに効く | 🟥 **ユーザー判断** |
+> | **C** | 🟥 ★★ **次の一手: [OBS-0019](OBS/OBS-0019_storyが一度も描いていない状態をどこまで機械で要求するか.md)**——① 🟥 **未調査の保留 12 件**（`aria-valid-attr-value` 2 ＝ **参照先が実在しない形＝本物の可能性** ／ `color-contrast` 10） ② `Sidebar` の `collapsed` / mobile | Claude（マージ後） |
+> | **D** | 🟨 **部品4 の §2 の判断は事後承認待ち**（D1〜D9）。🟥 **とくに D7=C**（`aria-hidden-focus` を story 単位で外し、引き換えに `expectFocusTrapped` で測る）は**検査の運用を 1 つ決めている** | 🟨 事後報告 |
+>
+> **以下は部品3 までの申し送り。**
 >
 > | # | やること | 誰がやるか |
 > | --- | --- | --- |
 > | **1** | ✅ ~~**D4（依存の追認）を決める**~~ **完了**（**A**・ユーザー判断 2026-08-09「推奨で」）→ [DR-0095](DR/DR-0095-shipped-dependencies-arrived-without-a-decision.md) | ✅ |
 > | **2** | ✅ ~~**D7（ゲート 7 本目）を決める**~~ **完了**（**A**・同上）。**[未決 #14](#未決保留) が閉じた**——`CLAUDE.md` を 7 本に更新し、**K7 で赤の伝播を確認**（exit 1 / exit 0） | ✅ |
 > | **3** | ✅ ~~**部品3 を C3-01 から実行する**~~ **完了**（ブランチ `da-nang`・[PR #17](https://github.com/yatami0/design/pull/17)） | ✅ |
-> | **3b** | 🟥 ★★ **[PR #17](https://github.com/yatami0/design/pull/17) をマージする** | 🟥 **人**（[DR-0068](DR/DR-0068-merge-through-pull-requests.md)） |
-> | **3c** | 🟥 ★★ **次の一手: [DR-0096](DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) が名指しした 4 部品に「開いた story」を置く**（`DropdownMenu` / `Sheet` / `Tooltip` / `Select`）。🟥 **`Popover` と同じ欠陥があるかは測っていない**——**`Sheet` は Radix の Dialog 系なので `SheetTitle` が紐づく見込みだが、確かめていない** | Claude（マージ後） |
-> | 4 | 🟨 **部品1・部品2 の §2 の判断は事後承認待ちのまま**（部品1 D2〜D13 ／ 部品2 D2〜D10）。**異議があれば言ってほしい** | 🟨 事後報告 |
+> | **3b** | ✅ ~~**[PR #17](https://github.com/yatami0/design/pull/17) をマージする**~~ **完了**（`1897a4e`） | ✅ |
+> | **3c** | ✅ ~~**DR-0096 が名指しした 4 部品に「開いた story」を置く**~~ **完了**（部品4）。🟥 **名指しは 1 件が誤りで 1 件が漏れていた**——`Tooltip` は手5 から開いており、`dropdown-menu-sub-content` は誰も挙げていなかった（[DR-0099](DR/DR-0099-the-blind-spot-list-must-be-machine-derived.md)） | ✅ |
+> | 4 | 🟨 **部品1・部品2・部品3・部品4 の §2 の判断は事後承認待ちのまま**（部品1 D2〜D13 ／ 部品2 D2〜D10 ／ 部品3 D1〜D3・D5・D6・D8〜D11 ／ 部品4 D1〜D9）。**異議があれば言ってほしい** | 🟨 事後報告 |
 > | 5 | 🟨 **工程軸（工程5 = 稼働表）は止めたまま。**[手順書](手順/工程5_稼働表_ピボット.md)は書き上がっており**再開はいつでもできる**。🟦 **工程5 D7（addon-vitest）は部品3 D7 が先に片付ける**（[段取り §3b](工場の段取り.md)「先に走ったほうが他方の手順を消す」） | 保留 |
 > | 6 | 🟨 **同期軸（`/design-sync`）も止めたまま。**🟥 **再開時の観測 1 点目は [OBS-0016](OBS/OBS-0016_headerが名指ししていない出荷部品8件をどう埋めるか.md)**（出荷物 → header の向きで 8 件落ちている） | 保留 |
 >

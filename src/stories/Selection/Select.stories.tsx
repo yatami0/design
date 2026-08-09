@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, waitFor } from 'storybook/test';
+import { expect, userEvent, waitFor } from 'storybook/test';
 
 import { Stack } from '@/components/Layout/Stack';
 import {
@@ -10,6 +10,12 @@ import {
   SelectValue,
 } from '@/components/Selection/Select';
 import { boxOf, resolveLength } from '../measure';
+import {
+  FOCUS_TRAPPED_A11Y,
+  expectFocusTrapped,
+  expectOpened,
+  triggerOf,
+} from '../opened';
 
 const WIDTHS = ['sm', 'md', 'lg'] as const;
 
@@ -28,21 +34,50 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const select = (
+  <Select>
+    {/* 🟦 以前はここが `className="w-48"` だった。**我々の story 自身が面①と同じ逸脱を持っていた** */}
+    <SelectTrigger width="md" aria-label="ステータス">
+      <SelectValue placeholder="ステータス" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="new">新規</SelectItem>
+      <SelectItem value="in-progress">進行中</SelectItem>
+      <SelectItem value="resolved">解決</SelectItem>
+      <SelectItem value="closed">終了</SelectItem>
+    </SelectContent>
+  </Select>
+);
+
 export const Default: Story = {
-  render: () => (
-    <Select>
-      {/* 🟦 以前はここが `className="w-48"` だった。**我々の story 自身が面①と同じ逸脱を持っていた** */}
-      <SelectTrigger width="md" aria-label="ステータス">
-        <SelectValue placeholder="ステータス" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="new">新規</SelectItem>
-        <SelectItem value="in-progress">進行中</SelectItem>
-        <SelectItem value="resolved">解決</SelectItem>
-        <SelectItem value="closed">終了</SelectItem>
-      </SelectContent>
-    </Select>
-  ),
+  render: () => select,
+};
+
+/**
+ * 🆕 **開いた状態**（部品4 C4-02・D2=B）。
+ *
+ * ★★★ 🟥 **`Select` はこの repo でいちばん測られてきた部品なのに、リストの中身は 1 度も検査されていなかった。**
+ * [DR-0090](../../../docs/DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md)（幅の語彙が死んでいた）も
+ * [DR-0089](../../../docs/DR/DR-0089-overlays-do-not-cover-their-anchor.md)（アンカーに重なる）も**トリガ側の話**で、
+ * **開いた `SelectContent` の DOM を axe に通したのはこの story が初めて**
+ * （[DR-0096](../../../docs/DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md)）。
+ *
+ * 🟥 **`element.click()` では開かない**——Radix `Select` のトリガは `pointerdown` で開くので、
+ * `userEvent`（ポインタ列を発火する）が要る（実測・C4-02）。
+ *
+ * ★★★ 🟥 **開いた初回に `aria-hidden-focus`（serious）で落ちた**（K2・`DropdownMenu` と同じ）。
+ * **`role="listbox"` も axe の modal 判定（`[role=dialog]` のみ）を通らない**ので、
+ * `hideOthers()` に隠された側のトリガが違反になる。🟦 **実際は閉じ込められている**——
+ * **rule を外す代わりに `expectFocusTrapped` で測る**（D7=C）。
+ */
+export const Open: Story = {
+  parameters: FOCUS_TRAPPED_A11Y,
+  render: () => select,
+  play: async ({ canvasElement }) => {
+    await userEvent.click(triggerOf(canvasElement, 'select-trigger'));
+    const content = await expectOpened('select-content');
+    await expectFocusTrapped(content);
+  },
 };
 
 /**
