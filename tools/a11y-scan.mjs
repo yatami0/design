@@ -10,6 +10,15 @@
 // 🟥 **`document` を走査する**（`#storybook-root` ではない）——portal に出る部品
 //    （`Dialog` / `Popover` / `Tooltip`）が丸ごと観測から消える（完成バー §0 罠 3）。
 //
+// 🆕 ★★★ 🟥 **2026-08-09（部品4 D8=B）: `incomplete`（axe が判定を保留したもの）も数える。**
+//    **旧: `resultTypes: ['violations']`** ——**「機械が分からないと答えたもの」を明示的に捨てていた。**
+//    落とす側（`preview.tsx` の `a11y.test: 'error'`）も violations しか見ないので、
+//    🟥 **保留は repo のどこにも 1 件も記録されていなかった。**
+//    実測（部品4 C4-03）: `Sheet/Open` は **violations 0 / incomplete `aria-hidden-focus` 3 件**——
+//    **「通った」と読んでいたものが、実は「分からない」だった。**
+//    ★ **「対象 0 件で緑」とは別の型**——**対象は在るのに、判定が保留のまま緑になる。**
+//    🟨 **落とさない**（数える場所を先に作る。落とすかは数を見てから決める）。
+//
 // 使い方: pnpm build-storybook && node tools/a11y-scan.mjs
 import { createServer } from 'node:http';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -29,6 +38,11 @@ const HARNESS_RULES = new Set([
   'region',
   'landmark-one-main',
   'page-has-heading-one',
+  // 🆕 部品4 D8=B の初回計測で incomplete に **102 件 / 44 story** 出た。
+  //    「繰り返しブロックを飛ばす手段」はページの規定で、**iframe 1 枚に story を 1 つ描く
+  //    harness には成立しない**（`region` / `landmark-one-main` と同じ理由）。
+  //    🟥 **消したのではなく分類した**——数は本コメントに残す。
+  'bypass',
 ]);
 
 const MIME = {
@@ -80,8 +94,11 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
 
 const shelf = { shipped: [], excluded: [] };
+/** 🆕 D8=B: 判定の保留（axe の incomplete）。**落とさないが、必ず数える。** */
+const pending = { shipped: [], excluded: [] };
 for (const story of stories) {
   const isExcluded = EXCLUDED.some((prefix) => story.title.startsWith(prefix));
+  const key = isExcluded ? 'excluded' : 'shipped';
   await page.goto(
     `http://localhost:${String(PORT)}/iframe.html?id=${story.id}&viewMode=story`,
     { waitUntil: 'networkidle' },
@@ -90,7 +107,8 @@ for (const story of stories) {
   await page.addScriptTag({ content: axeSource });
   const result = await page.evaluate(async () => {
     // @ts-expect-error axe は addScriptTag で注入している
-    return await axe.run(document, { resultTypes: ['violations'] });
+    // 🆕 resultTypes を外した（部品4 D8=B）——**incomplete を捨てない。**
+    return await axe.run(document);
   });
   for (const v of result.violations) {
     if (HARNESS_RULES.has(v.id)) continue;
@@ -100,7 +118,7 @@ for (const story of stories) {
           node.any.map((c) => c.message).join(' '),
         );
       const data = node.any.find((c) => c.data?.fgColor !== undefined)?.data;
-      shelf[isExcluded ? 'excluded' : 'shipped'].push({
+      shelf[key].push({
         story: story.title,
         rule: v.id,
         impact: v.impact,
@@ -109,6 +127,17 @@ for (const story of stories) {
             ? null
             : `${String(data.fgColor)} on ${String(data.bgColor)}`,
         _matched: color === null ? undefined : color[1],
+      });
+    }
+  }
+  for (const v of result.incomplete) {
+    if (HARNESS_RULES.has(v.id)) continue;
+    for (const node of v.nodes) {
+      pending[key].push({
+        story: story.title,
+        rule: v.id,
+        impact: v.impact,
+        target: node.target.join(' '),
       });
     }
   }
@@ -133,14 +162,36 @@ const summarize = (rows) => {
   };
 };
 
+/** 🆕 保留は「どの rule が、どの story で」だけを畳む（色の組は関係しない）。 */
+const summarizePending = (rows) => {
+  const byRule = new Map();
+  for (const r of rows) {
+    const entry = byRule.get(r.rule) ?? { count: 0, stories: new Set() };
+    entry.count += 1;
+    entry.stories.add(r.story);
+    byRule.set(r.rule, entry);
+  }
+  return {
+    total: rows.length,
+    byRule: [...byRule.entries()]
+      .map(([rule, e]) => ({ rule, count: e.count, stories: [...e.stories] }))
+      .sort((a, b) => b.count - a.count),
+  };
+};
+
 const report = {
   storyCount: stories.length,
   shipped: summarize(shelf.shipped),
   excluded: summarize(shelf.excluded),
+  pendingShipped: summarizePending(pending.shipped),
+  pendingExcluded: summarizePending(pending.excluded),
 };
 
 await mkdir(OUT, { recursive: true });
-await writeFile(`${OUT}/a11y.json`, JSON.stringify({ report, shelf }, null, 2));
+await writeFile(
+  `${OUT}/a11y.json`,
+  JSON.stringify({ report, shelf, pending }, null, 2),
+);
 
 console.log(`story ${String(stories.length)} 題`);
 for (const key of ['shipped', 'excluded']) {
@@ -151,4 +202,16 @@ for (const key of ['shipped', 'excluded']) {
   console.log(`  rules: ${s.rules.join(', ') || '（無し）'}`);
   for (const [pair, count] of s.pairs)
     console.log(`  ${String(count)}  ${pair}`);
+}
+
+// 🆕 D8=B — 判定の保留。**「緑」の中に混ざっていたもの。**
+for (const key of ['pendingShipped', 'pendingExcluded']) {
+  const p = report[key];
+  console.log(
+    `\n[判定の保留・${key === 'pendingShipped' ? '出荷物の棚' : '除外棚'}] ${String(p.total)} 件`,
+  );
+  for (const r of p.byRule)
+    console.log(
+      `  ${String(r.count)}  ${r.rule} / ${r.stories.length > 3 ? `${String(r.stories.length)} story` : r.stories.join(', ')}`,
+    );
 }

@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/Overlay/Tooltip';
 import { Button } from '@/components/Action/Button';
+import { expectOpened } from '../opened';
 
 /**
  * ★ Q3 の答えが出る部品。**state は持たないが `TooltipProvider` の配線が必須**（部品カタログ 表4）。
@@ -47,7 +48,16 @@ export const Default: Story = {
   ),
 };
 
-/** 常時表示。手5 で角丸（rounded-[2px]）が変わらないことを目視するための story。 */
+/**
+ * 常時表示。手5 で角丸（rounded-[2px]）が変わらないことを目視するための story。
+ *
+ * 🆕 ★★★ **部品4 C4-02（D6=B）で「開いていることの主張」を足した。**
+ * 🟥 **[DR-0096](../../../docs/DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) は
+ * この story を数え落として「`Tooltip` の中身はいまも開かれていない」と書いた**——
+ * **数え方が「story 名に `Open` が付くか」だったので `AlwaysOpen` が漏れた**（部品4 Q3）。
+ * ★ **主張が無ければ、`open` prop を外しても誰も気づかない**——
+ * **たまたま開いていた状態を、機械が要求する状態に変える。**
+ */
 export const AlwaysOpen: Story = {
   render: () => (
     <Tooltip open>
@@ -57,4 +67,7 @@ export const AlwaysOpen: Story = {
       <TooltipContent>rounded-[2px] は --radius に追従しない</TooltipContent>
     </Tooltip>
   ),
+  play: async () => {
+    await expectOpened('tooltip-content');
+  },
 };

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, waitFor } from 'storybook/test';
+import { expect, userEvent, waitFor } from 'storybook/test';
 
 import {
   DATE_PICKER_MODES,
@@ -10,6 +10,7 @@ import {
 } from '@/components/Selection/DatePicker';
 import { Stack } from '@/components/Layout/Stack';
 import { resolveLength } from '../measure';
+import { expectOpened, triggerOf } from '../opened';
 
 const WIDTHS = ['sm', 'md', 'lg'] as const;
 
@@ -71,16 +72,9 @@ export const Range: Story = {
 export const Open: Story = {
   args: { mode: 'single', value: DAY },
   play: async ({ canvasElement }) => {
-    const trigger = canvasElement.querySelector<HTMLElement>(
-      '[data-slot="date-picker-trigger"]',
-    );
-    if (trigger === null) throw new Error('trigger が描画されていない');
-    trigger.click();
-    await waitFor(async () => {
-      await expect(
-        document.querySelectorAll('[data-slot="popover-content"]').length,
-      ).toBe(1);
-    });
+    // 🆕 部品4 C4-02: 手書きの主張を `expectOpened` に寄せた（D4=C の静的側の検体になる）。
+    await userEvent.click(triggerOf(canvasElement, 'date-picker-trigger'));
+    await expectOpened('popover-content');
   },
 };
 

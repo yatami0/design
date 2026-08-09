@@ -2,10 +2,10 @@
 type: procedure
 step: '-'
 title: '部品4 — 開かれない overlay を開く（DR-0096 が名指しした射程の外）'
-status: planned # planned | in-progress | done | blocked
+status: done # planned | in-progress | done | blocked
 date: 2026-08-09
 updated_at: 2026-08-09
-next_action: 'C4-01 から実行する（予測の登録が先）'
+next_action: '完了（2026-08-09・ブランチ bangkok）。マージは人。次は OBS-0019（Sidebar の collapsed / mobile と、判定の保留 12 件の未調査分）'
 ---
 
 # 部品4 — 開かれない overlay を開く
@@ -127,6 +127,21 @@ next_action: 'C4-01 から実行する（予測の登録が先）'
 | **D5** | 🟥 **[DR-0096](../DR/DR-0096-overlays-that-no-story-opens-are-invisible-to-every-check.md) の誤りをどう直すか**（Q3） | A: **本文を直し、訂正した旨を残す** ／ B: 新しい DR で supersede する ／ C: 直さない（新 DR に事実だけ書く） | **A** | ★ **[DR-0004](../DR/DR-0004-document-system-and-git.md) §4 が明記している**——「**決定は不変に積む。覆すときは本文を書き換えず新しい DR で supersede する。ただし事実誤認の訂正は本文を直し、訂正した旨を残す**（決定の変更ではないため）」。🟦 **本件は事実誤認**（`Tooltip` を数え落とした）で、**DR-0096 の発見そのもの（開かれない overlay は見えない）は維持される**。★ **先例は [DR-0030](../DR/DR-0030-touch-target-provenance-corrected.md)**（DR-0023 の発見 2 だけを訂正し、1・3 は維持した）。🟨 **ただし「なぜ数え落としたか」は新しい発見**なので、**そちらは別の DR に書く**（数え方が目視だった＝ Q3） | 🟦 |
 | **D6** | 🟨 **`Tooltip` をこの回でどう扱うか** | A: 既に開いているので何もしない ／ B: **既存の `AlwaysOpen` に「開いていることの主張」を足す**（D4=C の helper） ／ C: `Open`（`play` で hover）を新設する | **B** | ★ **A は「たまたま開いていた」を「開いていることになっている」に据え置く**——**`open` prop を外しても誰も気づかない**（**まさに DR-0096 が言う形**）。🟥 **C は hover の待ち時間が入る**（`delayDuration = 0` だが Radix の内部遷移がある）ぶん**バーの所要が伸びる**——**`open` で描く価値は既に story のコメントが持っている**（手5 の目視用）。★ **B なら 1 行足すだけで、D4=C の静的側の検体にもなる** | 🟦 |
 
+> 🆕 **以下の D7〜D9 は C4-02 / C4-03 の実測（K2 の発火）で出た論点。**
+> 「実行中に §2 に無い選択肢が出たら、その場で決めずにここへ追記してから進む」に従って、**決める前に書いた。**
+>
+> **実測（2026-08-09・C4-02/03）**:
+> - 🟥 **`DropdownMenu/Open` と `Select/Open` が `aria-hidden-focus`（serious）で落ちた**——**予測した `aria-required-children` ではない**
+> - 🟦 **`Sheet/Open` は通った。ただし「名前が紐づいたから」ではない**——
+>   **axe を直接走らせると `violations: 0` ／ `incomplete: aria-hidden-focus/serious/3`** ＝ 🟥 **判定を保留している**
+> - 🟦 **3 件ともフォーカスは実際に閉じ込められている**（`userEvent.tab()` ×3 で 1 度も外へ出ない・実測）
+
+| # | 論点 | 選択肢 | 決定 | 根拠 | 戻せるか |
+| --- | --- | --- | --- | --- | --- |
+| **D7** | 🆕 ★★★ 🟥 **`aria-hidden-focus`（`DropdownMenu` / `Select`）をどう扱うか** | A: 製品層で `modal={false}` を既定にする ／ B: rule 単位で全 story から無効化する ／ C: **該当 story だけ rule を外し、代わりに「フォーカスが閉じ込められている」を `play` で直接測る** ／ D: 落としたまま（ゲートを赤にする） | **C** | ★★★ 🟥 **実測で「部品の欠陥ではなく検査器の限界」と分かった。**axe-core 4.12.1 の `isModalOpen()` は **`dialog, [role=dialog], [aria-modal=true]` しか見ない**（ソース実測）——`role="menu"` / `role="listbox"` は modal と認識されないので、**Radix が `hideOthers()` で document 全体を `aria-hidden` にした結果、その中に残るトリガが「隠された領域の中の focusable」として違反になる**。🟦 **実際には Radix が focus を閉じ込めており、`tab` を 3 回打っても中身から出ない**（実測）。🟥 **A は却下——a11y としてむしろ後退する**。`modal={false}` にすると `hideOthers()` が走らず、**開いている間も背後の内容が支援技術から読める**（Radix が modal を既定にしているのはそのため）。**違反が消えるのは「隠すのをやめる」からで、直したことにならない**。🟥 **B は却下**——**全 story で消えると、本当に `aria-hidden` の中に到達できる欠陥が出たとき見えない**。★★ **C は「数える場所を移す」形**（部品1 D3 が `color-contrast` でやったのと同じ）——🟥 **無効化と引き換えに、axe が測れなかったものを我々が測る**（`expectFocusTrapped`）。**引き換えを置かずに無効化するのは D と同じ「消した」**。🟥 **D は却下**——**ゲートが赤いままだと「新しい赤」が見えなくなる**（部品1 D7 の条件と同じ理由） | 🟦 |
+| **D8** | 🆕 ★★★ 🟥 **axe の `incomplete`（判定の保留）をどう扱うか** | A: 何もしない ／ B: **台帳に載せる**（`tools/a11y-scan.mjs` を `violations` ＋ `incomplete` にする） ／ C: 落とす（incomplete も赤にする） | **B** | ★★★ 🟥 **この repo は「機械が分からないと答えたもの」を 1 件も記録していなかった。**落とす側（`preview.tsx` の `a11y.test: 'error'`）は `violations` しか見ず、**数える側（`tools/a11y-scan.mjs`）は `resultTypes: ['violations']` と明示して incomplete を捨てている**——**2 つとも独立に同じ穴を持っていた**。★★ **これは「対象 0 件で緑」とは別の型**——**対象は在るのに、判定が保留のまま緑になる**。🟥 **本回の `Sheet` がまさにそれ**（「通った」と読んでいたが、実際は「分からない」だった）。🟥 **C は却下**——**`aria-hidden-focus` の incomplete は `Sheet` を開くたびに必ず出る**ので、**落とすと直せない赤が常時点灯する**（部品1 D3 が `color-contrast` で踏んだ形そのもの）。★ **数える場所を先に作り、落とすかは数を見てから決める** | 🟦 |
+| **D9** | 🆕 🟨 **`Dialog/Open` にもフォーカスの主張を足すか** | A: 足す ／ B: **足さない** | **B** | 🟦 **`Dialog/Open` は `DialogTrigger` を描いていない**（`defaultOpen` だけ）ので、**`aria-hidden` の中に focusable が 1 つも無い**＝ **axe は violation も incomplete も出していない**（実測）。★ **主張を足しても「対象 0 件で緑」を 1 つ増やすだけ**。🟨 **ただし D8=B の台帳で incomplete を数え始めるので、そこに出てきたら足す**——**判断を数字に紐づける** | 🟦 |
+
 ---
 
 ## 3. 成果物
@@ -211,16 +226,28 @@ flowchart TD
 
 ## 6. 完了条件
 
-- [ ] §0 の Q1〜Q5 に答えが出ている
-- [ ] §2 の D1〜D6 が決着し、根拠が書かれている
-- [ ] 赤テスト K1〜K7 を打った（🟥 **K3 は両方向**）
-- [ ] **`DropdownMenu` / `Sheet` / `Select` が開いた状態でバーを通っている**
-- [ ] **`Tooltip/AlwaysOpen` が「開いていること」を主張している**（D6=B）
-- [ ] 🟥 **素材層 29 件の diff が 0 行**（K1）／ **`dependencies` 0 増**（K6）
-- [ ] 🟥 **Q2 の機械化が置かれ、両方向で発火を確認している**（D4=C）
-- [ ] 🟥 **DR-0096 の本文が訂正されている**（D5=A）
-- [ ] 実行記録 §部品4 ／ handoff ／ 完成バー ／ 台帳が更新されている
-- [ ] コミット済み・PR を出した（🟥 **マージは人**・[DR-0068](../DR/DR-0068-merge-through-pull-requests.md)）
+- [x] §0 の Q1〜Q5 に答えが出ている（**答えは [実行記録 §部品4](../実行記録.md) の締めの表**）
+- [x] §2 の D1〜D6 が決着し、根拠が書かれている（🆕 **実行中に D7・D8・D9 を追記して決着**。
+      🟥 **D9 は一度 B に決めたあと、D8=B の計測で前提が崩れて A に訂正した**）
+- [x] 赤テスト K1〜K7 を打った（🟦 K1 / K3 / K4 / K5 / K6 は期待どおり ／
+      🟥 **K2 は予測 3 本中 2 本が外れた** ／ 🟥 **K7（予測していない箇所）は 4 件**）
+- [x] **`DropdownMenu` / `Sheet` / `Select` が開いた状態でバーを通っている**（🆕 **＋ `DropdownMenu/SubMenuOpen`**）
+- [x] **`Tooltip/AlwaysOpen` が「開いていること」を主張している**（D6=B）
+- [x] 🟥 **素材層 29 件の diff が 0 行**（K1）／ **`dependencies` 12 件のまま**（K6）
+- [x] 🟥 **Q2 の機械化が置かれ、両方向で発火を確認している**（D4=C・**静的と動的の 2 段とも**）
+- [x] 🟥 **DR-0096 の本文が訂正されている**（D5=A・訂正 3 点）
+- [x] 実行記録 §部品4 ／ handoff ／ 完成バー §7 ／ 台帳 §4.2・§4.4・§5 が更新されている
+- [x] コミット済み・PR を出した（🟥 **マージは人**・[DR-0068](../DR/DR-0068-merge-through-pull-requests.md)）
+
+### 🟨 やり残し（理由つき）
+
+| # | やり残し | 理由 |
+| --- | --- | --- |
+| 1 | 🟥 **判定の保留 12 件が未調査**（`aria-valid-attr-value` 2 ／ `color-contrast` 10） | **D8=B は「数える場所を作る」までが範囲**。★ **`aria-valid-attr-value` は参照先が実在しないときに出る形なので本物の可能性がある** → [OBS-0019](../OBS/OBS-0019_storyが一度も描いていない状態をどこまで機械で要求するか.md) §5 |
+| 2 | 🟨 **`Sidebar` の `collapsed` / mobile** | **D1=B で範囲外にした**（`Sidebar` は [DR-0035](../DR/DR-0035-sidebar-stays-as-vendor.md) で「素材のまま」・mobile は viewport の道具が要る）→ OBS-0019 |
+| 3 | 🟨 **他の機械ゲートにも「保留」の口があるか** | [DR-0098](../DR/DR-0098-incomplete-was-counted-as-green.md) の推論のまま。**候補は挙げたが 1 つも数えていない** |
+| 4 | 🟨 **`opened-overlay-check.mjs` はゲート 7 本に入れていない** | **入れるなら 8 本目**＝ CLAUDE.md の規約変更で全工程に効く（部品3 D7 と同じ重さ）。🟦 **判断材料は揃っている**（赤テスト済み・所要 0.1 秒）が、**ユーザー判断に上げる** |
+| 5 | 🟨 **面③ の借金 33 件** | **部品1 D6=B に据え置き** |
 
 ## 7. 出典
 
