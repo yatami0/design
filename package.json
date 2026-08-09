@@ -7,13 +7,16 @@
     "dev": "storybook dev -p 6006",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
+    "typecheck:tools": "tsc -p tsconfig.tools.json",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "spell": "cspell --no-progress --gitignore \"**\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "vitest --project=storybook --run"
+    "test-storybook": "vitest --project=storybook --run",
+    "self-check": "node tools/self-check.mjs",
+    "coverage": "node tools/coverage-scan.mjs"
   },
   "dependencies": {
     "@tanstack/react-table": "8.21.3",
