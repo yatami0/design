@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor } from 'storybook/test';
 
 import { Stack } from '@/components/Layout/Stack';
 import {
@@ -8,6 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/Selection/Select';
+import { boxOf, resolveLength } from '../measure';
+
+const WIDTHS = ['sm', 'md', 'lg'] as const;
 
 // Radix の薄い再輸出で state を持たない（DR-0013）。open は制御 props としてパススルーされる。
 //
@@ -44,13 +48,25 @@ export const Default: Story = {
 /**
  * 幅の語彙（手8d H8D-04）。`width` は `sm | md | lg` の 3 語だけで、
  * `className` は**型に無い**。未指定は上流の既定（内容なり）。
+ *
+ * ★★★ 🆕 **面④（語彙の効果）を機械で閉じた**（部品1 B1-06b）。
+ * 🟥 **この story は [DR-0090](../../../docs/DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md) の現場そのもの**——
+ * `twMerge('w-fit w-field-md')` が両方を残し、CSS 順で `w-fit` が勝って
+ * **3 語とも一度も効いていなかった**（実測 sm 112 / md 114 / lg 105px ＝ **sm > lg の逆転**）。
+ * **prop も型も lint も story も緑で、作用だけが無かった。**
+ * ★ **塞いだのは 2026-08-08（[PR #11](https://github.com/yatami0/design/pull/11)）だが、
+ * 再発を止める検査はここまで無かった**——`tw-merge.ts` から `'field-md'` を 1 語消せば黙って戻る。
  */
 export const Widths: Story = {
   render: () => (
     <Stack gap="md" align="start">
-      {(['sm', 'md', 'lg'] as const).map((width) => (
+      {WIDTHS.map((width) => (
         <Select key={width}>
-          <SelectTrigger width={width} aria-label={`w-field-${width}`}>
+          <SelectTrigger
+            width={width}
+            aria-label={`w-field-${width}`}
+            data-testid={`trigger-${width}`}
+          >
             <SelectValue placeholder={`w-field-${width}`} />
           </SelectTrigger>
           <SelectContent>
@@ -61,4 +77,22 @@ export const Widths: Story = {
       ))}
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await waitFor(async () => {
+      await expect(boxOf(canvasElement, 'trigger-lg').width).toBeGreaterThan(0);
+    });
+    for (const width of WIDTHS) {
+      await expect(
+        `${String(boxOf(canvasElement, `trigger-${width}`).width)}px`,
+      ).toBe(resolveLength(canvasElement, `--container-field-${width}`));
+    }
+    // 🟥 **単調性**——ここが逆転していたのが DR-0090 の症状。
+    //    値が入っていることではなく「**語の順序どおりに並んでいる**」を見る。
+    await expect(boxOf(canvasElement, 'trigger-sm').width).toBeLessThan(
+      boxOf(canvasElement, 'trigger-md').width,
+    );
+    await expect(boxOf(canvasElement, 'trigger-md').width).toBeLessThan(
+      boxOf(canvasElement, 'trigger-lg').width,
+    );
+  },
 };

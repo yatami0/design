@@ -68,3 +68,56 @@ const preview: Preview = {
 };
 
 export default preview;
+
+// 🆕 部品1 B1-06a（2026-08-09）— [完成バー](../docs/部品の完成バー.md) 面①（描画された）を機械で効かせる。
+//
+// ★★★ 🟥 **バー文書は面① を「🟥 落とす」と宣言していたのに、実装が 1 行も無かった。**
+//    実測: `() => null` を描くだけの空 story を足したら、バーは **96/96 緑**で通った。
+//    面② は `a11y.test: 'error'` で効いていたが、**a11y は「中身が無い」を違反として出さない**
+//    （空の DOM には違反すべきノードが無いので、**空は 0 件 ＝ 緑**）。
+//    ★ **「対象 0 件で緑」ではなく「目盛りを書いて針を付けなかった」形**——
+//    [DR-0094](../docs/DR/DR-0094-the-bar-engine-ran-without-any-css.md)（エンジンが CSS 無しで走っていた）と同じ
+//    **「バー自身が測れていない」系**の 2 例目。
+//
+// 🟥 **`#storybook-root` だけを見てはいけない**（バー §0 罠 3）。実測——
+//    `Dialog/Open` は **`canvasElement` の子孫が 0** で、中身は `document.body` 直下の
+//    `#radix-_r_3_`（`[role=dialog]`）に出ている。root だけ見ると
+//    **空 story と `Dialog/Open` が同じ絵になり、正しい部品を落とす。**
+// 🟥 **`textContent` でも測らない**——`Spacer` / `Separator` は文字を持たない部品。
+// → **判定は「大きさ」**: canvas ＋ portal の中に、**0 でない大きさの要素が 1 つ以上**。
+
+/** storybook の harness が `document.body` 直下に置くもの（部品ではない）。実測で毎回この 5 件。 */
+const isHarness = (el: Element) =>
+  el.classList.contains('sb-wrapper') ||
+  el.id === 'storybook-a11y-vision-filters';
+
+/** canvas の外に出た描画先（Radix の portal 等）。canvas の祖先は除く。 */
+const portalRoots = (canvasElement: HTMLElement) =>
+  [...document.body.children].filter(
+    (el) => !isHarness(el) && !el.contains(canvasElement),
+  );
+
+const hasVisibleContent = (canvasElement: HTMLElement) =>
+  [canvasElement, ...portalRoots(canvasElement)]
+    .flatMap((root) => [...root.querySelectorAll('*')])
+    .some((el) => {
+      const box = el.getBoundingClientRect();
+      return box.width > 0 && box.height > 0;
+    });
+
+export const afterEach = async ({
+  canvasElement,
+}: {
+  canvasElement: HTMLElement;
+}) => {
+  // 🟥 **待つ。**同期に測ると CSS が当たる前の大きさ（0）を読み、**正しい部品を落とす**
+  //    ——面④ で実際に踏んだ形（[DR-0094]）。500ms を上限に取り直す。
+  for (let i = 0; i < 20 && !hasVisibleContent(canvasElement); i++) {
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  if (hasVisibleContent(canvasElement)) return;
+  throw new Error(
+    '完成バー 面①: この story は描画されていない（canvas にも portal にも、大きさを持つ要素が 1 つも無い）。' +
+      '意図的に何も描かない story なら、まず「なぜ部品として出荷するのか」を書く。',
+  );
+};

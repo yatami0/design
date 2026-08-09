@@ -3,7 +3,9 @@
 > **この repo の「状態」はすべて本ファイルが正。**セッション開始時に必ず読み、終了時に更新する。
 > 地図＝[UI検証の位置づけと段取り.md](UI検証の位置づけと段取り.md)／計画＝[docs/手順/](手順/)／実測＝[実行記録.md](実行記録.md)／決定と発見＝[docs/DR/](DR/index.md)／**まだ決まっていないもの＝[docs/OBS/](OBS/index.md)**
 
-最終更新: 2026-08-09（★★★ 🆕 **部品2 が完了した — 役割 9 カテゴリの欠落 5 件を入れ、部品を 39 → 44 にした**（ブランチ `semarang`・[PR #15](https://github.com/yatami0/design/pull/15)）。★★★ 🟥 **Q1 の答え: バーは設計指針として働いた。ただし一発では通らなかった**——15 story 中 **13 が一発で通り、2 が落ちた**。落ちた 2 件は**本物の欠陥**（`Slider` に名前を与える口が素材層に無い＝ **[DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md) と同じ「型は受けるが作用しない」形の 2 例目**）で、**バーが無ければ確実に出荷していた。**★★★ 🟥 **本回いちばんの発見はそこではない——面④ を実装した最初の実行で、バーの実行エンジン自体が CSS を 1 行も当てずに走っていたことが出た**（[DR-0094](DR/DR-0094-the-bar-engine-ran-without-any-css.md)）。`vitest.config.ts` は `vite.config.ts` から **`resolve.alias` だけ**を引いており **`@tailwindcss/vite` を引いていなかった**＝ `@import 'tailwindcss'` が展開されず utility が 0 個。実測は **`Switch/sm` 幅 0 ／ `Avatar/sm` 16px（文字幅）／ thumb 背景 透明**＝ **全部「素の HTML の値」**。🟥 **`waitFor` では直らない**（競合ではない）。★★ **`vitest.config.ts` の冒頭が「jsdom は CSS を計算しないので実ブラウザにする」と書いているのに、その理由そのものが動いていなかった。**🟦 **部品1 の「critical 0」は無効にならない**（名前系 rule は CSS に依存しない）。★★ **Q3 = 2 問の限界が出た**——shadcn に無い 11 件に [DR-0088](DR/DR-0088-core-subject-boundary-is-decided-by-two-questions.md) の 2 問を当てたら **9 件が「作れ」に倒れ、「作るな」を一度も言えなかった**。**2 問には「需要」の項も「既存で足りるか」の項も無い**（→ DR-0088 への差分要求）。★ **Q5 = 予測が外れた**——5 件中 **4 素通し / 1 ラッパー**（`Slider`）で、ラッパー化の理由は「見た目の既定値」ではなく **「素材が名前を渡せない」**＝ **手3 D1=(c) が想定していない種類の欠落**。🟥 **素材層を 8 手＋工程0〜4 で初めて触った**（`slider.tsx` の 2 箇所）——**製品層で組み直す案（D8=B）は機械が拒んだ**（`size-3` と `transition-[…]` が製品層では違法＝ **指摘 12 の 2 例目**）。🟥 **K1 は「0 行」と出るが指標の限界つき**——`slider.tsx` は同コミットの新規なので git に diff が出ない。**上流との差分 2 箇所を実測して残した。**★ **予測 7 本中 5 的中 / 2 外れ**（🟥 予3 = `no-arbitrary-value` は +3 予測に対し **+7**・`switch` 1 件で全量。中身も違い **`h-[18.4px]` という非整数の生ピクセル**＝ DR-0010 の最も強い形）。🟦 **予7「予測していない箇所」は 4 件**（`bg-white` がどの検査にも掛からない → **D9 で塞ぎ赤テスト済み** ／ D8=B を機械が拒んだ ／ DR-0094 ／ **`rsc: false` が `use client` を 5 件中 3 件だけ剥がした**＝ 工程1 D3 の申し送りへの答え）。★ 🆕 **[DR-0093](DR/DR-0093-shadcn-radix-nova-is-not-a-single-primitive-source.md)** = **shadcn の `radix-nova` は radix 1 本ではない**（`combobox` は `@base-ui/react`）。ゲート: typecheck 緑 ／ 🟥 **error 50 / warning 1（+8・全部素材層・自作分 0）** ／ dist **84**・`design.mjs` **91,322 B** ／ format・spell 緑（327） ／ story **54 / 95**・**バー 95/95 緑** ／ **a11y critical 0**・serious **83**（+6 は全部 `Avatar` の 1 色組＝ OBS-0017 の 8 組目）。🟨 **部品カタログの「実測」列が 6 件遅れていた**（18 → 29 に更新）。🟥 **次: この PR のマージ（人）→ 部品3（`calendar` の出荷＝ DatePicker）か 部品1 B1-06**）
+最終更新: 2026-08-09（★★★ 🆕 **部品1 が完了した — B1-06 でバーを既存 44 件に通した**（ブランチ `lisbon`・[実行記録 §部品1 B1-06](実行記録.md)・[台帳](部品の完成バー_台帳.md)）。★★★ 🟥 **Q5 の答え: 借金の主体は部品ではなく、バーそのものだった。**通す前に各面の実装を数えたら、**7 面のうち 2 面が文書の中にしか無かった**——🟥 **面①（描画された・🟥「落とす」と宣言）は実装が 0 行**で、**`() => null` を描くだけの空 story がバーを 96/96 緑で通った**。🟥 **面④（語彙の効果・同じく「落とす」）は「story に `play` を書けば掛かる」形**で、**union prop を持つ 21 部品のうち 2 件しか書かれていなかった**。★★ **これは「対象 0 件で緑」ではない**（通算 16 例は据え置き）——**「目盛りを書いて、針を付けなかった」**形で、[DR-0094](DR/DR-0094-the-bar-engine-ran-without-any-css.md)（エンジンが CSS 無しで走っていた）と同じ**「バー自身が測れていない」系の 2 例目**。★★★ **面① を機械化した**——`.storybook/preview.tsx` の `export const afterEach` で**全 story に自動**（D10=A）。判定は **canvas ＋ portal に「0 でない大きさの要素」が 1 つ以上**（D11=B）。🟥 **`#storybook-root` だけ見ると `Dialog/Open`（canvas の子孫 0・中身は portal）を落とす**し、🟥 **`textContent` で見ると `Spacer` / `Separator`（文字を持たない）を落とす**。**K6 で空 story だけが落ちることを、K7 でそれら 4 件が通ることを、両方向で確認した。**★★★ **面④ を 13 部品に足した**（D12=B・story 80 → 91）。🟥 **K8 が効いた**——`tw-merge.ts` から **`'field-md'` の 1 語**を消したら **`Select/Widths` が 113.59px** になった＝ **[DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md) が記録した数値そのもの**。**2026-08-08 に塞いだが、再発を止める検査はこの回まで無かった。**★★★ 🟥 **書き方も 1 つ決まった——story に生値を書かない。**`tokens.css` の宣言から期待値を計算したら **3 件外れた**（`--spacing-inline-sm` 6px → **4px** ／ `--container-content` 896px → **980px** ／ `--text-heading` 18px → **17px**）。**部品は正しく、`tmp-admin.css` の上書きが実効値**（[DR-0005](DR/DR-0005-token-ownership-and-two-stage.md) のとおり・仕様）。→ **主張を「このクラスはこのトークンを指している」に絞る**（`src/stories/measure.ts` の `resolveLength` / `resolveColor`）。**生値は二重管理を増やすうえ、トークン差し替えのたびに story が壊れる**——**差し替えられることこそが目的**なのに。★★ 🆕 **[OBS-0018](OBS/OBS-0018_リンクが本文と見分けられない.md)**——`Link` の `play` に「リンクの色は親と違うはず」と書いたら赤。**`--primary` も `--foreground` も `rgb(0,0,0)`**（tmp-admin V2「accent は塗りに使わない」＝ 仕様）で、**静止状態の下線も無い＝ リンクが本文と見分けられない**。🟦 **axe では検出できない**（`color-contrast` は前景と背景しか見ない）。★ **一般則: 「語が効いているか」と「効いた結果が使えるか」は別の検査**（面④ と面⑦ の境目）。★ 🟥 **story を 1 本も持たない出荷物が 3 件**（`Alert` / `Field` / `Textarea` は export しているのに story が無く、**バーの全面が「対象 0 件で緑」**）＝ **バーの射程の限界。**ゲート: typecheck 緑 ／ **error 50 / warning 1（内訳一致・自作分 0）** ／ dist **84**・`design.mjs` **91,322 B**（**完全に不変**） ／ format 緑 ／ spell **332**（辞書 +2） ／ **バー 106/106 緑** ／ **a11y critical 0**・🟨 **serious 113**（+30 だが**新しい欠陥は 0**——**色の組は 8 種類のまま**。🟥 **serious の件数は story 数に比例するので指標にならない**）。🟥 **次: この PR のマージ（人）→ 部品3（`calendar` の出荷＝ DatePicker。story が無い 3 件も拾う）**）
+
+前回: 2026-08-09（★★★ 🆕 **部品2 が完了した — 役割 9 カテゴリの欠落 5 件を入れ、部品を 39 → 44 にした**（ブランチ `semarang`・[PR #15](https://github.com/yatami0/design/pull/15)）。★★★ 🟥 **Q1 の答え: バーは設計指針として働いた。ただし一発では通らなかった**——15 story 中 **13 が一発で通り、2 が落ちた**。落ちた 2 件は**本物の欠陥**（`Slider` に名前を与える口が素材層に無い＝ **[DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md) と同じ「型は受けるが作用しない」形の 2 例目**）で、**バーが無ければ確実に出荷していた。**★★★ 🟥 **本回いちばんの発見はそこではない——面④ を実装した最初の実行で、バーの実行エンジン自体が CSS を 1 行も当てずに走っていたことが出た**（[DR-0094](DR/DR-0094-the-bar-engine-ran-without-any-css.md)）。`vitest.config.ts` は `vite.config.ts` から **`resolve.alias` だけ**を引いており **`@tailwindcss/vite` を引いていなかった**＝ `@import 'tailwindcss'` が展開されず utility が 0 個。実測は **`Switch/sm` 幅 0 ／ `Avatar/sm` 16px（文字幅）／ thumb 背景 透明**＝ **全部「素の HTML の値」**。🟥 **`waitFor` では直らない**（競合ではない）。★★ **`vitest.config.ts` の冒頭が「jsdom は CSS を計算しないので実ブラウザにする」と書いているのに、その理由そのものが動いていなかった。**🟦 **部品1 の「critical 0」は無効にならない**（名前系 rule は CSS に依存しない）。★★ **Q3 = 2 問の限界が出た**——shadcn に無い 11 件に [DR-0088](DR/DR-0088-core-subject-boundary-is-decided-by-two-questions.md) の 2 問を当てたら **9 件が「作れ」に倒れ、「作るな」を一度も言えなかった**。**2 問には「需要」の項も「既存で足りるか」の項も無い**（→ DR-0088 への差分要求）。★ **Q5 = 予測が外れた**——5 件中 **4 素通し / 1 ラッパー**（`Slider`）で、ラッパー化の理由は「見た目の既定値」ではなく **「素材が名前を渡せない」**＝ **手3 D1=(c) が想定していない種類の欠落**。🟥 **素材層を 8 手＋工程0〜4 で初めて触った**（`slider.tsx` の 2 箇所）——**製品層で組み直す案（D8=B）は機械が拒んだ**（`size-3` と `transition-[…]` が製品層では違法＝ **指摘 12 の 2 例目**）。🟥 **K1 は「0 行」と出るが指標の限界つき**——`slider.tsx` は同コミットの新規なので git に diff が出ない。**上流との差分 2 箇所を実測して残した。**★ **予測 7 本中 5 的中 / 2 外れ**（🟥 予3 = `no-arbitrary-value` は +3 予測に対し **+7**・`switch` 1 件で全量。中身も違い **`h-[18.4px]` という非整数の生ピクセル**＝ DR-0010 の最も強い形）。🟦 **予7「予測していない箇所」は 4 件**（`bg-white` がどの検査にも掛からない → **D9 で塞ぎ赤テスト済み** ／ D8=B を機械が拒んだ ／ DR-0094 ／ **`rsc: false` が `use client` を 5 件中 3 件だけ剥がした**＝ 工程1 D3 の申し送りへの答え）。★ 🆕 **[DR-0093](DR/DR-0093-shadcn-radix-nova-is-not-a-single-primitive-source.md)** = **shadcn の `radix-nova` は radix 1 本ではない**（`combobox` は `@base-ui/react`）。ゲート: typecheck 緑 ／ 🟥 **error 50 / warning 1（+8・全部素材層・自作分 0）** ／ dist **84**・`design.mjs` **91,322 B** ／ format・spell 緑（327） ／ story **54 / 95**・**バー 95/95 緑** ／ **a11y critical 0**・serious **83**（+6 は全部 `Avatar` の 1 色組＝ OBS-0017 の 8 組目）。🟨 **部品カタログの「実測」列が 6 件遅れていた**（18 → 29 に更新）。🟥 **次: この PR のマージ（人）→ 部品3（`calendar` の出荷＝ DatePicker）か 部品1 B1-06**）
 
 前回: 2026-08-09（★★★ 🆕 **`/design-sync` を打った — 打つものが無かった**（[実行記録 §/design-sync 再同期（2026-08-09・工程4 後）](実行記録.md)・一次記録は `.design-sync/NOTES.md`・`main` 直コミット `a9424b9`）。★★★ 🟥 **台帳と remote が食い違っていた**——アンカーを取ったら**既に 39 部品**で、`DescriptionList` / `Timeline` / `FormLayout` が載っていた＝ **工程4 の後に既に同期が打たれ、記録されていない**（handoff は「次: `/design-sync`（人）」のままだった）。★ **教訓: 現在地の正本は NOTES ではなく remote のアンカー**——再同期の最初に `_ds_sync.json` を取れば 1 発で分かる。ドライバは `ok: true` / `unchanged` **39** / `changed` 0 / **`upload.any: false`**（`finalize_plan` を打っていない・デザイン側は 1 バイトも変わっていない）。★★★ 🟦 **見張り #17 が決着した — `SelectTrigger` の `width` は出荷物で効くようになった**（[PR #11](https://github.com/yatami0/design/pull/11) `1425e30` の効果）。**出荷物を Playwright で開いて実測: sm 128 / md 192 / lg 320 px**（塞ぐ前は **112.31 / 113.59 / 104.88** で **sm > lg の逆転**）。emit されるクラスから `w-fit` も消えた。★★ **これは「名前の実在は効果を保証しない」（検証の方法そのものへの指摘）への答え**——**名前確認で止めず px を読んだ**＝ **効果まで測れる claim は測る**が同期側の作法に 1 つ増えた。★★★ 🟥 **検証の向きを逆にしたら 8 件落ちていた** → **[OBS-0016](OBS/OBS-0016_headerが名指ししていない出荷部品8件をどう埋めるか.md) を起票**。header 検証は毎回「header → 出荷物」（名前が実在するか）を全件見てきたが、**「出荷物 → header」（実在するものが名指しされているか）は一度も数えていなかった**——`DescriptionList` `Timeline` `Breadcrumb` `Tabs` `FilterBar` `FormLayout` `PageHeader` `PeriodSelect` が**カードは出ているのに header の 2 層の列挙に無い**＝ **design agent が手組みに回る側**（[OBS-0013](OBS/OBS-0013_部品があるのにインラインスタイルで組んだ.md) と同型）。🟥 **単純に足せない**（[DR-0069](DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md)＝842 バイト足したら触っていない箇所が壊れた）ので **header は書き換えていない**。★ **conventions header の実在検証はドリフト 0 件**（クラス 27・custom property 2・props と union 値・**否定の主張**まで全件実測。`window.Design` は **164 export**）。🟦 **見張り #19 も決着**（工程4 D3 = B ＝ `cfg.entry` は `src/index.ts` 据え置き）。🟨 **ベースライン表を 1 件訂正した**——**`pnpm spell` は 303 ではなく 305 ファイル**（同一コミットで再実測）。★★ 🆕 **同日、工程5（稼働表）の手順書も起こした**（[工程5](手順/工程5_稼働表_ピボット.md)・status `planned`・**コードは 1 行も書いていない**）。**問いは 5 本**（段取りの Q1・Q2 に着手前実測で Q3〜Q5 を足した）・**判断ポイント D1〜D8**。★★★ 🟥 **D7（`@storybook/addon-vitest`）だけユーザー確認待ち**——工程4 D11=B が「**回数ではなく『Playwright の手順が 3 工程連続で同じ形になったか』を理由にする**」と条件つきで送ってきたもので、🟦 **条件は満たされている**（工程2・3・4 で `tools/*-probe.mjs` を 3 本）。★★ **さらに未決 #14 に唯一残っていた論点が消えていた**——「残る論点は移送コスト（手9 に効く）だけ」と書かれているが、**手9 は [DR-0078](DR/DR-0078-repo-becomes-a-ui-factory-for-a-core-design-system.md) で廃止済み**、かつ**工程4 D13 で `devDependencies` は出荷しないと確定している**＝ **移送コストは 0・止めている理由が 1 つも残っていない**。🟥 **次: D7 の確認（ユーザー）→ P5-01 から実行**）
 
@@ -27,7 +29,73 @@
 
 ## 現在地
 
-- ★★★ 🆕 **部品2 が完了した — 役割 9 カテゴリの欠落 5 件を入れた**（2026-08-09・[手順書](手順/部品2_9カテゴリの充足.md)・[実行記録 §部品2](実行記録.md)・ブランチ `semarang`・[PR #15](https://github.com/yatami0/design/pull/15)）。
+- ★★★ 🆕 **部品1 が完了した — B1-06 でバーを既存 44 件に通した**（2026-08-09・[手順書](手順/部品1_完成バーを機械で閉じる.md)・[実行記録 §部品1 B1-06](実行記録.md)・ブランチ `lisbon`・**PR 待ち**）。
+  - ★★★ 🟥 **Q5 の答え: 借金の主体は部品ではなく、バーそのものだった。**
+    **「通す」前に各面の実装を数えたら、7 面のうち 2 面が文書の中にしか無かった。**
+
+    | 面 | バーの宣言 | B1-06 の前 | 後 |
+    | --- | --- | --- | --- |
+    | **① 描画された** | 🟥 **落とす** | 🟥 **実装 0 行** | 🟦 **44/44** |
+    | **② a11y** | 🟥 critical 0 | 🟦 0 | 🟦 **0** |
+    | **③ 状態面** | 🟨 台帳 | 🟥 10/44 | 🟥 **10/44**（据え置き・D6=B） |
+    | **④ 語彙の効果** | 🟥 **落とす** | 🟥 **2/21** | 🟨 **15/21** |
+    | **⑤ 型の閉じ** | 🟥 落とす | 🟦 `tsc` ＋ lint | 🟦 変化なし |
+
+    ★★ **これは「対象 0 件で緑」ではない**（通算 16 例は据え置き）——**「目盛りを書いて、針を付けなかった」**形。
+    **[DR-0094](DR/DR-0094-the-bar-engine-ran-without-any-css.md)（エンジンが CSS 無しで走っていた）と同じ「バー自身が測れていない」系の 2 例目。**
+    🟦 **バーの妥当性の検算としては成立している**——面① は 44/44 通り（**緩すぎない**：空 story は実際に落ちる）、
+    面③ は 10/44（**厳しすぎない**：返せる量の借金が見えている）
+  - ★★★ **面① を機械化した**（D10=A・D11=B）——`.storybook/preview.tsx` の **`export const afterEach`**（**全 story に自動**）。
+    🟥 **`() => null` を描くだけの空 story が、実装前は 96/96 緑で通っていた。**
+    **判定は canvas ＋ portal に「0 でない大きさの要素」が 1 つ以上**——
+    🟥 **`#storybook-root` だけ見ると `Dialog/Open` を落とす**（canvas の子孫が **0** で、中身は `#radix-_r_3_`）／
+    🟥 **`textContent` で見ると `Spacer` / `Separator` を落とす**（文字を持たない部品）。
+    🟦 **両方向で確認した**——**K6: 空 story だけが落ちる** ／ **K7: `Dialog/Open`・`Spacer`・`Separator`・`Tooltip` は通る**。
+    ★ **「赤くできる」だけでは足りない。「赤くすべきでないものを赤くしない」も同じ回で測る**
+  - ★★★ **面④ を 13 部品に足した**（D12=B・story **80 → 91**）。**repo が定義した語彙を持つもの**が対象で、
+    🟨 **shadcn の cva 由来 6 件（`Button` / `Sidebar` / `Badge` / `Card` / `Empty` / `Tabs`）は台帳に載せて返さない**——
+    **壊れ方が違う**（🟥 [DR-0090](DR/DR-0090-token-classes-were-silently-dropped-by-tailwind-merge.md) は `tw-merge.ts` への登録漏れで起きる **repo 語彙に固有**の経路）。
+    ★★ 🟥 **K8 が効いた**——`tw-merge.ts` から **`'field-md'` の 1 語だけ**を消したら
+    **`Select/Widths` が 113.59375px** ／ `PeriodSelect` が 67.86px になった。
+    **`113.59` は DR-0090 が記録した数値そのもの**＝ **同じ壊れ方が寸分違わず戻る。**
+    🟦 **`field-sm` を使う `DescriptionList` は緑のまま**（消した語だけが落ちる＝ 分解能も確認できた）。
+    **2026-08-08（PR #11）に塞いだが、再発を止める検査はこの回まで無かった**
+  - ★★★ 🟥 **書き方が 1 つ決まった —— story に生値を書かない。**
+    期待値を `tokens.css` の宣言から計算して書いたら **3 件が赤になった**:
+
+    | 語 | tokens.css の宣言 | 実効値 |
+    | --- | --- | --- |
+    | `--spacing-inline-sm` | `calc(--spacing * 1.5)` = 6px | 🟥 **4px** |
+    | `--container-content` | `--container-4xl` = 896px | 🟥 **980px** |
+    | `--text-heading` | `--text-lg` = 18px | 🟥 **17px** |
+
+    🟦 **部品は正しく、期待値のほうが誤り**——`tmp-admin.css` が `:root:root` で上書きしており、
+    **[DR-0005](DR/DR-0005-token-ownership-and-two-stage.md)「値は tmp-admin を引き継ぐ」のとおり・仕様。**🟨 **ずれていたのは `tokens.css` のコメント。**
+    → **主張を「このクラスは**このトークン**を指している」に絞った**（`src/stories/measure.ts` の `resolveLength` / `resolveColor`）。
+    ★ **生値は ① 二重管理を 1 つ増やし ② トークン差し替えのたびに story が壊れる**——
+    **差し替えられることこそが [DR-0078](DR/DR-0078-repo-becomes-a-ui-factory-for-a-core-design-system.md) の目的**なのに。
+    🟥 **`?.` も禁じた**——`querySelector(…)?.…` は**要素が無いと `undefined` で `expect(undefined).not.toBe(...)` が通る**＝
+    **「対象 0 件で緑」の play 版**。`el()` は**無ければ throw する**
+  - ★★ 🆕 **[OBS-0018](OBS/OBS-0018_リンクが本文と見分けられない.md)**——`Link` の `play` に「リンクの色は親と違うはず」と書いたら赤。
+    🟦 **`--primary` も `--foreground` も `rgb(0,0,0)`**（tmp-admin V2「accent は塗りに使わない」＝ **仕様**）で、
+    **静止状態の下線も無い**（`hover:` / `focus-visible:` だけ）＝ 🟥 **リンクが本文と見分けられない。**
+    🟦 **axe では検出できない**——`color-contrast` は**前景と背景**しか見ず、**リンクと本文の対比は誰も測っていない**（WCAG 1.4.1）。
+    ★ **一般則: 「語が効いているか」と「効いた結果が使えるか」は別の検査で、後者は機械に載っていない**（面④ と面⑦ の境目）
+  - ★ 🟥 **story を 1 本も持たない出荷物が 3 件**——`Alert` / `Field` / `Textarea` は **`src/index.ts` で export しているのに story が無い**。
+    **バーの全面が「対象 0 件で緑」**で、`/design-sync` のカードも立たない。
+    ★ **「出荷部品 44 件」という数え方自体が story を数えている**（[DR-0091](DR/DR-0091-claude-design-is-a-fourth-shipping-entrance.md)）＝ **この 3 件はどの数え方からも落ちる**
+  - 🆕 **[台帳](部品の完成バー_台帳.md) を新設**（D13=B）——**44 部品 × 面の「いまの状態」。**
+    **バー本体は「定義」、台帳は「実測」、実行記録は「いつ何をしたか」**で三分した
+  - 🟨 **面② を再計測した**（`storybook-static` ＋ axe-core 4.12.1）——**critical 0** ／ **serious 113**（83 → +30）。
+    ★★ 🟥 **件数は指標として使えない**——**増えた 30 は全部、既知の色の組を描く story が増えたぶん**
+    （本回の `Vocabulary` story 11 本が `StatusPill` 等を再描画）。🟦 **色の組で畳むと 8 種類のまま**（全部 OBS-0017）。
+    → **次からは件数ではなく「色の組の種類」を台帳に載せる**
+  - ゲート: typecheck 緑 ／ 🟦 **error 50 / warning 1（内訳一致・自作分 0）** ／ 🟦 **dist 84・`design.mjs` 91,322 B（完全に不変）** ／
+    format 緑 ／ spell **332**（辞書 +2 ＝ `nopreview` / `errordisplay`） ／ story **54 ファイル / 106 件** ／ 🟦 **バー 106/106 緑**
+  - 🟨 **やり残し 4 件**（手順書 §6 に理由つきで記載）: 面③ の 34 部品（D6=B で部品を触るとき）／ 面④ の cva 由来 6 件（D12=B）／
+    story が無い 3 件（部品3 で拾う）／ 🟥 **`pnpm test-storybook` をゲート 7 本目にするか**（D7=C の条件は満たしたが**足す操作は未実施**）
+  - 🟥 **次: この PR のマージ（人）→ 部品3（`calendar` の出荷＝ DatePicker）**
+- ★★★ ~~🆕~~ **部品2 が完了した — 役割 9 カテゴリの欠落 5 件を入れた**（2026-08-09・[手順書](手順/部品2_9カテゴリの充足.md)・[実行記録 §部品2](実行記録.md)・ブランチ `semarang`・[PR #15](https://github.com/yatami0/design/pull/15)）。
   - **入れたのは依存 0 の 5 件**（`RadioGroup` / `Switch` / `Slider` / `Progress` / `Avatar`）。**素材層 24 → 29・出荷部品 39 → 44。**
     🟦 **`dependencies` は 12 件のまま**（K3）・**`@base-ui/*` は 0 件**。
   - ★★★ 🟥 **Q1（この回の芯）の答え: バーは設計指針として働いた。ただし一発では通らなかった。**
@@ -601,7 +669,22 @@
 pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && pnpm build-storybook
 ```
 
-### 🆕 部品2 完了時のベースライン（2026-08-09・**現行**）
+### 🆕 部品1 B1-06 完了時のベースライン（2026-08-09・**現行**）
+
+| ゲート | 結果 | 部品2 完了時（`2284b8a`）との差 |
+|---|---|---|
+| `pnpm typecheck` | 🟦 緑 | — |
+| `pnpm lint` | 🟥 **error 50 ／ warning 1** | 🟦 **内訳まで一致・自作分の赤 0**。🟨 **途中で 57 まで増えた**——自作の `play` が `restrict-template-expressions` を **7 件**持ち込み、`String()` で明示変換して 0 に戻した |
+| `pnpm build`（= `vite build`） | 🟦 緑 | 🟦 **dist 84 / `design.mjs` 91,322 B ＝ 完全に不変**（story は出荷物に入らない） |
+| `pnpm format:check` | 🟦 緑 | — |
+| `pnpm spell` | 🟦 緑 | **332 ファイル**（+3 ＝ `src/stories/measure.ts` ＋ 本回の md 2 本）。辞書 **+2 語**（`nopreview` / `errordisplay` ＝ storybook harness のクラス名）。🟨 **表の 327 は部品2 の測定時点で、その後 DR-0093・DR-0094 の 2 本が増えていた**（329 が正・**新しい赤ではない**） |
+| `pnpm build-storybook` | 🟦 緑 | story **54 ファイル／index.json 106 件**（+11 story・ファイル数は不変） |
+| **`pnpm test-storybook`**（バー） | 🟦 **106/106 緑** | +11 |
+| **a11y**（出荷物の棚 **91 story**） | 🟦 **critical 0** ／ 🟨 **serious 113** | 🟥 **+30 だが新しい欠陥は 0**——**増えたのは既知の色の組を描く story が増えたぶん**。🟦 **色の組で畳むと 8 種類のまま**（全部 [OBS-0017](OBS/OBS-0017_意味色とfillの対比が全滅している.md)）。★ 🟥 **serious の件数は指標として使えない**（story 数に比例して増える）——**次からは「色の組の種類」を載せる** |
+
+🟥 **`pnpm test-storybook` はまだ 6 本のゲートに入っていない**（部品1 D7 = C の条件「critical を 0 にしてから」は満たしたが、**足す操作は未実施**）。
+
+### 部品2 完了時のベースライン（2026-08-09）
 
 | ゲート | 結果 | 部品1 完了時（`4f65a46`）との差 |
 |---|---|---|
