@@ -61,10 +61,26 @@ if (required.size === 0) {
 // ── ② 主張を含む story があるか ────────────────────────────────
 // 🟨 `expectOpened('<slot>')` の**文字列リテラル**を探す。変数に逃がすと検体が消えるので、
 //    `src/stories/opened.ts` の JSDoc に「変数に逃がさない」と書いてある。
+//
+// 🆕 ★★★ 🟥 **2026-08-09（部品5 D11=A）: コメントを先に落とす。**
+//    **初版はソースをそのまま grep していたので、JSDoc に書いた `expectOpened('sheet-content')` が
+//    主張として数えられた。**実測（部品5 C5-05）——
+//    `Sidebar.stories.tsx` の説明文にこの文字列を書いただけで担当が奪われ、
+//    🟥 **`Sheet.stories.tsx` の本物の主張を消しても検査は緑のままだった。**
+//    ★★ **「無いことを落とす検査」が、書けば通る形だった**——
+//    **部品4 C4-04 の「詰まったら」欄が名指しした「grep が当たるかどうかに落ちると脆い」が
+//    1 回で現実になった。**
+//
+//    🟨 **限界も書いておく**: 文字列リテラルの中の `//` や `/* */` も落とす。
+//    story ファイルで実害が出るのは URL 等だが、**落とした結果 `expectOpened('…')` が
+//    増えることはない**（減る方向にしか効かない）ので、**偽の緑は作らない。**
+const stripComments = (src) =>
+  src.replaceAll(/\/\*[\s\S]*?\*\//g, '').replaceAll(/\/\/[^\n]*/g, '');
+
 const files = await storyFiles(STORY_DIR);
 const claimed = new Map(); // slot -> story ファイル
 for (const path of files) {
-  const src = await readFile(path, 'utf8');
+  const src = stripComments(await readFile(path, 'utf8'));
   for (const m of src.matchAll(/expectOpened\(\s*'([a-z-]+)'\s*\)/g)) {
     if (!claimed.has(m[1])) claimed.set(m[1], path);
   }

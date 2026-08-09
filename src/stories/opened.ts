@@ -47,7 +47,39 @@ export const expectOpened = async (slot: string): Promise<HTMLElement> => {
     );
   }
 
+  // 🆕 部品5 D10=A — **axe が確かめていないものを、開くたびに確かめる。**
+  expectAriaControlsResolved();
+
   return found;
+};
+
+/**
+ * ★★★ 🟥 **`aria-controls` の参照先が実在することを測る**（部品5 D3=B の引き換え・2026-08-09）。
+ *
+ * **背景**: `axe-core@4.12.1` の `ariaValidAttrValueEvaluate` は、
+ * `preChecks['aria-controls']` で **`aria-haspopup` が `false` / `null` 以外なら、
+ * 参照先 ID の実在を 1 度も確かめずに `needsReview` を立てる**（ソース実測）。
+ * ＝ **overlay のトリガは、参照先が存在しなくても・存在しても、同じ「保留」になる。**
+ *
+ * 🟥 **実測（部品5 §1.1）では 2 件とも実在した**が、**実在を確かめたのは我々であって axe ではない。**
+ * ★★ **だから畳むなら、引き換えにこれを測る**（部品4 D7=C と同じ形）。
+ *
+ * 🟨 **`aria-hidden` の中は見ない**——Radix が `hideOthers()` を掛けた側のトリガは
+ * 支援技術から到達できないので、参照の健全性を問う意味が無い（axe も同じ理由で飛ばす）。
+ */
+export const expectAriaControlsResolved = (): void => {
+  for (const el of document.querySelectorAll('[aria-controls]')) {
+    if (el.closest('[aria-hidden="true"]') !== null) continue;
+    const id = el.getAttribute('aria-controls');
+    if (id === null || id === '') continue;
+    if (document.getElementById(id) === null) {
+      throw new Error(
+        `開いた story: aria-controls="${id}" の参照先が document に無い` +
+          `（${el.tagName.toLowerCase()}[data-slot="${String(el.getAttribute('data-slot'))}"]）。` +
+          'axe はこれを違反ではなく「判定の保留」として通すので、ここで測る',
+      );
+    }
+  }
 };
 
 /**

@@ -19,6 +19,25 @@
 //    ★ **「対象 0 件で緑」とは別の型**——**対象は在るのに、判定が保留のまま緑になる。**
 //    🟨 **落とさない**（数える場所を先に作る。落とすかは数を見てから決める）。
 //
+// 🆕 ★★★ 🟥 **2026-08-09（部品5 D2=C / D3=B / D4=B）: 数える場所に「種類」と「理由」を足した。**
+//    **部品4 は数える場所を作ったが、種類を持たなかった**——**23 という数字は、増えても減っても
+//    何が起きたか読めない。**🟥 **`violations` 側は最初からこれを解いている**
+//    （`HARNESS_RULES` で harness 由来を畳み、`pairs` で色の組に畳む）。
+//
+//    実測（部品5 §1.1）で保留 23 件は **3 種類**に割れた:
+//      (a) **既知の色の組と同じもの**（9 件）——axe は「文字が短くて本文か判定できない」と保留するが、
+//          **色は測れている**（`fgColor` / `bgColor` / `contrastRatio` を持っている）。
+//          🟥 **実測すると本当に AA 未達**（`#8a8a8e on #ffffff` 3.43 ／ `#85858b on #f2f2f7` 3.28）
+//          ＝ **同じ欠陥が、文字数だけで violations と incomplete に振り分けられている。**
+//      (b) **重なりで測れないもの**（1 件）——`bgOverlap`。**判断はまだ無い**（OBS 行き）。
+//      (c) **検査器が無条件に保留するもの**（13 件）——`TOOL_LIMIT` を見よ。
+//
+//    🟥 **理由（`messageKey`）を保存する。**旧版は `rule` / `impact` / `target` しか持たず、
+//    **12 件を割るのに probe を書き直す必要があった**（＝ 次も同じ作業を繰り返す形）。
+//
+// 🟥 **本ファイルはゲート 7 本には入っていない**が、**未分類が出たら exit 1 で落ちる。**
+//    「知っているものを畳み、知らないものは落とす」——`HARNESS_RULES` の形をそのまま裏返した。
+//
 // 使い方: pnpm build-storybook && node tools/a11y-scan.mjs
 import { createServer } from 'node:http';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -44,6 +63,44 @@ const HARNESS_RULES = new Set([
   //    🟥 **消したのではなく分類した**——数は本コメントに残す。
   'bypass',
 ]);
+
+/**
+ * 🆕 **(c) 検査器が無条件に保留するもの**（部品5 D3=B）。
+ *
+ * 🟥 **`HARNESS_RULES` に混ぜない。**あちらは「storybook の iframe が原因」という意味で、
+ *    **harness を替えれば消える**もの。こちらは **本番の DOM でも同じことが起きる。**
+ *    混ぜると、次に harness を替えたときに何を再検討すべきかが分からなくなる。
+ *
+ * 🟥 **`引き換え` を書けないものはここに入れない。**畳むだけなら、それは無効化ではなく削除
+ *    （部品1 D3 が `color-contrast` でやったのは「数える場所を移す」であって「消す」ではない）。
+ */
+const TOOL_LIMIT = {
+  'aria-hidden-focus': {
+    根拠: 'axe-core@4.12.1 の isModalOpen() は dialog, [role=dialog], [aria-modal=true] しか見ない（ソース実測）。role="menu" / role="listbox" の modal overlay は原理的に判定できない',
+    引き換え:
+      'src/stories/opened.ts の expectFocusTrapped（userEvent.tab() ×3 で外へ出ないことを直接測る）',
+    出典: '部品4 D7=C',
+  },
+  'aria-valid-attr-value': {
+    根拠: 'axe-core@4.12.1 の ariaValidAttrValueEvaluate は、preChecks["aria-controls"] で aria-haspopup が false/null 以外なら **参照先 ID の実在を確かめずに** needsReview を立てる（ソース実測）',
+    引き換え:
+      'src/stories/opened.ts の expectOpened（開いた story で aria-controls の参照先が実在することを毎回測る）',
+    出典: '部品5 D3=B・D10=A',
+  },
+};
+
+/**
+ * 🆕 **保留 1 件を種類に割る**（部品5 D2=C）。
+ * 戻り値の `kind` が `unclassified` なら**落とす**——「知らないもの」を黙って通さない。
+ */
+const classify = (row) => {
+  if (TOOL_LIMIT[row.rule] !== undefined) return 'tool-limit';
+  if (row.rule === 'color-contrast' && row.messageKey === 'shortTextContent')
+    return 'short-text'; // (a) 色は測れている → 既知の色の組と突き合わせる（D4=B）
+  if (row.rule === 'color-contrast' && row.messageKey === 'bgOverlap')
+    return 'bg-overlap'; // (b) 重なりで測れない → 判断は OBS が持つ
+  return 'unclassified';
+};
 
 const MIME = {
   '.html': 'text/html',
@@ -133,12 +190,28 @@ for (const story of stories) {
   for (const v of result.incomplete) {
     if (HARNESS_RULES.has(v.id)) continue;
     for (const node of v.nodes) {
-      pending[key].push({
+      // 🆕 部品5 D2=C — **理由を捨てない。**axe は保留の理由を `messageKey` で、
+      //    色は `fgColor` / `bgColor` / `contrastRatio` で**既に持っている**。
+      const check = node.any.find((c) => c.data?.messageKey !== undefined);
+      const data = check === undefined ? undefined : check.data;
+      const row = {
         story: story.title,
         rule: v.id,
         impact: v.impact,
         target: node.target.join(' '),
-      });
+        messageKey: data === undefined ? null : data.messageKey,
+        message: node.any.map((c) => c.message).join(' / '),
+        pair:
+          data === undefined || data.fgColor === undefined
+            ? null
+            : `${String(data.fgColor)} on ${String(data.bgColor)}`,
+        contrastRatio:
+          data === undefined || data.contrastRatio === undefined
+            ? null
+            : data.contrastRatio,
+      };
+      row.kind = classify(row);
+      pending[key].push(row);
     }
   }
 }
@@ -162,29 +235,54 @@ const summarize = (rows) => {
   };
 };
 
-/** 🆕 保留は「どの rule が、どの story で」だけを畳む（色の組は関係しない）。 */
-const summarizePending = (rows) => {
+/**
+ * 🆕 保留を **種類（`kind`）→ rule** の 2 段で畳む（部品5 D2=C）。
+ *
+ * 🟥 **`knownPairs` と突き合わせる**（D4=B）——`short-text` の保留は**色が測れている**ので、
+ *    **既に violations 側に出ている色の組かどうか**を機械が言える。
+ *    ★ これが言えないと、保留が増えたとき [OBS-0017] の話なのか新しい欠陥なのかが読めない。
+ */
+const summarizePending = (rows, knownPairs) => {
   const byRule = new Map();
+  const byKind = new Map();
+  const newPairs = new Map();
   for (const r of rows) {
     const entry = byRule.get(r.rule) ?? { count: 0, stories: new Set() };
     entry.count += 1;
     entry.stories.add(r.story);
     byRule.set(r.rule, entry);
+    byKind.set(r.kind, (byKind.get(r.kind) ?? 0) + 1);
+    if (r.kind === 'short-text' && r.pair !== null && !knownPairs.has(r.pair))
+      newPairs.set(r.pair, (newPairs.get(r.pair) ?? 0) + 1);
   }
   return {
     total: rows.length,
+    byKind: [...byKind.entries()].sort((a, b) => b[1] - a[1]),
     byRule: [...byRule.entries()]
       .map(([rule, e]) => ({ rule, count: e.count, stories: [...e.stories] }))
       .sort((a, b) => b.count - a.count),
+    knownPairCount: rows.filter(
+      (r) => r.kind === 'short-text' && knownPairs.has(r.pair),
+    ).length,
+    newPairs: [...newPairs.entries()],
+    unclassified: rows.filter((r) => r.kind === 'unclassified'),
   };
 };
 
+const shippedSummary = summarize(shelf.shipped);
+const excludedSummary = summarize(shelf.excluded);
+/** 🆕 D4=B — 既知の色の組（violations 側に出ているもの）。保留の突き合わせ先。 */
+const knownPairs = new Set([
+  ...shippedSummary.pairs.map(([pair]) => pair),
+  ...excludedSummary.pairs.map(([pair]) => pair),
+]);
+
 const report = {
   storyCount: stories.length,
-  shipped: summarize(shelf.shipped),
-  excluded: summarize(shelf.excluded),
-  pendingShipped: summarizePending(pending.shipped),
-  pendingExcluded: summarizePending(pending.excluded),
+  shipped: shippedSummary,
+  excluded: excludedSummary,
+  pendingShipped: summarizePending(pending.shipped, knownPairs),
+  pendingExcluded: summarizePending(pending.excluded, knownPairs),
 };
 
 await mkdir(OUT, { recursive: true });
@@ -205,13 +303,54 @@ for (const key of ['shipped', 'excluded']) {
 }
 
 // 🆕 D8=B — 判定の保留。**「緑」の中に混ざっていたもの。**
+// 🆕 部品5 D2=C — **種類つきで出す。**数だけでは、増えても減っても何が起きたか読めない。
+const KIND_LABEL = {
+  'tool-limit': '(c) 検査器が無条件に保留（引き換えを我々が測っている）',
+  'short-text': '(a) 文字が短くて本文か判定できない（色は測れている）',
+  'bg-overlap': '(b) 重なっていて背景色を決められない',
+  unclassified: '🟥 未分類',
+};
 for (const key of ['pendingShipped', 'pendingExcluded']) {
   const p = report[key];
   console.log(
     `\n[判定の保留・${key === 'pendingShipped' ? '出荷物の棚' : '除外棚'}] ${String(p.total)} 件`,
   );
+  for (const [kind, count] of p.byKind)
+    console.log(`  ${String(count)}  ${KIND_LABEL[kind] ?? kind}`);
   for (const r of p.byRule)
     console.log(
-      `  ${String(r.count)}  ${r.rule} / ${r.stories.length > 3 ? `${String(r.stories.length)} story` : r.stories.join(', ')}`,
+      `    ${String(r.count)}  ${r.rule} / ${r.stories.length > 3 ? `${String(r.stories.length)} story` : r.stories.join(', ')}`,
     );
+  if (p.byKind.some(([kind]) => kind === 'short-text'))
+    console.log(
+      `  → 色の組: 既知 ${String(p.knownPairCount)} 件 / 新しい組 ${String(p.newPairs.length)} 種類${p.newPairs.map(([pair, n]) => `（${pair} ×${String(n)}）`).join('')}`,
+    );
+}
+
+// 🟥 **知らないものは黙って通さない**（部品5 D2=C の赤テストは K2）。
+const unresolved = [
+  ...report.pendingShipped.unclassified,
+  ...report.pendingExcluded.unclassified,
+];
+const newPairs = [
+  ...report.pendingShipped.newPairs,
+  ...report.pendingExcluded.newPairs,
+];
+if (unresolved.length > 0 || newPairs.length > 0) {
+  console.error(
+    '\n🟥 保留に分類できないものがある（数える場所は、読めないと意味が無い）',
+  );
+  for (const r of unresolved)
+    console.error(
+      `  未分類  ${r.rule} / ${String(r.messageKey)} / ${r.story} / ${r.target}\n          ${r.message}`,
+    );
+  for (const [pair, n] of newPairs)
+    console.error(
+      `  新しい色の組  ${pair} ×${String(n)}（violations 側に出ていない＝ OBS-0017 の一覧に無い）`,
+    );
+  console.error(
+    '\n  ★ 塞ぎ方は 2 つ: ① TOOL_LIMIT に「根拠」と「引き換え」を書いて畳む（引き換えが書けないなら畳まない）\n' +
+      '                  ② classify() に種類を足す（＝ 何を見て種類を決めたかをコードに残す）',
+  );
+  process.exit(1);
 }
