@@ -37,6 +37,12 @@ export {
   PeriodSelect,
   PERIOD_PRESETS,
 } from '@/components/Selection/PeriodSelect';
+// 部品3 C3-02（D2=B / D3=B）: 上流に実装が無い初めての部品（`date-picker` はレジストリ 404）。
+// 🟥 素材の `calendar` はここからしか出荷物に到達しない——**`Calendar` 単体は出さない**（D3=B）。
+export {
+  DatePicker,
+  DATE_PICKER_MODES,
+} from '@/components/Selection/DatePicker';
 
 // ── ③ Patterns ─────────────────────────────────────────────────
 export { EmptyState } from '@/patterns/EmptyState';
@@ -125,6 +131,13 @@ export type {
   PeriodPreset,
   PeriodRange,
 } from '@/components/Selection/PeriodSelect';
+export type {
+  DatePickerProps,
+  DatePickerSingleProps,
+  DatePickerRangeProps,
+  DatePickerMode,
+  DateRange,
+} from '@/components/Selection/DatePicker';
 export type {
   StatusPillProps,
   StatusTone,

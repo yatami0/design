@@ -26,7 +26,7 @@ export const Default: Story = {
       <PopoverTrigger asChild>
         <Button variant="outline">絞り込み</Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent aria-label="絞り込み条件">
         <PopoverHeader>
           <PopoverTitle>絞り込み条件</PopoverTitle>
           <PopoverDescription>

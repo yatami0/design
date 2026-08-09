@@ -6,18 +6,17 @@
 //    逃げ道（`custom` ＋ range）を**同じ部品の中に対で持つ**（DR-0063: 禁止は代替と対でしか効かない）。
 // 🟥 **プリセットが実際にいつからいつまでかは知らない。**「今週」の起点・四半期の定義は
 //    題材の知識（src/redmine/period.ts の対応表）。コアは語彙と器だけ。
-// 🟨 範囲の入力（Popover ＋ Calendar）を内蔵するのは D13=A——外に出すと
+// 🟨 範囲の入力を内蔵するのは D13=A——外に出すと
 //    「語彙は部品・逃げ道は画面」に割れ、画面ごとの再発明が起きる。
-import { format } from 'date-fns';
-
-import { Button } from '@/components/Action/Button';
+//
+// ★★ 🆕 **部品3 C3-04（2026-08-09）: 内蔵の中身が Popover ＋ Calendar の手組みから
+//    `DatePicker` に替わった**（D6=A・Q2）。**D13=A の判断は変えていない**——
+//    「範囲の入力はこの部品が持つ」は据え置きで、**持ち方が手組みから部品の利用に変わった**だけ。
+//    🟥 **D13=A が想定していた選択肢は「部品が内蔵する / 画面が組む」の 2 つ**で、
+//    **「部品が別の部品を使う」は選択肢に無かった**（外に出す先が画面しかなかったため）。
+import { DatePicker, type DateRange } from '@/components/Selection/DatePicker';
 import { Inline } from '@/components/Layout/Inline';
 import { type FieldWidth } from '@/components/Layout/tokens';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/Overlay/Popover';
 import {
   Select,
   SelectContent,
@@ -25,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/Selection/Select';
-import { Calendar } from '@/components/ui/calendar';
 
 /**
  * 期間の語彙（有限集合）。`custom` が逃げ道。
@@ -106,26 +104,13 @@ export function PeriodSelect({
         </SelectContent>
       </Select>
       {value === 'custom' && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline">
-              {range
-                ? `${format(range.from, 'yyyy-MM-dd')} 〜 ${format(range.to, 'yyyy-MM-dd')}`
-                : '範囲を選ぶ'}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="start">
-            <Calendar
-              mode="range"
-              selected={range}
-              onSelect={(next) => {
-                if (next?.from && next.to) {
-                  onRangeChange?.({ from: next.from, to: next.to });
-                }
-              }}
-            />
-          </PopoverContent>
-        </Popover>
+        <DatePicker
+          mode="range"
+          {...(range === undefined ? {} : { value: range })}
+          onValueChange={(next: DateRange) => {
+            onRangeChange?.(next);
+          }}
+        />
       )}
     </Inline>
   );

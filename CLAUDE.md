@@ -46,11 +46,16 @@
 ## 機械ゲート
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell
+pnpm typecheck && pnpm lint && pnpm build && pnpm format:check && pnpm spell && pnpm build-storybook && pnpm test-storybook
 ```
 
 **赤がベースライン。**件数と内訳を `docs/handoff.md` の表と比較して「新しい赤」を見つける。
-🟥 工程1（Next → Vite）でゲートの構成が変わる予定。それまでは上記 ＋ `pnpm build-storybook` の 6 本。
+
+🆕 **2026-08-09（部品3 D7=A・ユーザー判断）: `pnpm test-storybook` を 7 本目に足した**＝ **完成バーの実行エンジン**。
+🟥 **`pnpm build-storybook` は story が実行時に落ちても exit 0**（[DR-0048](docs/DR/DR-0048-build-storybook-does-not-render.md)）——
+**バーの面①（描画された）・面②（a11y）・面④（語彙の効果）はこの 7 本目の中でしか走らない。**
+🟦 **赤の伝播は赤テストで確認済み**（部品3 K7: わざと 1 story を落として **exit 1**・戻して **exit 0**）。
+🟨 **所要は約 70 秒**で 6 本の合計より重い。**足した条件は「a11y critical が 0 になってから」**（部品1 D7=C）。
 
 ### 文書のメタデータと台帳
 

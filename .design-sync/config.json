@@ -56,7 +56,8 @@
     "Switch": "src/components/Selection/Switch.tsx",
     "Slider": "src/components/Selection/Slider.tsx",
     "Progress": "src/components/Communication/Progress.tsx",
-    "Avatar": "src/components/Display/Avatar.tsx"
+    "Avatar": "src/components/Display/Avatar.tsx",
+    "DatePicker": "src/components/Selection/DatePicker.tsx"
   },
   "readmeHeader": ".design-sync/conventions.md",
   "guidelinesGlob": [
