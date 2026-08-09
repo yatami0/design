@@ -17,8 +17,14 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const UI_DIR = 'src/components/ui';
-const STORY_DIR = 'src/stories';
+// 🆕 部品6 D4=D — **走査先を差し替えられるようにする。**
+//    理由は 1 つだけ: **この検査自身の赤テストを repo に固定するため**（`tools/self-check.mjs`）。
+//    🟥 部品4 K3・部品5 C5-05 の両方向テストは**毎回手で打って捨てていた**——
+//    [DR-0101](../docs/DR/DR-0101-a-comment-satisfied-the-check-for-absence.md) の穴は
+//    **その手打ちで偶然見つかった**もので、次に同じ形が入っても止まらない。
+//    🟨 既定値は変えない（呼び出し側は今までどおり `node tools/opened-overlay-check.mjs`）。
+const UI_DIR = process.env['OVERLAY_UI_DIR'] ?? 'src/components/ui';
+const STORY_DIR = process.env['OVERLAY_STORY_DIR'] ?? 'src/stories';
 
 /** 再帰的に .stories.tsx を集める。 */
 async function storyFiles(dir) {
