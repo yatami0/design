@@ -112,7 +112,13 @@ for (const path of storyPaths) {
       hasPlay: /\bplay:/.test(body),
       expects: (body.match(/await expect\(/g) ?? []).length,
       // 面④（語彙の効果）— `src/stories/measure.ts` の測り方を使っているか
-      vocab: /\b(resolveLength|resolveColor|styleOf|boxOf)\(/.test(body),
+      // 🆕 工程5 D12=A: `measure.ts` の 4 関数**または**生の `getComputedStyle`。
+      //    🟥 初版は measure.ts の呼び出しだけを数えており、**実効値を読んでいる主張を
+      //    「道具の使い方が違う」という理由で 0 と数えていた**（`PivotTable` で踏んだ）。
+      vocab:
+        /\b(resolveLength|resolveColor|styleOf|boxOf|getComputedStyle)\(/.test(
+          body,
+        ),
       opened: (body.match(/expectOpened\(/g) ?? []).length,
       trapped: (body.match(/expectFocusTrapped\(/g) ?? []).length,
     });
@@ -137,10 +143,37 @@ for (const dir of COMPONENT_DIRS) {
 
 /** (ii) の下ごしらえ: `export type X = keyof typeof CONST` の X を集める。 */
 const keyofAliases = new Set();
+/**
+ * ★★★ 🆕 **(iv) 4 経路目**（工程5 D11=A）: `export type X = (typeof CONST)[number]`
+ * ＝ **`as const` 配列から導いた union**。
+ *
+ * 🟥 **部品6 は「語彙の書かれ方は 3 通り」と結論したが、4 通り目があった。**
+ *    落ちていたのは新設の `PivotTable.intensity` だけではない——
+ *    **`PERIOD_PRESETS`（工程3）と `DATE_PICKER_MODES`（部品3）も同じ書き方**で、
+ *    **ずっと母数の外に居た。**（`PeriodSelect` が母数に居るのは別 prop `width` のおかげ。）
+ * ★ **母数は目より機械が正しい、が正しくない場合がある**——**機械も 1 経路落とす。**
+ */
+const constUnionAliases = new Set();
+/**
+ * ★★★ 🆕 **(v) 5 経路目**（工程5 D11=A）: `export type X = 'a' | 'b'` に**名前を付けた**もの。
+ *
+ * 🟥 経路 (i) は **prop の宣言に union が直書きされている場合しか見ていない**ので、
+ *    **`DataGridColumnKind`（手8d）や `StatusTone`（工程2）は 1 度も母数に入っていなかった。**
+ * ★ **4 通り目を見つけたら 5 通り目も出た**——「何通りあるか」を数え切った証拠は無い。
+ */
+const literalAliases = new Set();
 for (const path of componentPaths) {
   const src = stripComments(await readFile(path, 'utf8'));
   for (const m of src.matchAll(/type\s+(\w+)\s*=\s*keyof\s+typeof\s+\w+/g))
     keyofAliases.add(m[1]);
+  for (const m of src.matchAll(
+    /type\s+(\w+)\s*=\s*\(\s*typeof\s+\w+\s*\)\s*\[\s*number\s*\]/g,
+  ))
+    constUnionAliases.add(m[1]);
+  for (const m of src.matchAll(
+    /type\s+(\w+)\s*=\s*["'][A-Za-z0-9-]+["'](?:\s*\|\s*["'][A-Za-z0-9-]+["'])+/g,
+  ))
+    literalAliases.add(m[1]);
 }
 
 const ROUTES = {
@@ -169,6 +202,26 @@ for (const path of componentPaths.sort()) {
     );
     for (const m of src.matchAll(alias)) {
       found.routes.add('keyof');
+      found.props.add(m[1]);
+    }
+  }
+  if (constUnionAliases.size > 0) {
+    const alias = new RegExp(
+      String.raw`(\w+)\??:\s*(${[...constUnionAliases].join('|')})\b`,
+      'g',
+    );
+    for (const m of src.matchAll(alias)) {
+      found.routes.add('constUnion');
+      found.props.add(m[1]);
+    }
+  }
+  if (literalAliases.size > 0) {
+    const alias = new RegExp(
+      String.raw`(\w+)\??:\s*(${[...literalAliases].join('|')})\b`,
+      'g',
+    );
+    for (const m of src.matchAll(alias)) {
+      found.routes.add('literalAlias');
       found.props.add(m[1]);
     }
   }
@@ -248,7 +301,7 @@ const report = {
     '④ 語彙の効果': {
       対象: vocabParts.length,
       掛かった: vocabParts.filter((p) => p.covered).length,
-      注: '対象は「語彙 prop を持つ部品」を 3 経路で機械が引いた数',
+      注: '対象は「語彙 prop を持つ部品」を 5 経路で機械が引いた数（工程5 D11=A で 3 → 5）',
     },
   },
   claims: {
@@ -331,7 +384,9 @@ console.log(
 console.log(
   `\n[面④ の対象＝ 語彙 prop を持つ部品] ${String(vocabParts.length)} 件（経路: ${[
     'literal',
+    'literalAlias',
     'keyof',
+    'constUnion',
     'cva',
   ]
     .map(
@@ -368,7 +423,7 @@ if (report.storyFiles === 0) broken.push('story ファイルが 1 件も見つ�
 if (report.stories === 0) broken.push('story が 1 件も見つからない');
 if (vocabParts.length === 0)
   broken.push('語彙 prop を持つ部品が 1 件も引けない');
-for (const route of ['literal', 'keyof', 'cva'])
+for (const route of ['literal', 'literalAlias', 'keyof', 'constUnion', 'cva'])
   if (!vocabParts.some((p) => p.routes.includes(route)))
     broken.push(`語彙の経路 ${route} が 0 件（抽出が壊れている合図）`);
 if (c.総数 === 0) broken.push('await expect が repo 全体で 0 本');

@@ -63,3 +63,46 @@ export function periodToQuery(
   }
   return toUpdatedOnParam(resolvePeriod(preset, today));
 }
+
+// ── 🆕 工程5 D4=A: 2 本目の対応表（`spent_on`）─────────────────────────
+//
+// ★★ **同じ「今週」が、端点ごとに違うクエリ形に化ける。**
+//    一覧（`/issues.json`）は `updated_on=><a|b` の**演算子記法 1 パラメータ**、
+//    稼働（`/time_entries.json`）は **`from` / `to` の 2 パラメータ**（実 Redmine もこの形）。
+// 🟥 **汎用化しない**（D4 の B を却下した理由）——パラメータの個数も記法も違うので、
+//    1 本にまとめると「どちらでもない形」になる。工程3 が `STATUS_OPTIONS` で踏んだ
+//    「同じ名前の別物」と同型。
+// 🟦 **共通で残るのは `resolvePeriod`（語 → 範囲）まで。**割れるのは「範囲 → クエリ」の 1 段だけ。
+
+/** `time_entries` の絞り込み（両端含む）。`client.ts` の `TimeEntryQuery` の一部。 */
+export interface SpentOnParams {
+  from: string;
+  to: string;
+}
+
+/** 範囲 → `spent_on` の `from` / `to`。 */
+export function toSpentOnParams(range: PeriodRange): SpentOnParams {
+  return {
+    from: format(range.from, 'yyyy-MM-dd'),
+    to: format(range.to, 'yyyy-MM-dd'),
+  };
+}
+
+/**
+ * 画面の状態から `spent_on` の範囲を組む。
+ *
+ * 🟥 **`all` は undefined を返す**——一覧では「絞らない」で成立するが、
+ *    **ピボットは列の軸を範囲から引くので、範囲が無いと表が組めない**（工程5 の実測）。
+ *    どう扱うかは**画面の責務**で、対応表はここでは判断しない。
+ */
+export function periodToSpentOnParams(
+  preset: PeriodPreset,
+  customRange: PeriodRange | undefined,
+  today: Date,
+): SpentOnParams | undefined {
+  if (preset === 'all') return undefined;
+  if (preset === 'custom') {
+    return customRange === undefined ? undefined : toSpentOnParams(customRange);
+  }
+  return toSpentOnParams(resolvePeriod(preset, today));
+}

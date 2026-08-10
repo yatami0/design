@@ -30,6 +30,12 @@ export { StatusPill } from '@/components/DataDisplay/StatusPill';
 // Ant Design の `group: Data Display` を根拠に DataDisplay へ置いた（指摘 14）
 export { DescriptionList } from '@/components/DataDisplay/DescriptionList';
 export { Timeline } from '@/components/DataDisplay/Timeline';
+// 🆕 工程5 D1=B → 新設 / D5=A: ピボット表。🟥 **役割 9 カテゴリに席が無い 4 件目**（指摘 15）。
+//    語彙定数（濃淡の 5 語）も API の一部（`PERIOD_PRESETS` と同じ扱い）
+export {
+  PivotTable,
+  PIVOT_INTENSITIES,
+} from '@/components/DataDisplay/PivotTable';
 // 手8d H8D-06: 面④b（`a { color: var(--primary) }` が 4/6 周）を部品に引き取る
 export { Link } from '@/components/Navigation/Link';
 // 工程3 D3=C: 期間の語彙（有限 union）＋ 逃げ道（custom）を対で持つ。語彙定数も API の一部
@@ -152,6 +158,13 @@ export type {
   TimelineProps,
   TimelineEvent,
 } from '@/components/DataDisplay/Timeline';
+export type {
+  PivotTableProps,
+  PivotColumn,
+  PivotRow,
+  PivotCell,
+  PivotIntensity,
+} from '@/components/DataDisplay/PivotTable';
 export type { EmptyStateProps } from '@/patterns/EmptyState';
 export type { FormLayoutProps, FormFieldProps } from '@/patterns/FormLayout';
 export type { PageHeaderProps } from '@/patterns/PageHeader';

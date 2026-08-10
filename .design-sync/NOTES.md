@@ -179,6 +179,10 @@
 | --- | --- | --- |
 | 21 | 🟥 **header が名指ししていない出荷部品が 8 件ある** | `DescriptionList` `Timeline` `Breadcrumb` `Tabs` `FilterBar` `FormLayout` `PageHeader` `PeriodSelect`。**カードは出ているのに header の 2 層の列挙に載っていない。**header は「2 層とも実在する部品だから自分で markup を書くな」と言っているので、**載っていない部品は design agent が手組みする側に回る**（工程7 で `Card` が無くてカード面を手組みされたのと同じ形）。🟥 **ただし [DR-0069](../docs/DR/DR-0069-adding-prohibitions-to-the-header-degraded-the-output.md) があるので足すなら 1 変数で測る**——手8 で 842 バイト足したら**触っていない箇所が壊れた**。**今回は書き換えていない**（skill も「既存 header は書き換えず、ドリフトを報告して提案する」） |
 
+> 🆕 **2026-08-10（工程5 D8=B）: 検体が 8 → 9 件になった。**工程5 で新設・出荷した `PivotTable` も
+> header の 2 層の列挙に無い。🟥 **header は書き換えていない**——**この工程は design agent に組ませないので、
+> 書き換えても効果が観測できない**（[OBS-0016](../docs/OBS/OBS-0016_headerが名指ししていない出荷部品8件をどう埋めるか.md) §8 に追記）。
+
 ## 🆕 工程3 後の再同期（2026-08-08）— 土台が Vite になった後の 1 回目
 
 **同期範囲は 31 → 36 部品**（`Breadcrumb` `Tabs` `PeriodSelect` `FilterBar` `PageHeader` が追加）。

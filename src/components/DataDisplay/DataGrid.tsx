@@ -59,6 +59,12 @@ export interface DataGridProps<TData> {
   onRowSelect?: (row: TData) => void;
   /** 行が無いときに出すもの（空状態は Pattern 側が持つ）。 */
   empty?: React.ReactNode;
+  /**
+   * 🆕 工程5 D9=B: 横スクロールする器に付ける名前。
+   * 列が多くて溢れる表（ピボット等）では**器がキーボードの焦点を得る**ので、
+   * 何の領域かを名乗らせる。
+   */
+  scrollLabel?: string;
 }
 
 // 書式フラグの置き場は TanStack の `meta`——**利用者定義の列情報の公式の口**。
@@ -85,6 +91,7 @@ export function DataGrid<TData>({
   columns,
   onRowSelect,
   empty,
+  scrollLabel,
 }: DataGridProps<TData>) {
   const table = useReactTable({
     data,
@@ -106,7 +113,7 @@ export function DataGrid<TData>({
   const interactive = onRowSelect !== undefined;
 
   return (
-    <Table>
+    <Table {...(scrollLabel === undefined ? {} : { scrollLabel })}>
       <TableHeader>
         {table.getHeaderGroups().map((group) => (
           <TableRow key={group.id}>
