@@ -138,7 +138,10 @@ const COMP_VOCAB = `
 import { cva } from 'class-variance-authority';
 export type Inset = keyof typeof INSET;
 const INSET = { none: '', sm: 'p-inset-sm' } as const;
-export interface ProbeProps { inset?: Inset; tone?: 'primary' | 'muted' }
+export const MODES = ['a', 'b'] as const;
+export type Mode = (typeof MODES)[number];
+export type Tone = 'primary' | 'muted';
+export interface ProbeProps { inset?: Inset; tone?: 'primary' | 'muted'; named?: Tone; mode?: Mode }
 const probeVariants = cva('base', {
   variants: {
     size: { sm: '', md: '' },
@@ -202,7 +205,7 @@ check(
   `exit ${String(r.code)} / ${/④ 語彙の効果.*/.exec(r.out)?.[0]?.trim() ?? '（行が無い）'}`,
 );
 
-// 🟥 語彙の 3 経路のどれかが引けなくなったら落ちる
+// 🟥 語彙の 5 経路のどれかが引けなくなったら落ちる（工程5 D11=A で 3 → 5）
 await fixture(comp, {
   'Probe.tsx': `export interface ProbeProps { tone?: 'primary' | 'muted' }`,
 });

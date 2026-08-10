@@ -99,6 +99,15 @@ const classify = (row) => {
     return 'short-text'; // (a) 色は測れている → 既知の色の組と突き合わせる（D4=B）
   if (row.rule === 'color-contrast' && row.messageKey === 'bgOverlap')
     return 'bg-overlap'; // (b) 重なりで測れない → 判断は OBS が持つ
+  // 🆕 工程5 D13=A: **(b) の 2 つ目の入口。**axe の messageKey は違うが意味は同じ——
+  //    メッセージ本文は逐語で「partially obscured by another element」。
+  //    🟥 **初めて出た理由は「横に溢れる表が 1 つも無かった」**（工程5 D9 と同じ根）——
+  //    器の外へスクロールしたセルを axe が「隠れている」と見る。**新種ではなく既知の種類。**
+  if (
+    row.rule === 'color-contrast' &&
+    row.messageKey === 'elmPartiallyObscured'
+  )
+    return 'bg-overlap';
   return 'unclassified';
 };
 

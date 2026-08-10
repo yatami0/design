@@ -236,6 +236,9 @@ export const handlers = [
   // ── 作業時間（🟦 AC が日次で取れる唯一の端点）───────────────────────
   http.get(`${REDMINE_BASE_URL}/time_entries.json`, ({ request }) => {
     const url = new URL(request.url);
+    // 🆕 工程5 K2: 一覧（`/issues.json`）と同じ形で証拠を残す。
+    //    **飛んだ URL を機械が数える**ための口（`tools/pivot-probe.mjs`）。
+    console.info(`[msw] GET /time_entries.json${url.search}`);
     const { offset, limit } = readPaging(url);
     const from = url.searchParams.get('from');
     const to = url.searchParams.get('to');
