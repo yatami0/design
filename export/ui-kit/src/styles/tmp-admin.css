@@ -1,0 +1,142 @@
+/* src/app/tmp-admin.css
+ * 手5 の 1 周目「素直」— tmp-admin の値を流し込む。
+ *
+ * 🟦 ここは値を書いてよい唯一のファイル。
+ *    DR-0005 決定3「値は書かない」は ./tokens.css（語彙の定義）に対する規律であって、
+ *    本ファイルは 2 段階投入の **2 段目**そのもの＝値の投入口。
+ *
+ * 🟥 1 周目の縛り（手5 §2 D1=D の 1 周目 / D5=A）:
+ *      - 触ってよいのは `@theme`（変数の再定義）と **既存の変数の向け替え**だけ
+ *      - レイヤ外からの**プロパティ上書き**は使わない（2 周目 = tmp-admin-override.css）
+ *      - 角丸は `--radius` 1 変数だけ動かす（段ごとの上書きは 2 周目）
+ *    → 出すのは「**素直にやったときの追従率**」。
+ *
+ * 値の出どころ: ~/git/CC-Skills
+ *   base   .claude/skills/web-design-mock/references/apple/apple.md
+ *   delta  web-design-mock/_philosophies/aux-admin/aux-admin.md
+ *
+ * 切り戻し: globals.css の `@import './tmp-admin.css';` を 1 行コメントアウトする。
+ */
+
+/* ══ 表1 2.1 / 2.2  shadcn 自身の変数名を上書きする（手5 D7=B′）══════════
+ * 🟥 罠が 2 つあった（どちらもビルドは緑のまま素通りした → DR-0046）。
+ *   1. `@theme { --color-primary: … }` では効かない。globals.css の
+ *      `@theme inline { --color-primary: var(--primary) }` が後ろにあり、
+ *      別名の向き先を `--primary` に固定し直してしまう。
+ *   2. 「では import を末尾へ」も効かない。CSS の `@import` は他の規則より前に
+ *      なければならず、**import ごと黙って捨てられる**。
+ * 🟦 結論: 位置は前（globals.css の上部）に固定し、**詳細度で勝つ**。
+ *    `:root:root` は (0,2,0) で shadcn の `:root` (0,1,0) に勝つので、
+ *    ソース順に関係なく後勝ちできる。shadcn 自身のテーマ機構に乗るので
+ *    `.dark` の上書きも生きたまま残る（`.dark` は (0,1,0) だが後ろにあるため別問題→ §末尾の注記）。 */
+:root:root {
+  /* ── 意味色 18（apple / tmp-admin ← shadcn semantic）─────────────────
+   * 🟥 V2「accent を塗りに使わない／ブランドは濃紺の面で出す」を守る。
+   *    --primary に --color-accent(#005fa2) を入れない（トークンマッピング 表3 #1）。
+   *    nova の --primary は元から無彩色なので、label 色を入れれば V2 は保たれる。 */
+  --background: #ffffff; /* apple --color-bg */
+  --foreground: rgba(0, 0, 0, 1); /* apple --color-label */
+  --card: #ffffff; /* apple --color-surface */
+  --card-foreground: rgba(0, 0, 0, 1);
+  --popover: #ffffff; /* apple --color-surface */
+  --popover-foreground: rgba(0, 0, 0, 1);
+  --primary: rgba(0, 0, 0, 1); /* 🟥 accent を入れない（V2） */
+  --primary-foreground: #ffffff; /* apple --color-on-accent */
+  --secondary: #f2f2f7; /* apple --color-bg-secondary */
+  --secondary-foreground: rgba(0, 0, 0, 1);
+  --muted: #f2f2f7; /* apple --color-bg-grouped */
+  --muted-foreground: rgba(60, 60, 67, 0.6); /* --color-label-secondary */
+  --accent: rgba(
+    120,
+    120,
+    128,
+    0.2
+  ); /* 🟨 shadcn accent = 弱い面。apple --color-fill を写す */
+  --accent-foreground: rgba(0, 0, 0, 1);
+  --destructive: #ff3b30; /* apple --color-danger */
+  --border: rgba(60, 60, 67, 0.29); /* apple --color-separator */
+  --input: rgba(60, 60, 67, 0.29);
+  --ring: #005fa2; /* 🟦 tmp --color-accent はここ（4.5 フォーカス最小用途） */
+
+  /* ── サイドバー 8（component 層・V5 on-dark の隔離）────────────────── */
+  --sidebar: #003a63; /* tmp --sidebar-bg = brand-navy */
+  --sidebar-foreground: rgba(255, 255, 255, 0.92); /* --sidebar-fg */
+  --sidebar-primary: #009fe8; /* --sidebar-accent = brand-skyblue */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(255, 255, 255, 0.1); /* --sidebar-fill */
+  --sidebar-accent-foreground: rgba(255, 255, 255, 0.92);
+  --sidebar-border: rgba(255, 255, 255, 0.16); /* --sidebar-border */
+  --sidebar-ring: #009fe8;
+
+  /* ── 角丸の基数 — 🟥 1 周目は 1 変数だけ（手5 §2 D5 = A）──────────────
+   * apple は 8/12/18/28 の **非線形 5 段**。shadcn は --radius から比率で 7 段を派生する。
+   * ここでは基数だけ apple の --radius-m(12px) に合わせ、
+   * **段の比率が固定であること（＝非線形は再現できないこと）を観測する。**
+   * 段ごとの上書き（= 語彙の追加）は 2 周目。
+   * 派生: sm 7.2 / md 9.6 / lg 12 / xl 16.8 / 2xl 21.6 / 3xl 26.4 / 4xl 31.2 */
+  --radius: 12px;
+}
+
+@theme {
+  /* ══ 表1 2.4  意味色と状態 tint（手4 で語彙を足した分に値を入れる）══════ */
+  --color-success: #34c759; /* apple systemGreen */
+  --color-warning: #ff9500; /* apple systemOrange */
+  --color-fill-success: rgba(52, 199, 89, 0.16); /* tmp --fill-success */
+  --color-fill-warning: rgba(255, 149, 0, 0.16);
+  --color-fill-danger: rgba(255, 59, 48, 0.16);
+  --color-fill-neutral: rgba(120, 120, 128, 0.14);
+
+  /* ══ 表1 2.3  spacing（自前 semantic 語彙 → apple --space-*）════════════
+   * 🟨 shadcn 素材層 132 箇所はこの語彙を使わない（--spacing 経由で動く）。
+   *    ここで動くのは自作 Layout テンプレの内側だけ（tokens.css の注記どおり）。 */
+  --spacing-inset-xs: 8px; /* --space-3 */
+  --spacing-inset-sm: 12px; /* --space-4 */
+  --spacing-inset-md: 16px; /* --space-5 */
+  --spacing-inset-lg: 24px; /* --space-7 */
+  --spacing-stack-sm: 8px; /* --space-3 */
+  --spacing-stack-md: 16px; /* --space-5 */
+  --spacing-stack-lg: 20px; /* --space-6 */
+  --spacing-inline-sm: 4px; /* --space-2 */
+  --spacing-inline-md: 8px; /* --space-3 */
+  --spacing-gutter: 16px; /* tmp --gutter = --space-5 */
+  --spacing-row: 60px; /* aux-admin §4.4 テーブル行高 */
+  --spacing-dot: 6px; /* aux-admin §4.5 状態ドット */
+  --spacing-touch-min: 44px; /* apple --touch-min */
+  --spacing-hit-expand: 6px; /* (44-32)/2 */
+
+  /* ══ 表1 2.3  レイアウト幅 ═══════════════════════════════════════════ */
+  --container-content: 980px; /* apple --content-max */
+  --container-wide: 1280px; /* apple --content-wide */
+
+  /* ══ 表1 2.3  タイポ（自前 semantic 語彙 → apple の用途名タイポ）══════
+   * 🟨 4 者のうち apple だけが用途名タイポを持つ（トークンマッピング 表2）。 */
+  --text-body: 17px; /* apple --text-body */
+  --text-table: 15px; /* --text-subhead（密データ） */
+  --text-label: 13px; /* --text-footnote */
+  --text-emphasis: 17px; /* --text-body + weight で立てる（V3） */
+  --text-heading: 17px; /* --text-headline（V3: title 群は使わない） */
+
+  /* ══ V3「強調は weight 600 ⇔ 400 のコントラスト」════════════════════
+   * 🆕 DR-0044。font-medium は var(--font-weight-medium) を出すので、
+   *    ここを 600 にすると **shadcn 素材層の 15 箇所すべてが動く**。 */
+  --font-weight-medium: 600;
+  --font-weight-emphasis: 600;
+
+  /* ══ V1「blur を使わない。奥行きは 3 層の面で作る」═════════════════
+   * 🆕 DR-0044。backdrop-blur-xs は blur(var(--blur-xs)) を出すので、
+   *    ここを 0 にすると dialog / sheet の overlay 2 箇所から blur が消える。 */
+  --blur-xs: 0px;
+
+  /* ══ 影（apple --shadow-1 / --shadow-2）═══════════════════════════════
+   * 🆕 DR-0044。shadow-* は :root に変数を出さない（ビルド時解決）が、
+   *    @theme の定義は読む。素材層 7 箇所が部品を触らずに動く。
+   * 🟨 shadcn は 3 段（sm/md/lg）、apple は 2 段。多:1 で写す。 */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 30px rgba(0, 0, 0, 0.1);
+
+  /* ══ 等幅（tmp §4.4 密データ用）════════════════════════════════════ */
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
